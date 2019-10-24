@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">iPolygot</string>
+    <string name="permission_message">This app needs to record audio and recognize your speech.</string>
+
+    <!-- https://cloud.google.com/translate/docs/languages -->
+    <string-array name="list_of_language">
+        <item>Arabic</item>
+        <item>Malay</item>
+        <item>Chinese</item>
+        <item>English</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Hindi</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Korean</item>
+        <item>Punjabi</item>
+        <item>Tamil</item>
+        <item>Tagalog</item>
+        <item>Thai</item>
+        <item>Vietnamese</item>
+    </string-array>
+</resources>

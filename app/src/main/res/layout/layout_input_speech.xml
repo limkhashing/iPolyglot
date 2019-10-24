@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Please select your input speech language"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/input_speech_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        app:ms_background_color="#f2f2f2"
+        app:ms_dropdown_height="200dp"
+        app:ms_text_color="@color/colorPrimaryDark" />
+
+</LinearLayout>
