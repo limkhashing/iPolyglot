@@ -78,9 +78,9 @@ public class SpeechService extends Service {
     public interface Listener {
 
         /**
-         * Called when a new piece of text was recognized by the Speech API.
+         * Called when a new piece of speechText was recognized by the Speech API.
          *
-         * @param text    The text.
+         * @param text    The speechText.
          * @param isFinal {@code true} when the API finished processing audio.
          */
         void onSpeechRecognized(String text, boolean isFinal);
@@ -250,18 +250,21 @@ public class SpeechService extends Service {
             return;
         }
         // Configure the API
-        mRequestObserver = mApi.streamingRecognize(mResponseObserver);
-        mRequestObserver.onNext(StreamingRecognizeRequest.newBuilder()
-                .setStreamingConfig(StreamingRecognitionConfig.newBuilder()
-                        .setConfig(RecognitionConfig.newBuilder()
-                                .setLanguageCode(inputSpeechLanguageCode)
-                                .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-                                .setSampleRateHertz(sampleRate)
-                                .build())
-                        .setInterimResults(true)
-                        .setSingleUtterance(true)
-                        .build())
-                .build());
+        if (inputSpeechLanguageCode != null) {
+            mRequestObserver = mApi.streamingRecognize(mResponseObserver);
+            mRequestObserver.onNext(StreamingRecognizeRequest.newBuilder()
+                    .setStreamingConfig(StreamingRecognitionConfig.newBuilder()
+                            .setConfig(RecognitionConfig.newBuilder()
+                                    .setLanguageCode(inputSpeechLanguageCode)
+                                    .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+                                    .setSampleRateHertz(sampleRate)
+                                    .build())
+                            .setInterimResults(true)
+                            .setSingleUtterance(true)
+                            .build())
+                    .build());
+        }
+
     }
 
     /**
