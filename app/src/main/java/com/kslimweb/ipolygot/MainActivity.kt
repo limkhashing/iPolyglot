@@ -192,6 +192,7 @@ class MainActivity : AppCompatActivity(){
                 val translate = translateOptions.service
                 val translation = translate.translate(text,
                     Translate.TranslateOption.targetLanguage(translateLanguageCode),
+                    // Use "base" for standard edition, "nmt" for the premium model.
                     Translate.TranslateOption.model("base"))
                 val translatedText = translation.translatedText
                 Log.d(TAG, "Translated Text: " + translatedText)
