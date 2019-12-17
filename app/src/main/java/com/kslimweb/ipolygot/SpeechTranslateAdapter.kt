@@ -28,6 +28,9 @@ class SpeechTranslateAdapter(private var speechResult: String = "",
             holder.searchAppearLabel.visibility = View.VISIBLE
             holder.searchRecyclerView.adapter = AlgoliaSearchAdapter(hits)
             holder.searchRecyclerView.visibility = View.VISIBLE
+        } else {
+            holder.searchAppearLabel.visibility = View.GONE
+            holder.searchRecyclerView.visibility = View.GONE
         }
     }
 

@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.kslimweb.ipolygot.R
 import com.kslimweb.ipolygot.SpeechTranslateAdapter
 import com.kslimweb.ipolygot.algolia_data.AlgorliaCredentials
+import com.kslimweb.ipolygot.algolia_data.Hit
 import com.kslimweb.ipolygot.algolia_data.HitsJson
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
@@ -19,6 +20,8 @@ import org.json.JSONObject
 
 class Helper {
     companion object {
+        private lateinit var tempAlgoliaHitList: List<Hit>
+
         fun getLanguageCode(position: Int = 0): String {
             var languageCode = ""
             when (position) {
@@ -56,21 +59,36 @@ class Helper {
             }
         }
 
-        suspend fun translateText(translate: Translate, text: String, translateLanguageCode: String): String {
+        suspend fun translateText(translate: Translate, text: String, translateLanguageCode: String, model: String): String {
             var translatedText = ""
             withContext(IO) {
                 translatedText = translate.translate(text,
                     Translate.TranslateOption.targetLanguage(translateLanguageCode),
                     // Use "base" for standard edition, "nmt" for the premium model.
-                    Translate.TranslateOption.model("base")).translatedText
+                    Translate.TranslateOption.model(model)).translatedText
             }
             return translatedText
         }
 
-        fun algoliaSearchCallback(speechToText: String, translatedText: String, speechTranslateAdapter: SpeechTranslateAdapter, index: Index) {
-            index.searchAsync(Query(translatedText)) { jsonObject: JSONObject?, algoliaException: AlgoliaException? ->
-                val hitsJson = Gson().fromJson(jsonObject.toString(), HitsJson::class.java)
-                speechTranslateAdapter.setResult(speechToText, translatedText, hitsJson.hits)
+        fun algoliaIndexSearchCallback(speechText: String,
+                                       translatedText: String,
+                                       speechTranslateAdapter: SpeechTranslateAdapter,
+                                       index: Index,
+                                       isNewSpeech: Boolean = false) {
+            if (isNewSpeech) {
+                index.searchAsync(Query(speechText)) { jsonObject: JSONObject?, algoliaException: AlgoliaException? ->
+                    tempAlgoliaHitList = Gson().fromJson(jsonObject.toString(), HitsJson::class.java).hits
+                    algoliaIndexSearchCallback(speechText, translatedText, speechTranslateAdapter, index, false)
+                }
+            } else {
+                index.searchAsync(Query(translatedText)) { jsonObject: JSONObject?, algoliaException: AlgoliaException? ->
+                    val hitsJson = Gson().fromJson(jsonObject.toString(), HitsJson::class.java)
+                    val finalList = mutableListOf<Hit>()
+                    tempAlgoliaHitList.intersect(hitsJson.hits).forEach {
+                        finalList.add(it)
+                    }
+                    speechTranslateAdapter.setResult(speechText, translatedText, finalList)
+                }
             }
         }
     }

@@ -10,7 +10,16 @@
     android:paddingTop="@dimen/spacing_small">
 
     <TextView
-        android:id="@+id/chapter_arabic"
+        android:id="@+id/txt_chapter_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_small"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textStyle="bold"
+        tools:text="Chapter Number: " />
+
+    <TextView
+        android:id="@+id/txt_chapter_arabic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"
@@ -19,16 +28,15 @@
         tools:text="Chapter Arabic: " />
 
     <TextView
-        android:id="@+id/chapter_translated"
+        android:id="@+id/txt_chapter_translated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"
-        android:text="Appeared in: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         tools:text="Chapter English: " />
 
     <TextView
-        android:id="@+id/reference"
+        android:id="@+id/txt_reference"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"
@@ -38,7 +46,7 @@
         tools:text="Reference: " />
 
     <TextView
-        android:id="@+id/in_book_reference"
+        android:id="@+id/txt_in_book_reference"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"

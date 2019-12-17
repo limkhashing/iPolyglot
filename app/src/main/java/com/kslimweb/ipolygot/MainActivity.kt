@@ -17,7 +17,7 @@ import com.algolia.search.saas.Client
 import com.google.cloud.translate.Translate
 import com.kslimweb.ipolygot.speechtotext.SpeechService
 import com.kslimweb.ipolygot.speechtotext.VoiceRecorder
-import com.kslimweb.ipolygot.util.Helper.Companion.algoliaSearchCallback
+import com.kslimweb.ipolygot.util.Helper.Companion.algoliaIndexSearchCallback
 import com.kslimweb.ipolygot.util.Helper.Companion.getAlgoliaClient
 import com.kslimweb.ipolygot.util.Helper.Companion.getGoogleTranslationService
 import com.kslimweb.ipolygot.util.Helper.Companion.getLanguageCode
@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
 
 const val REQUEST_AUDIO_PERMISSION = 200
 const val ALGOLIA_INDEX_NAME = "hadith"
-
+const val TRANSLATE_MODEL = "base"
 class MainActivity : AppCompatActivity() {
 
     private var mSpeechService: SpeechService? = null
@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity() {
         }
         if (speech_text != null && !TextUtils.isEmpty(speechText)) {
             CoroutineScope(IO).launch {
-                val translatedText=  translateText(googleTranslateService, speechText, translateLanguageCode)
+                val translatedText=  translateText(googleTranslateService, speechText, translateLanguageCode, TRANSLATE_MODEL)
                 setTextOnMain(isFinal, speechText, translatedText)
             }
         }
@@ -170,13 +170,13 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Main).launch {
             withContext(Main) {
                 if (final) {
-                    speech_text.text = null
-                    translate_text.text = null
+                    speech_text.text = ""
+                    translate_text.text = ""
                     if (!::speechTranslateAdapter.isInitialized) {
                         speechTranslateAdapter = SpeechTranslateAdapter()
                         rv_speech_translate_search.adapter = speechTranslateAdapter
                     }
-                    algoliaSearchCallback(speechText, translatedText, speechTranslateAdapter, algoliaClient.getIndex(ALGOLIA_INDEX_NAME))
+                    algoliaIndexSearchCallback(speechText, translatedText, speechTranslateAdapter, algoliaClient.getIndex(ALGOLIA_INDEX_NAME), true)
                 } else {
                     speech_text.text = speechText
                     translate_text.text = translatedText
