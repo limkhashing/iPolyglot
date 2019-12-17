@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity() {
         initSpinnerItem()
         speechLanguageCode = getLanguageCode()
         translateLanguageCode = getLanguageCode()
-        googleTranslateService = getGoogleTranslationService(this)
-        algoliaClient = getAlgoliaClient(this)
+        googleTranslateService = getGoogleTranslationService(applicationContext)
+        algoliaClient = getAlgoliaClient(applicationContext)
 
         spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
             speechLanguageCode = getLanguageCode(position)
@@ -82,10 +82,10 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         // Prepare Cloud Speech API
-        bindService(Intent(this, SpeechService::class.java), mServiceConnection, BIND_AUTO_CREATE)
+        bindService(Intent(applicationContext, SpeechService::class.java), mServiceConnection, BIND_AUTO_CREATE)
 
         // Start listening to voices
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED) {
             startVoiceRecorder()
         }
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initSpinnerItem() {
-        val adapter = ArrayAdapter.createFromResource(this, R.array.list_of_language, android.R.layout.simple_spinner_item)
+        val adapter = ArrayAdapter.createFromResource(applicationContext, R.array.list_of_language, android.R.layout.simple_spinner_item)
         spinner_speech_language.setAdapter(adapter)
         spinner_translate_language.setAdapter(adapter)
     }
@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showPermissionMessageDialog() {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(applicationContext)
             .setMessage(getString(R.string.permission_message))
             .setPositiveButton(android.R.string.ok) { dialog, which ->
                 dialog.dismiss()

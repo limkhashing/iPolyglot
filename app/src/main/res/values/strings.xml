@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">iPolygot</string>
+    <string name="app_name">iPolyglot</string>
     <string name="permission_message">This app needs to record audio and recognize your speech.</string>
 
     <!-- https://cloud.google.com/translate/docs/languages -->
