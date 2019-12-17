@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="MissingTranslation" severity="warning"/>
+    <issue id="StringFormatCount" severity="error"/>
+    <issue id="InvalidPackage">
+        <ignore regexp="java-common-1.8.jar"/>
+        <ignore regexp=".*okio.*" />
+        <ignore regexp=".*retrofit.*" />
+        <ignore path="*/io.grpc/grpc-core/*"/>
+    </issue>
+    <issue id="ObsoleteLintCustomCheck">
+        <ignore regexp="butterknife.lint" />
+        <ignore regexp="nl.littlerobots.rxlint" />
+    </issue>
+</lint>

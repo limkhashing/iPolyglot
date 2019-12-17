@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_small"
+    android:paddingLeft="@dimen/spacing_medium"
+    android:paddingRight="@dimen/spacing_medium"
+    android:paddingTop="@dimen/spacing_small">
+
+    <TextView
+        android:id="@+id/chapter_arabic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_small"
+        android:text="Appeared in: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        tools:text="Chapter Arabic: " />
+
+    <TextView
+        android:id="@+id/chapter_translated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_small"
+        android:text="Appeared in: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        tools:text="Chapter English: " />
+
+    <TextView
+        android:id="@+id/reference"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_small"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Reference: " />
+
+    <TextView
+        android:id="@+id/in_book_reference"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_small"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="In-book Reference: " />
+
+    <include layout="@layout/divider_vertical" />
+
+</LinearLayout>

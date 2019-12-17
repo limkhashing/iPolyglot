@@ -44,6 +44,8 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             tools:text="It is fine today."/>
 
+        <include layout="@layout/divider_vertical" />
+
         <TextView
             android:id="@+id/translate_text"
             android:layout_width="match_parent"
@@ -53,6 +55,25 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             tools:text="It is fine today."/>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/txt_label_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/spacing_small"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:text="Appeared in: "
+            tools:visibility="visible"
+            android:visibility="gone"/>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_search"
+            android:visibility="gone"
+            tools:visibility="visible">
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

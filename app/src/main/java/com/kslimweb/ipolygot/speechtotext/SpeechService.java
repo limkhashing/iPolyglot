@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kslimweb.ipolygot;
+package com.kslimweb.ipolygot.speechtotext;
 
 import android.app.Service;
 import android.content.Context;
@@ -45,6 +45,7 @@ import com.google.cloud.speech.v1.StreamingRecognitionResult;
 import com.google.cloud.speech.v1.StreamingRecognizeRequest;
 import com.google.cloud.speech.v1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
+import com.kslimweb.ipolygot.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -356,7 +357,7 @@ public class SpeechService extends Service {
             // folder of this client app. You should never do this in your app. Instead, store
             // the file in your server and obtain an access token from there.
             // *******************
-            final InputStream stream = getResources().openRawResource(R.raw.credential);
+            final InputStream stream = getResources().openRawResource(R.raw.credential_dev);
             try {
                 final GoogleCredentials credentials = GoogleCredentials.fromStream(stream)
                         .createScoped(SCOPE);

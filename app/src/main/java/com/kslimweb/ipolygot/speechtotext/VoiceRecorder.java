@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kslimweb.ipolygot;
+package com.kslimweb.ipolygot.speechtotext;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
