@@ -67,10 +67,10 @@ class Helper {
             return translatedText
         }
 
-        fun algoliaSearchCallback(speechToText: String, translatedText: String, resultAdapter: SpeechTranslateAdapter, index: Index) {
+        fun algoliaSearchCallback(speechToText: String, translatedText: String, speechTranslateAdapter: SpeechTranslateAdapter, index: Index) {
             index.searchAsync(Query(translatedText)) { jsonObject: JSONObject?, algoliaException: AlgoliaException? ->
                 val hitsJson = Gson().fromJson(jsonObject.toString(), HitsJson::class.java)
-                resultAdapter.addResult(speechToText, translatedText, hitsJson.hits)
+                speechTranslateAdapter.setResult(speechToText, translatedText, hitsJson.hits)
             }
         }
     }

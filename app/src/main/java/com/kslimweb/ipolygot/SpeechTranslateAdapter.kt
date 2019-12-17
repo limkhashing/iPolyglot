@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kslimweb.ipolygot.algolia_data.Hit
-import java.util.ArrayList
 
-class SpeechTranslateAdapter(private val results: ArrayList<String> = ArrayList(),
+class SpeechTranslateAdapter(private var speechResult: String = "",
+                             private var translateText: String = "",
                              private var hits: List<Hit> = emptyList())
     : RecyclerView.Adapter<SpeechTranslateAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
-        return results.size
+        return 1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -21,28 +21,21 @@ class SpeechTranslateAdapter(private val results: ArrayList<String> = ArrayList(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val speechTranslateSearchResult = results[position]
-        val resultPart = speechTranslateSearchResult.split("-")
-        holder.speechText.text = resultPart[0]
-        holder.translateText.text = resultPart[1]
+        holder.speechText.text = speechResult
+        holder.translateText.text = translateText
 
         if (hits.isNotEmpty()) {
             holder.searchAppearLabel.visibility = View.VISIBLE
             holder.searchRecyclerView.adapter = AlgoliaSearchAdapter(hits)
             holder.searchRecyclerView.visibility = View.VISIBLE
         }
-
     }
 
-    internal fun addResult(speechResult: String, translateText: String, hits: List<Hit>) {
-        val result = speechResult + "-" + translateText
-        results.add(0, result)
+    internal fun setResult(speechResult: String, translateText: String, hits: List<Hit>) {
+        this.speechResult = speechResult
+        this.translateText = translateText
+        notifyDataSetChanged()
         this.hits = hits
-        notifyItemInserted(0)
-    }
-
-    fun getResults(): ArrayList<String> {
-        return results
     }
 
     class ViewHolder internal constructor(inflater: LayoutInflater, parent: ViewGroup) :

@@ -33,13 +33,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 const val REQUEST_AUDIO_PERMISSION = 200
-const val STATE_RESULTS = "results"
 const val ALGOLIA_INDEX_NAME = "hadith"
 
 class MainActivity : AppCompatActivity() {
 
     private var mSpeechService: SpeechService? = null
-    private lateinit var resultAdapter: SpeechTranslateAdapter
+    private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
     private lateinit var algoliaClient: Client
     private lateinit var googleTranslateService: Translate
 
@@ -51,12 +50,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_AUDIO_PERMISSION)
-
-        val results = savedInstanceState?.getStringArrayList(STATE_RESULTS)
-        results?.let {
-            resultAdapter = SpeechTranslateAdapter(it)
-            rv_speech_translate_search.adapter = resultAdapter
-        }
 
         initSpinnerItem()
         speechLanguageCode = getLanguageCode()
@@ -71,11 +64,6 @@ class MainActivity : AppCompatActivity() {
         spinner_translate_language.setOnItemSelectedListener { view, position, id, item ->
             translateLanguageCode = getLanguageCode(position)
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putStringArrayList(STATE_RESULTS, resultAdapter.getResults())
     }
 
     override fun onStart() {
@@ -184,12 +172,11 @@ class MainActivity : AppCompatActivity() {
                 if (final) {
                     speech_text.text = null
                     translate_text.text = null
-                    if (!::resultAdapter.isInitialized) {
-                        resultAdapter = SpeechTranslateAdapter()
-                        rv_speech_translate_search.adapter = resultAdapter
+                    if (!::speechTranslateAdapter.isInitialized) {
+                        speechTranslateAdapter = SpeechTranslateAdapter()
+                        rv_speech_translate_search.adapter = speechTranslateAdapter
                     }
-                    algoliaSearchCallback(speechText, translatedText, resultAdapter, algoliaClient.getIndex(ALGOLIA_INDEX_NAME))
-                    rv_speech_translate_search.smoothScrollToPosition(0)
+                    algoliaSearchCallback(speechText, translatedText, speechTranslateAdapter, algoliaClient.getIndex(ALGOLIA_INDEX_NAME))
                 } else {
                     speech_text.text = speechText
                     translate_text.text = translatedText
