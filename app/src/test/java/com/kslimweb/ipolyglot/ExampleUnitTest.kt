@@ -1,4 +1,4 @@
-package com.kslimweb.ipolygot
+package com.kslimweb.ipolyglot
 
 import org.junit.Test
 

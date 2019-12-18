@@ -34,12 +34,10 @@ android {
             minifyEnabled false
             multiDexEnabled true
             applicationIdSuffix = '.dev'
-            buildConfigField "String", "BUILD_VARIANT", "\"development\""
         }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BUILD_VARIANT", "\"release\""
         }
     }
     packagingOptions {

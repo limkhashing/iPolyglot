@@ -1,15 +1,15 @@
-package com.kslimweb.ipolygot
+package com.kslimweb.ipolyglot
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.kslimweb.ipolygot.algolia_data.Hit
+import com.kslimweb.ipolyglot.algolia_data.Hit
 
-class SpeechTranslateAdapter(private var speechResult: String = "",
-                             private var translateText: String = "",
-                             private var hits: List<Hit> = emptyList())
+class SpeechTranslateAdapter(private var speechResult: String,
+                             private var translatedText: String,
+                             private var hits: List<Hit>)
     : RecyclerView.Adapter<SpeechTranslateAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
@@ -22,23 +22,24 @@ class SpeechTranslateAdapter(private var speechResult: String = "",
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.speechText.text = speechResult
-        holder.translateText.text = translateText
+        holder.translateText.text = translatedText
+        holder.searchAppearLabel.visibility = View.VISIBLE
+        holder.searchAppearLabel.text = holder.searchAppearLabel.text.toString().replace(": None", "")
 
         if (hits.isNotEmpty()) {
-            holder.searchAppearLabel.visibility = View.VISIBLE
             holder.searchRecyclerView.adapter = AlgoliaSearchAdapter(hits)
             holder.searchRecyclerView.visibility = View.VISIBLE
         } else {
-            holder.searchAppearLabel.visibility = View.GONE
+            holder.searchAppearLabel.append(" None")
             holder.searchRecyclerView.visibility = View.GONE
         }
     }
 
-    internal fun setResult(speechResult: String, translateText: String, hits: List<Hit>) {
+    fun setResult(speechResult: String, translateText: String, hits: List<Hit>) {
         this.speechResult = speechResult
-        this.translateText = translateText
-        notifyDataSetChanged()
+        this.translatedText = translateText
         this.hits = hits
+        notifyDataSetChanged()
     }
 
     class ViewHolder internal constructor(inflater: LayoutInflater, parent: ViewGroup) :

@@ -1,27 +1,21 @@
-package com.kslimweb.ipolygot.util
+package com.kslimweb.ipolyglot.util
 
 import android.content.Context
-import com.algolia.search.saas.AlgoliaException
-import com.algolia.search.saas.Client
-import com.algolia.search.saas.Index
-import com.algolia.search.saas.Query
+import com.algolia.search.saas.*
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
 import com.google.gson.Gson
-import com.kslimweb.ipolygot.R
-import com.kslimweb.ipolygot.SpeechTranslateAdapter
-import com.kslimweb.ipolygot.algolia_data.AlgorliaCredentials
-import com.kslimweb.ipolygot.algolia_data.Hit
-import com.kslimweb.ipolygot.algolia_data.HitsJson
+import com.kslimweb.ipolyglot.R
+import com.kslimweb.ipolyglot.algolia_data.AlgorliaCredentials
+import com.kslimweb.ipolyglot.algolia_data.Hit
+import com.kslimweb.ipolyglot.algolia_data.HitsJson
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 class Helper {
     companion object {
-        private lateinit var tempAlgoliaHitList: List<Hit>
-
         fun getLanguageCode(position: Int = 0): String {
             var languageCode = ""
             when (position) {
@@ -33,7 +27,7 @@ class Helper {
                 5 -> languageCode = "de"
                 6 -> languageCode = "hi"
                 7 -> languageCode = "it"
-                8-> languageCode = "ja"
+                8 -> languageCode = "ja"
                 9 -> languageCode = "ko"
                 10 -> languageCode = "pa"
                 11 -> languageCode = "ta"
@@ -62,34 +56,55 @@ class Helper {
         suspend fun translateText(translate: Translate, text: String, translateLanguageCode: String, model: String): String {
             var translatedText = ""
             withContext(IO) {
-                translatedText = translate.translate(text,
+                translatedText = translate.translate(
+                    text,
                     Translate.TranslateOption.targetLanguage(translateLanguageCode),
                     // Use "base" for standard edition, "nmt" for the premium model.
-                    Translate.TranslateOption.model(model)).translatedText
+                    Translate.TranslateOption.model(model)
+                ).translatedText
             }
             return translatedText
         }
 
-        fun algoliaIndexSearchCallback(speechText: String,
-                                       translatedText: String,
-                                       speechTranslateAdapter: SpeechTranslateAdapter,
-                                       index: Index,
-                                       isNewSpeech: Boolean = false) {
-            if (isNewSpeech) {
-                index.searchAsync(Query(speechText)) { jsonObject: JSONObject?, algoliaException: AlgoliaException? ->
-                    tempAlgoliaHitList = Gson().fromJson(jsonObject.toString(), HitsJson::class.java).hits
-                    algoliaIndexSearchCallback(speechText, translatedText, speechTranslateAdapter, index, false)
+        private fun speechTextSearch(speechText: String, index: Index): JSONObject? {
+            return index.search(Query(speechText), null)
+        }
+
+        private fun translatedTextSearch(translatedText: String, index: Index): JSONObject? {
+            return index.search(Query(translatedText), null)
+        }
+
+        suspend fun algoliaIndexSearch(speechText: String, translatedText: String, index: Index): List<Hit> {
+            var finalList = emptyList<Hit>()
+            withContext(IO) {
+                val speechTextSearchJson = async {
+                    speechTextSearch(speechText, index)
                 }
-            } else {
-                index.searchAsync(Query(translatedText)) { jsonObject: JSONObject?, algoliaException: AlgoliaException? ->
-                    val hitsJson = Gson().fromJson(jsonObject.toString(), HitsJson::class.java)
-                    val finalList = mutableListOf<Hit>()
-                    tempAlgoliaHitList.intersect(hitsJson.hits).forEach {
-                        finalList.add(it)
-                    }
-                    speechTranslateAdapter.setResult(speechText, translatedText, finalList)
+                val translatedTextSearchJson = async {
+                    translatedTextSearch(translatedText, index)
                 }
+                finalList = pasrseSearchList(speechTextSearchJson.await(), translatedTextSearchJson.await())
             }
+            return finalList
+        }
+
+        private fun pasrseSearchList(speechTextSearchJson: JSONObject?, translatedTextSearchJson: JSONObject?): MutableList<Hit> {
+            val speechSearchList = Gson().fromJson(speechTextSearchJson.toString(), HitsJson::class.java).hits
+            val translatedTextSearchList = Gson().fromJson(translatedTextSearchJson.toString(), HitsJson::class.java).hits
+            return setSearchList(speechSearchList, translatedTextSearchList)
+        }
+
+        private fun setSearchList(speechSearchList: List<Hit>, translatedTextSearchList: List<Hit>): MutableList<Hit> {
+            val finalList = mutableListOf<Hit>()
+            speechSearchList.forEach {
+                if (!finalList.contains(it))
+                    finalList.add(it)
+            }
+            translatedTextSearchList.forEach {
+                if (!finalList.contains(it))
+                    finalList.add(it)
+            }
+            return finalList
         }
     }
 }

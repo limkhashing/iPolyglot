@@ -1,4 +1,4 @@
-package com.kslimweb.ipolygot.algolia_data
+package com.kslimweb.ipolyglot.algolia_data
 
 
 import com.google.gson.annotations.SerializedName

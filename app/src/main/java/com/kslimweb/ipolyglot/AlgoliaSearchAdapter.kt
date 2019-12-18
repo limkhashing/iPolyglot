@@ -1,12 +1,16 @@
-package com.kslimweb.ipolygot
+package com.kslimweb.ipolyglot
 
-import android.util.Log
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.kslimweb.ipolygot.algolia_data.Hit
+import com.kslimweb.ipolyglot.algolia_data.Hit
+
 
 class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapter<AlgoliaSearchAdapter.ViewHolder>() {
 
@@ -21,8 +25,18 @@ class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapt
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.chapterNumber.text = hitsJson[position].objectID
+
         holder.chapterArabic.text = "Arabic Chapter: " + hitsJson[position].chapterAra
+        setTextWithSpan(holder.chapterArabic,
+            holder.chapterArabic.text.toString(),
+            "Arabic Chapter: ",
+            StyleSpan(Typeface.BOLD))
+
         holder.chapterTranslated.text = "English Chapter: " + hitsJson[position].chapterEng
+        setTextWithSpan(holder.chapterTranslated,
+            holder.chapterTranslated.text.toString(),
+            "English Chapter: ",
+            StyleSpan(Typeface.BOLD))
 
         val reference = hitsJson[position].reference
         if (reference != null) {
@@ -35,6 +49,10 @@ class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapt
             }
             holder.reference.text = "Reference: \n\t" + sb.toString()
             holder.reference.visibility = View.VISIBLE
+            setTextWithSpan(holder.reference,
+                holder.reference.text.toString(),
+                "Reference: ",
+                StyleSpan(Typeface.BOLD))
         }
 
         val inBookReference = hitsJson[position].inBookReference
@@ -48,7 +66,19 @@ class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapt
             }
             holder.inBookReference.text = "In-book Reference: \n\t" + sb.toString()
             holder.inBookReference.visibility = View.VISIBLE
+            setTextWithSpan(holder.inBookReference,
+                holder.inBookReference.text.toString(),
+                "In-book Reference: ",
+                StyleSpan(Typeface.BOLD))
         }
+    }
+
+    private fun setTextWithSpan(textView: TextView, text: String, spanText: String, style: StyleSpan?) {
+        val sb = SpannableStringBuilder(text)
+        val start = text.indexOf(spanText)
+        val end = start + spanText.length
+        sb.setSpan(style, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        textView.text = sb
     }
 
     class ViewHolder internal constructor(inflater: LayoutInflater, parent: ViewGroup) :

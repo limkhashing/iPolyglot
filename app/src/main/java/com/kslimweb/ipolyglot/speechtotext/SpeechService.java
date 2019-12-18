@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kslimweb.ipolygot.speechtotext;
+package com.kslimweb.ipolyglot.speechtotext;
 
 import android.app.Service;
 import android.content.Context;
@@ -45,7 +45,7 @@ import com.google.cloud.speech.v1.StreamingRecognitionResult;
 import com.google.cloud.speech.v1.StreamingRecognizeRequest;
 import com.google.cloud.speech.v1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
-import com.kslimweb.ipolygot.R;
+import com.kslimweb.ipolyglot.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -499,7 +499,5 @@ public class SpeechService extends Service {
             }
             return headers;
         }
-
     }
-
 }
