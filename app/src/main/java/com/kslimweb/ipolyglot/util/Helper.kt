@@ -91,10 +91,10 @@ class Helper {
         private fun pasrseSearchList(speechTextSearchJson: JSONObject?, translatedTextSearchJson: JSONObject?): MutableList<Hit> {
             val speechSearchList = Gson().fromJson(speechTextSearchJson.toString(), HitsJson::class.java).hits
             val translatedTextSearchList = Gson().fromJson(translatedTextSearchJson.toString(), HitsJson::class.java).hits
-            return setSearchList(speechSearchList, translatedTextSearchList)
+            return getSearchList(speechSearchList, translatedTextSearchList)
         }
 
-        private fun setSearchList(speechSearchList: List<Hit>, translatedTextSearchList: List<Hit>): MutableList<Hit> {
+        private fun getSearchList(speechSearchList: List<Hit>, translatedTextSearchList: List<Hit>): MutableList<Hit> {
             val finalList = mutableListOf<Hit>()
             speechSearchList.forEach {
                 if (!finalList.contains(it))
