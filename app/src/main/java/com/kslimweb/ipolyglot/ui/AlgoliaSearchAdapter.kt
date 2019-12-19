@@ -1,4 +1,4 @@
-package com.kslimweb.ipolyglot
+package com.kslimweb.ipolyglot.ui
 
 import android.graphics.Typeface
 import android.text.Spannable
@@ -9,13 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.kslimweb.ipolyglot.algolia_data.Hit
+import com.kslimweb.ipolyglot.R
+import com.kslimweb.ipolyglot.model.Hit
 
 
 class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapter<AlgoliaSearchAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context), parent)
+        return ViewHolder(
+            LayoutInflater.from(parent.context),
+            parent
+        )
     }
 
     override fun getItemCount(): Int {

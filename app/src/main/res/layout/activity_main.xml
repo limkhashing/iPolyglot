@@ -16,7 +16,9 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Convert from Speech to Text" />
+        android:onClick="inputSpeech"
+        android:textAllCaps="false"
+        android:text="Start Speech to Text" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_speech_translate_search"

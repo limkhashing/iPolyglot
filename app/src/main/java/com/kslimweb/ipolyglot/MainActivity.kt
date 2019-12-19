@@ -5,40 +5,41 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.algolia.search.saas.Client
 import com.google.cloud.translate.Translate
-import com.kslimweb.ipolyglot.algolia_data.Hit
-import com.kslimweb.ipolyglot.util.Helper
-import com.kslimweb.ipolyglot.util.Helper.Companion.getAlgoliaClient
-import com.kslimweb.ipolyglot.util.Helper.Companion.getGoogleTranslationService
-import com.kslimweb.ipolyglot.util.Helper.Companion.getLanguageCode
+import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
+import com.kslimweb.ipolyglot.speechservices.VoiceRecognizerInterface
+import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
+import com.kslimweb.ipolyglot.util.CredentialsHelper
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.cardview_speech_translate.*
 import kotlinx.android.synthetic.main.layout_input_speech.*
 import kotlinx.android.synthetic.main.layout_select_translate.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 import java.util.*
 
 const val REQUEST_AUDIO_PERMISSION = 200
 const val ALGOLIA_INDEX_NAME = "hadith"
 const val TRANSLATE_MODEL = "base"
-const val REQ_CODE_SPEECH_INPUT = 100
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
 
-    private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
+    companion object {
+        lateinit var speechLanguageCode: String
+        lateinit var translateLanguageCode: String
+    }
+
+    private lateinit var mSpeechRecognizer: SpeechRecognizer
     private lateinit var algoliaClient: Client
     private lateinit var googleTranslateService: Translate
-
-    private lateinit var speechLanguageCode: String
-    private lateinit var translateLanguageCode: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,16 +50,25 @@ class MainActivity : AppCompatActivity() {
         initSpinnerItem()
         speechLanguageCode = getLanguageCode()
         translateLanguageCode = getLanguageCode()
-        googleTranslateService = getGoogleTranslationService(applicationContext)
-        algoliaClient = getAlgoliaClient(applicationContext)
 
-        speech_to_text_button.setOnClickListener {
-            inputSpeech()
+        startKoin {
+            // Koin Android logger
+            androidLogger()
+            //inject Android context
+            androidContext(applicationContext)
         }
 
-        // TODO use google intent
-        //  implement stop feature and clear the input text
-        //  allow type
+        googleTranslateService = CredentialsHelper(applicationContext).initGoogleTranslateClient()
+        algoliaClient = CredentialsHelper(applicationContext).initAlgoliaClient()
+
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
+        mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
+            getSpeechRecognizeIntent(),
+            this,
+            this@MainActivity,
+            googleTranslateService,
+            algoliaClient))
+
         spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
             speechLanguageCode = getLanguageCode(position)
         }
@@ -69,12 +79,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         if (requestCode == REQUEST_AUDIO_PERMISSION) {
-            if (permissions.size == 1 && grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                startVoiceRecorder()
-            } else {
-                showPermissionMessageDialog()
+            if (permissions.size != 1 && grantResults.size != 1 &&
+                grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+             showPermissionMessageDialog()
             }
         }
     }
@@ -97,49 +105,58 @@ class MainActivity : AppCompatActivity() {
             }.create().show()
     }
 
-    private fun inputSpeech() {
+    private fun getSpeechRecognizeIntent(): Intent {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+
+        //Customize language by passing language code
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE,
-            speechLanguageCode
-        )
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT)
-        }
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, speechLanguageCode)
+
+        //To receive partial results on the callback
+        intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS,true)
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, packageName)
+        return intent
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQ_CODE_SPEECH_INPUT) {
-            if (resultCode == RESULT_OK && null != data) {
-
-                val speechText = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)[0]
-
-                speechText?.let {
-                    CoroutineScope(IO).launch {
-                        val translatedText = Helper.translateText(googleTranslateService, speechText, translateLanguageCode, TRANSLATE_MODEL)
-                        val finalList = Helper.algoliaSearch(speechText, translatedText, algoliaClient.getIndex(ALGOLIA_INDEX_NAME))
-                        setAdapter(speechText, translatedText, finalList)
-                    }
-                }
-            }
-        }
-
+    fun inputSpeech(view: View) {
+        speech_to_text_button.text = "Stop Speech to Text"
+        mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
     }
 
-    private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<Hit>) {
-        withContext(Main) {
-            if (!::speechTranslateAdapter.isInitialized) {
-                speechTranslateAdapter = SpeechTranslateAdapter(speechText, translatedText, finalList)
-                rv_speech_translate_search.adapter = speechTranslateAdapter
-            } else {
-                speechTranslateAdapter.setResult(speechText, translatedText, finalList)
-            }
+    override fun spokenText(spokenText: String) {
+        Log.d("Main", spokenText)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mSpeechRecognizer.cancel()
+        mSpeechRecognizer.stopListening()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        mSpeechRecognizer.destroy()
+    }
+
+    private fun getLanguageCode(position: Int = 0): String {
+        var languageCode = ""
+        when (position) {
+            0 -> languageCode = "ar"
+            1 -> languageCode = "ms"
+            2 -> languageCode = "zh"
+            3 -> languageCode = "en"
+            4 -> languageCode = "fr"
+            5 -> languageCode = "de"
+            6 -> languageCode = "hi"
+            7 -> languageCode = "it"
+            8 -> languageCode = "ja"
+            9 -> languageCode = "ko"
+            10 -> languageCode = "pa"
+            11 -> languageCode = "ta"
+            12 -> languageCode = "tl"
+            13 -> languageCode = "th"
+            14 -> languageCode = "vi"
         }
+        return languageCode
     }
 }
