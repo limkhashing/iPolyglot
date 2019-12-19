@@ -11,16 +11,12 @@
 
     <include layout="@layout/layout_select_translate" />
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    <Button
+        android:id="@+id/speech_to_text_button"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark">
-
-        <include layout="@layout/cardview_speech_translate"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:text="Convert from Speech to Text" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_speech_translate_search"
