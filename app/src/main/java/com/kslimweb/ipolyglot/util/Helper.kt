@@ -66,22 +66,18 @@ class Helper {
             return translatedText
         }
 
-        private fun speechTextSearch(speechText: String, index: Index): JSONObject? {
-            return index.search(Query(speechText), null)
+        private fun queryIndexSearch(queryText: String, index: Index): JSONObject? {
+            return index.search(Query(queryText), null)
         }
 
-        private fun translatedTextSearch(translatedText: String, index: Index): JSONObject? {
-            return index.search(Query(translatedText), null)
-        }
-
-        suspend fun algoliaIndexSearch(speechText: String, translatedText: String, index: Index): List<Hit> {
+        suspend fun algoliaSearch(speechText: String, translatedText: String, index: Index): List<Hit> {
             var finalList = emptyList<Hit>()
             withContext(IO) {
                 val speechTextSearchJson = async {
-                    speechTextSearch(speechText, index)
+                    queryIndexSearch(speechText, index)
                 }
                 val translatedTextSearchJson = async {
-                    translatedTextSearch(translatedText, index)
+                    queryIndexSearch(translatedText, index)
                 }
                 finalList = pasrseSearchList(speechTextSearchJson.await(), translatedTextSearchJson.await())
             }

@@ -17,7 +17,7 @@ import com.algolia.search.saas.Client
 import com.google.cloud.translate.Translate
 import com.kslimweb.ipolyglot.speechtotext.SpeechService
 import com.kslimweb.ipolyglot.speechtotext.VoiceRecorder
-import com.kslimweb.ipolyglot.util.Helper.Companion.algoliaIndexSearch
+import com.kslimweb.ipolyglot.util.Helper.Companion.algoliaSearch
 import com.kslimweb.ipolyglot.util.Helper.Companion.getAlgoliaClient
 import com.kslimweb.ipolyglot.util.Helper.Companion.getGoogleTranslationService
 import com.kslimweb.ipolyglot.util.Helper.Companion.getLanguageCode
@@ -58,9 +58,6 @@ class MainActivity : AppCompatActivity() {
         googleTranslateService = getGoogleTranslationService(applicationContext)
         algoliaClient = getAlgoliaClient(applicationContext)
 
-        // TODO use google intent
-        //  implement stop feature and clear the input text
-        //  allow type
         spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
             speechLanguageCode = getLanguageCode(position)
             startVoiceRecorder()
@@ -183,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                 translate_text.text = ""
 
                 withContext(IO) {
-                    val finalList = algoliaIndexSearch(speechText, translatedText, algoliaClient.getIndex(ALGOLIA_INDEX_NAME))
+                    val finalList = algoliaSearch(speechText, translatedText, algoliaClient.getIndex(ALGOLIA_INDEX_NAME))
 
                     withContext(Main) {
                         if (!::speechTranslateAdapter.isInitialized) {
