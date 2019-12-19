@@ -39,13 +39,13 @@ class Helper {
         }
 
         fun getAlgoliaClient(context: Context): Client {
-            val algoliaJson = context.resources.openRawResource(R.raw.algolia).bufferedReader().use { it.readText() }
+            val algoliaJson = context.resources.openRawResource(R.raw.algolia_dev).bufferedReader().use { it.readText() }
             val algoliaCredentials = Gson().fromJson(algoliaJson, AlgorliaCredentials::class.java)
             return Client(algoliaCredentials.appId, algoliaCredentials.apiSearchKey)
         }
 
         fun getGoogleTranslationService(context: Context): Translate {
-            context.resources.openRawResource(R.raw.credential).use { `is` ->
+            context.resources.openRawResource(R.raw.credential_dev).use { `is` ->
                 val myCredentials = GoogleCredentials.fromStream(`is`)
                 val translateOptions =
                     TranslateOptions.newBuilder().setCredentials(myCredentials).build()
