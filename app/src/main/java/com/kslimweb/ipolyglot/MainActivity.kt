@@ -15,15 +15,10 @@ import com.algolia.search.saas.Client
 import com.google.cloud.translate.Translate
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizerInterface
-import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
 import com.kslimweb.ipolyglot.util.CredentialsHelper
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.cardview_speech_translate.*
 import kotlinx.android.synthetic.main.layout_input_speech.*
 import kotlinx.android.synthetic.main.layout_select_translate.*
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
 import java.util.*
 
 const val REQUEST_AUDIO_PERMISSION = 200
@@ -35,6 +30,7 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
     companion object {
         lateinit var speechLanguageCode: String
         lateinit var translateLanguageCode: String
+        var isSpeaking = false
     }
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
@@ -51,13 +47,6 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
         speechLanguageCode = getLanguageCode()
         translateLanguageCode = getLanguageCode()
 
-        startKoin {
-            // Koin Android logger
-            androidLogger()
-            //inject Android context
-            androidContext(applicationContext)
-        }
-
         googleTranslateService = CredentialsHelper(applicationContext).initGoogleTranslateClient()
         algoliaClient = CredentialsHelper(applicationContext).initAlgoliaClient()
 
@@ -71,6 +60,9 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
 
         spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
             speechLanguageCode = getLanguageCode(position)
+            if (isSpeaking) {
+                mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
+            }
         }
         spinner_translate_language.setOnItemSelectedListener { view, position, id, item ->
             translateLanguageCode = getLanguageCode(position)
@@ -120,8 +112,17 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
     }
 
     fun inputSpeech(view: View) {
-        speech_to_text_button.text = "Stop Speech to Text"
-        mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
+        if (!isSpeaking) {
+            speech_to_text_button.text = "Stop Speech to Text"
+            listening_status.text = "Listening..."
+            mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
+            isSpeaking = true
+        } else {
+            speech_to_text_button.text = "Start Speech to Text"
+            listening_status.text = "Not Listening..."
+            mSpeechRecognizer.stopListening()
+            isSpeaking = false
+        }
     }
 
     override fun spokenText(spokenText: String) {

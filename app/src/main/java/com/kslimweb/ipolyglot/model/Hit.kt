@@ -11,5 +11,6 @@ data class Hit(
     @SerializedName("in_book_reference")
     val inBookReference: List<String>?,
     val objectID: String,
-    val reference: List<String>?
+    val reference: List<String>?,
+    val highlightResult: HighlightResult
 )

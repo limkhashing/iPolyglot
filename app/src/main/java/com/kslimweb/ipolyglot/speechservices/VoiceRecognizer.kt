@@ -8,6 +8,7 @@ import android.speech.SpeechRecognizer
 import com.algolia.search.saas.Client
 import com.google.cloud.translate.Translate
 import com.kslimweb.ipolyglot.ALGOLIA_INDEX_NAME
+import com.kslimweb.ipolyglot.MainActivity.Companion.isSpeaking
 import com.kslimweb.ipolyglot.MainActivity.Companion.translateLanguageCode
 import com.kslimweb.ipolyglot.TRANSLATE_MODEL
 import com.kslimweb.ipolyglot.model.Hit
@@ -19,6 +20,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 class VoiceRecognizer(
@@ -29,7 +32,7 @@ class VoiceRecognizer(
     private val googleTranslateClient: Translate,
     private val algoliaClient: Client
 ) : RecognitionListener {
-    
+
     private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
 
     override fun onReadyForSpeech(params: Bundle?) { }
@@ -65,8 +68,17 @@ class VoiceRecognizer(
         }
 
         // TODO auto listen again add delay
-//        mSpeechRecognizer.startListening(intent)
-        activity.speech_to_text_button.text = "Start Speech to Text"
+        //  play around advanced syntax, deduplication
+        //  test on highlightResult
+        //  extract words until comma or footstop
+        //  test after speaking result, does it retain the same input language (check intent)
+        mSpeechRecognizer.stopListening()
+        Timer().schedule(3000) {
+            mSpeechRecognizer.startListening(intent)
+        }
+//        activity.speech_to_text_button.text = "Start Speech to Text"
+//        activity.listening_status.text =  "Not Listening..."
+//        isSpeaking = false
     }
 
     private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<Hit>) {

@@ -20,6 +20,18 @@
         android:textAllCaps="false"
         android:text="Start Speech to Text" />
 
+    <TextView
+        android:id="@+id/listening_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Not Listening..."
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:layout_marginBottom="@dimen/spacing_tiny"
+        android:layout_marginLeft="@dimen/spacing_medium"
+        android:layout_marginRight="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:textColor="@android:color/black" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_speech_translate_search"
         android:layout_width="match_parent"
