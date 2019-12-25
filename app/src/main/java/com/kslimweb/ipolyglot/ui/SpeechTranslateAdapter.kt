@@ -1,11 +1,12 @@
-package com.kslimweb.ipolyglot
+package com.kslimweb.ipolyglot.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.kslimweb.ipolyglot.algolia_data.Hit
+import com.kslimweb.ipolyglot.R
+import com.kslimweb.ipolyglot.model.Hit
 
 class SpeechTranslateAdapter(private var speechResult: String,
                              private var translatedText: String,
@@ -17,7 +18,10 @@ class SpeechTranslateAdapter(private var speechResult: String,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context), parent)
+        return ViewHolder(
+            LayoutInflater.from(parent.context),
+            parent
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -27,7 +31,8 @@ class SpeechTranslateAdapter(private var speechResult: String,
         holder.searchAppearLabel.text = holder.searchAppearLabel.text.toString().replace(": None", "")
 
         if (hits.isNotEmpty()) {
-            holder.searchRecyclerView.adapter = AlgoliaSearchAdapter(hits)
+            holder.searchRecyclerView.adapter =
+                AlgoliaSearchAdapter(hits)
             holder.searchRecyclerView.visibility = View.VISIBLE
         } else {
             holder.searchAppearLabel.append(" None")

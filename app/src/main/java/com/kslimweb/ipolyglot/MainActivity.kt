@@ -1,50 +1,41 @@
 package com.kslimweb.ipolyglot
 
 import android.Manifest
-import android.content.ComponentName
 import android.content.Intent
-import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.IBinder
-import android.text.TextUtils
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.algolia.search.saas.Client
 import com.google.cloud.translate.Translate
-import com.kslimweb.ipolyglot.speechtotext.SpeechService
-import com.kslimweb.ipolyglot.speechtotext.VoiceRecorder
-import com.kslimweb.ipolyglot.util.Helper.Companion.algoliaSearch
-import com.kslimweb.ipolyglot.util.Helper.Companion.getAlgoliaClient
-import com.kslimweb.ipolyglot.util.Helper.Companion.getGoogleTranslationService
-import com.kslimweb.ipolyglot.util.Helper.Companion.getLanguageCode
-import com.kslimweb.ipolyglot.util.Helper.Companion.translateText
+import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
+import com.kslimweb.ipolyglot.speechservices.VoiceRecognizerInterface
+import com.kslimweb.ipolyglot.util.CredentialsHelper
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.cardview_speech_translate.*
 import kotlinx.android.synthetic.main.layout_input_speech.*
 import kotlinx.android.synthetic.main.layout_select_translate.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.*
 
 const val REQUEST_AUDIO_PERMISSION = 200
 const val ALGOLIA_INDEX_NAME = "hadith"
 const val TRANSLATE_MODEL = "base"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
 
-    private var mSpeechService: SpeechService? = null
-    private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
+    companion object {
+        lateinit var speechLanguageCode: String
+        lateinit var translateLanguageCode: String
+        var isSpeaking = false
+    }
+
+    private lateinit var mSpeechRecognizer: SpeechRecognizer
     private lateinit var algoliaClient: Client
     private lateinit var googleTranslateService: Translate
-
-    private lateinit var speechLanguageCode: String
-    private lateinit var translateLanguageCode: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,56 +46,35 @@ class MainActivity : AppCompatActivity() {
         initSpinnerItem()
         speechLanguageCode = getLanguageCode()
         translateLanguageCode = getLanguageCode()
-        googleTranslateService = getGoogleTranslationService(applicationContext)
-        algoliaClient = getAlgoliaClient(applicationContext)
+
+        googleTranslateService = CredentialsHelper(applicationContext).initGoogleTranslateClient()
+        algoliaClient = CredentialsHelper(applicationContext).initAlgoliaClient()
+
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
+        mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
+            getSpeechRecognizeIntent(),
+            this,
+            this@MainActivity,
+            googleTranslateService,
+            algoliaClient))
 
         spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
             speechLanguageCode = getLanguageCode(position)
-            startVoiceRecorder()
+            if (isSpeaking) {
+                mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
+            }
         }
         spinner_translate_language.setOnItemSelectedListener { view, position, id, item ->
             translateLanguageCode = getLanguageCode(position)
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        // Prepare Cloud Speech API
-        bindService(
-            Intent(applicationContext, SpeechService::class.java),
-            mServiceConnection,
-            BIND_AUTO_CREATE
-        )
-
-        // Start listening to voices
-        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.RECORD_AUDIO)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            startVoiceRecorder()
-        }
-    }
-
-    override fun onStop() {
-        // Stop listening to voice
-        stopVoiceRecorder()
-
-        // Stop Cloud Speech API
-        mSpeechService?.removeListener(mSpeechServiceListener)
-        unbindService(mServiceConnection)
-        mSpeechService = null
-
-        super.onStop()
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         if (requestCode == REQUEST_AUDIO_PERMISSION) {
-            if (permissions.size == 1 && grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startVoiceRecorder()
-            } else {
-                showPermissionMessageDialog()
+            if (permissions.size != 1 && grantResults.size != 1 &&
+                grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+             showPermissionMessageDialog()
             }
         }
     }
@@ -119,87 +89,6 @@ class MainActivity : AppCompatActivity() {
         spinner_translate_language.setAdapter(adapter)
     }
 
-    private var mVoiceRecorder: VoiceRecorder? = null
-    private val mVoiceCallback = object : VoiceRecorder.Callback() {
-        override fun onVoiceStart() {
-            showStatus(true)
-            mSpeechService?.startRecognizing(mVoiceRecorder!!.sampleRate, speechLanguageCode)
-        }
-
-        override fun onVoice(data: ByteArray, size: Int) {
-            mSpeechService?.recognize(data, size)
-        }
-
-        override fun onVoiceEnd() {
-            showStatus(false)
-            mSpeechService?.finishRecognizing()
-        }
-    }
-
-    private val mServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(componentName: ComponentName, binder: IBinder) {
-            mSpeechService = SpeechService.from(binder)
-            mSpeechService?.addListener(mSpeechServiceListener)
-            listening_status.visibility = View.VISIBLE
-        }
-
-        override fun onServiceDisconnected(componentName: ComponentName) {
-            mSpeechService = null
-        }
-    }
-
-    private fun startVoiceRecorder() {
-        mVoiceRecorder?.stop()
-        mVoiceRecorder = VoiceRecorder(mVoiceCallback)
-        mVoiceRecorder?.start()
-    }
-
-    private fun stopVoiceRecorder() {
-        if (mVoiceRecorder != null) {
-            mVoiceRecorder?.stop()
-            mVoiceRecorder = null
-        }
-    }
-
-    private val mSpeechServiceListener = SpeechService.Listener { speechText, isFinal ->
-        if (isFinal) {
-            mVoiceRecorder?.dismiss()
-        }
-        if (speech_text != null && !TextUtils.isEmpty(speechText)) {
-            CoroutineScope(IO).launch {
-                val translatedText = translateText(googleTranslateService, speechText, translateLanguageCode, TRANSLATE_MODEL)
-                setTextOnMain(isFinal, speechText, translatedText)
-            }
-        }
-    }
-
-    private suspend fun setTextOnMain(final: Boolean, speechText: String, translatedText: String) {
-        withContext(Main) {
-            if (final) {
-                speech_text.text = ""
-                translate_text.text = ""
-
-                withContext(IO) {
-                    val finalList = algoliaSearch(speechText, translatedText, algoliaClient.getIndex(ALGOLIA_INDEX_NAME))
-
-                    withContext(Main) {
-                        if (!::speechTranslateAdapter.isInitialized) {
-                            speechTranslateAdapter = SpeechTranslateAdapter(speechText, translatedText, finalList)
-                            rv_speech_translate_search.adapter = speechTranslateAdapter
-                        } else {
-                            speechTranslateAdapter.setResult(speechText, translatedText, finalList)
-                        }
-                        stopVoiceRecorder()
-                        startVoiceRecorder()
-                    }
-                }
-            } else {
-                speech_text.text = speechText
-                translate_text.text = translatedText
-            }
-        }
-    }
-
     private fun showPermissionMessageDialog() {
         AlertDialog.Builder(applicationContext)
             .setMessage(getString(R.string.permission_message))
@@ -208,12 +97,67 @@ class MainActivity : AppCompatActivity() {
             }.create().show()
     }
 
-    private fun showStatus(hearingVoice: Boolean) {
-        runOnUiThread {
-            if (hearingVoice)
-                listening_status.text = "Listening..."
-            else
-                listening_status.text = "Not listening..."
+    private fun getSpeechRecognizeIntent(): Intent {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+
+        //Customize language by passing language code
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, speechLanguageCode)
+
+        //To receive partial results on the callback
+        intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS,true)
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, packageName)
+        return intent
+    }
+
+    fun inputSpeech(view: View) {
+        if (!isSpeaking) {
+            speech_to_text_button.text = "Stop Speech to Text"
+            listening_status.text = "Listening..."
+            mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
+            isSpeaking = true
+        } else {
+            speech_to_text_button.text = "Start Speech to Text"
+            listening_status.text = "Not Listening..."
+            mSpeechRecognizer.stopListening()
+            isSpeaking = false
         }
+    }
+
+    override fun spokenText(spokenText: String) {
+        Log.d("Main", spokenText)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mSpeechRecognizer.cancel()
+        mSpeechRecognizer.stopListening()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        mSpeechRecognizer.destroy()
+    }
+
+    private fun getLanguageCode(position: Int = 0): String {
+        var languageCode = ""
+        when (position) {
+            0 -> languageCode = "ar"
+            1 -> languageCode = "ms"
+            2 -> languageCode = "zh"
+            3 -> languageCode = "en"
+            4 -> languageCode = "fr"
+            5 -> languageCode = "de"
+            6 -> languageCode = "hi"
+            7 -> languageCode = "it"
+            8 -> languageCode = "ja"
+            9 -> languageCode = "ko"
+            10 -> languageCode = "pa"
+            11 -> languageCode = "ta"
+            12 -> languageCode = "tl"
+            13 -> languageCode = "th"
+            14 -> languageCode = "vi"
+        }
+        return languageCode
     }
 }
