@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kslimweb.ipolyglot.R
-import com.kslimweb.ipolyglot.model.Hit
+import com.kslimweb.ipolyglot.model.hit.Hit
 
 class SpeechTranslateAdapter(private var speechResult: String,
                              private var translatedText: String,
@@ -25,10 +25,11 @@ class SpeechTranslateAdapter(private var speechResult: String,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         holder.speechText.text = speechResult
         holder.translateText.text = translatedText
         holder.searchAppearLabel.visibility = View.VISIBLE
-        holder.searchAppearLabel.text = holder.searchAppearLabel.text.toString().replace(": None", "")
+        holder.searchAppearLabel.text = "Appeared in: "
 
         if (hits.isNotEmpty()) {
             holder.searchRecyclerView.adapter =

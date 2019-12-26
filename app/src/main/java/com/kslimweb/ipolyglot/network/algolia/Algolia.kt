@@ -1,9 +1,10 @@
 package com.kslimweb.ipolyglot.network.algolia
 
+import android.util.Log
 import com.algolia.search.saas.Index
 import com.algolia.search.saas.Query
 import com.google.gson.Gson
-import com.kslimweb.ipolyglot.model.Hit
+import com.kslimweb.ipolyglot.model.hit.Hit
 import com.kslimweb.ipolyglot.model.HitsJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -33,6 +34,9 @@ class Algolia {
     private fun parseSearchList(speechTextSearchJson: JSONObject?, translatedTextSearchJson: JSONObject?): MutableList<Hit> {
         val speechSearchList = Gson().fromJson(speechTextSearchJson.toString(), HitsJson::class.java).hits
         val translatedTextSearchList = Gson().fromJson(translatedTextSearchJson.toString(), HitsJson::class.java).hits
+//        Log.d("JSON", speechTextSearchJson.toString())
+//        Log.d("JSON", speechSearchList.toString())
+//        Log.d("JSON", translatedTextSearchList.toString())
         return getSearchList(speechSearchList, translatedTextSearchList)
     }
 

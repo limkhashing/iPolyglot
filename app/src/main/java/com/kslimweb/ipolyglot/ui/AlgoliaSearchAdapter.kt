@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kslimweb.ipolyglot.R
-import com.kslimweb.ipolyglot.model.Hit
+import com.kslimweb.ipolyglot.model.hit.Hit
 
 
 class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapter<AlgoliaSearchAdapter.ViewHolder>() {
@@ -30,35 +30,31 @@ class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapt
 
         holder.chapterNumber.text = hitsJson[position].objectID
 
-        holder.chapterArabic.text = "Arabic Chapter: " + hitsJson[position].chapterAra
-        setTextWithSpan(holder.chapterArabic,
-            holder.chapterArabic.text.toString(),
-            "Arabic Chapter: ",
-            StyleSpan(Typeface.BOLD))
+        setChapterText(holder, position)
+        setReference(holder, position)
+        setInBookReference(holder, position)
+        val highlightedResults= getHighlightResult(holder, position)
+        setHighlightedResultText(holder, highlightedResults)
+    }
 
-        holder.chapterTranslated.text = "English Chapter: " + hitsJson[position].chapterEng
-        setTextWithSpan(holder.chapterTranslated,
-            holder.chapterTranslated.text.toString(),
-            "English Chapter: ",
-            StyleSpan(Typeface.BOLD))
-
-        val reference = hitsJson[position].reference
-        if (reference != null) {
-            val sb = StringBuilder()
-            reference.forEachIndexed { index, it ->
-                if (index != reference.lastIndex)
-                    sb.append((index+1).toString() + ". " + it + "\n\t")
-                else
-                    sb.append((index+1).toString() + ". " + it)
-            }
-            holder.reference.text = "Reference: \n\t" + sb.toString()
-            holder.reference.visibility = View.VISIBLE
-            setTextWithSpan(holder.reference,
-                holder.reference.text.toString(),
-                "Reference: ",
-                StyleSpan(Typeface.BOLD))
+    private fun setHighlightedResultText(holder: ViewHolder, highlightedResults: MutableList<String>) {
+        // TODO bold found word
+        val sb = StringBuilder()
+        highlightedResults.forEachIndexed { index, it ->
+            if (index != highlightedResults.lastIndex)
+                sb.append((index+1).toString() + ". " + it + "\n\t")
+            else
+                sb.append((index+1).toString() + ". " + it)
         }
+        holder.highlightedResults.text = "Highlighted Result: \n\t" + sb.toString()
+        holder.highlightedResults.visibility = View.VISIBLE
+        setTextWithSpan(holder.highlightedResults,
+            holder.highlightedResults.text.toString(),
+            "Highlighted Result: ",
+            StyleSpan(Typeface.BOLD))
+    }
 
+    private fun setInBookReference(holder: ViewHolder, position: Int) {
         val inBookReference = hitsJson[position].inBookReference
         if (inBookReference != null) {
             val sb = StringBuilder()
@@ -77,6 +73,71 @@ class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapt
         }
     }
 
+    private fun setReference(holder: ViewHolder, position: Int) {
+        val reference = hitsJson[position].reference
+        if (reference != null) {
+            val sb = StringBuilder()
+            reference.forEachIndexed { index, it ->
+                if (index != reference.lastIndex)
+                    sb.append((index+1).toString() + ". " + it + "\n\t")
+                else
+                    sb.append((index+1).toString() + ". " + it)
+            }
+            holder.reference.text = "Reference: \n\t" + sb.toString()
+            holder.reference.visibility = View.VISIBLE
+            setTextWithSpan(holder.reference,
+                holder.reference.text.toString(),
+                "Reference: ",
+                StyleSpan(Typeface.BOLD))
+        }
+    }
+
+    private fun setChapterText(
+        holder: ViewHolder,
+        position: Int
+    ) {
+        holder.chapterArabic.text = "Arabic Chapter: " + hitsJson[position].chapterAraText
+        setTextWithSpan(holder.chapterArabic,
+            holder.chapterArabic.text.toString(),
+            "Arabic Chapter: ",
+            StyleSpan(Typeface.BOLD))
+
+        holder.chapterTranslated.text = "English Chapter: " + hitsJson[position].chapterEngText
+        setTextWithSpan(holder.chapterTranslated,
+            holder.chapterTranslated.text.toString(),
+            "English Chapter: ",
+            StyleSpan(Typeface.BOLD))
+    }
+
+    private fun getHighlightResult(holder: ViewHolder, position: Int): MutableList<String> {
+        val highlightResultList = mutableListOf<String>()
+        hitsJson[position].snippetResult?.let{ snippetResult ->
+            val snippetResultChapterAra = snippetResult.chapterAra
+            val snippetResultChapterEng = snippetResult.chapterEng
+            val snippetResultContentAraList = snippetResult.contentAra
+            val snippetResultContentEngList = snippetResult.contentEng
+
+            if (snippetResultChapterAra.matchLevel == "full" || snippetResultChapterAra.matchLevel == "partial")
+                highlightResultList.add(snippetResultChapterAra.value)
+
+            if (snippetResultChapterEng.matchLevel == "full" || snippetResultChapterEng.matchLevel == "partial")
+                highlightResultList.add(snippetResultChapterEng.value)
+
+            snippetResultContentAraList.forEach {
+                if (it.matchLevel == "full" || it.matchLevel == "partial") {
+                    highlightResultList.add(it.value)
+                }
+            }
+
+            snippetResultContentEngList.forEach {
+                if (it.matchLevel == "full" || it.matchLevel == "partial") {
+                    highlightResultList.add(it.value)
+                }
+            }
+        }
+        return highlightResultList
+    }
+
     private fun setTextWithSpan(textView: TextView, text: String, spanText: String, style: StyleSpan?) {
         val sb = SpannableStringBuilder(text)
         val start = text.indexOf(spanText)
@@ -92,5 +153,6 @@ class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapt
         val chapterTranslated: TextView = itemView.findViewById(R.id.txt_chapter_translated) as TextView
         val reference: TextView = itemView.findViewById(R.id.txt_reference) as TextView
         val inBookReference: TextView = itemView.findViewById(R.id.txt_in_book_reference) as TextView
+        val highlightedResults: TextView = itemView.findViewById(R.id.txt_snippet_result) as TextView
     }
 }

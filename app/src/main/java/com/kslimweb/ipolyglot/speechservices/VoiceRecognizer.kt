@@ -3,15 +3,17 @@ package com.kslimweb.ipolyglot.speechservices
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
+import android.util.Log
 import com.algolia.search.saas.Client
 import com.google.cloud.translate.Translate
 import com.kslimweb.ipolyglot.ALGOLIA_INDEX_NAME
 import com.kslimweb.ipolyglot.MainActivity.Companion.isSpeaking
 import com.kslimweb.ipolyglot.MainActivity.Companion.translateLanguageCode
 import com.kslimweb.ipolyglot.TRANSLATE_MODEL
-import com.kslimweb.ipolyglot.model.Hit
+import com.kslimweb.ipolyglot.model.hit.Hit
 import com.kslimweb.ipolyglot.network.algolia.Algolia
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
@@ -20,9 +22,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
-import kotlin.concurrent.schedule
 
+
+const val speechToTextButtonTextStart = "Start Speech to Text"
+const val notListeningStatus = "Not Listening..."
+
+const val speechToTextButtonTextStop = "Stop Speech to Text"
+const val listeningStatus = "Listening..."
 
 class VoiceRecognizer(
     private val mSpeechRecognizer: SpeechRecognizer,
@@ -33,23 +39,30 @@ class VoiceRecognizer(
     private val algoliaClient: Client
 ) : RecognitionListener {
 
+    init {
+        Log.d("Main", "Intent: " + intent.getStringExtra("android.speech.extra.LANGUAGE"))
+    }
+
     private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
 
-    override fun onReadyForSpeech(params: Bundle?) { }
+    override fun onReadyForSpeech(params: Bundle?) { setMainUI(speechToTextButtonTextStop, listeningStatus, true) }
 
     override fun onRmsChanged(rmsdB: Float) { }
 
     override fun onBufferReceived(buffer: ByteArray?) { }
 
-    override fun onPartialResults(partialResults: Bundle?) { }
+    override fun onPartialResults(partialResults: Bundle?) {}
 
     override fun onEvent(eventType: Int, params: Bundle?) { }
 
     override fun onBeginningOfSpeech() { }
 
-    override fun onEndOfSpeech() { }
+    override fun onEndOfSpeech() { setMainUI(speechToTextButtonTextStart, notListeningStatus, false) }
 
-    override fun onError(error: Int) { }
+    override fun onError(error: Int) {
+        Log.d("Main", error.toString())
+//        setMainUI(speechToTextButtonTextStart, notListeningStatus, false)
+    }
 
     override fun onResults(results: Bundle?) {
         if (results != null) {
@@ -67,18 +80,12 @@ class VoiceRecognizer(
             }
         }
 
-        // TODO auto listen again add delay
-        //  play around advanced syntax, deduplication
-        //  test on highlightResult
-        //  extract words until comma or footstop
-        //  test after speaking result, does it retain the same input language (check intent)
+        // TODO play around advanced syntax, deduplication
+        //  fix when changing input speech language during speaking
         mSpeechRecognizer.stopListening()
-        Timer().schedule(3000) {
+        Handler().postDelayed({
             mSpeechRecognizer.startListening(intent)
-        }
-//        activity.speech_to_text_button.text = "Start Speech to Text"
-//        activity.listening_status.text =  "Not Listening..."
-//        isSpeaking = false
+        }, 2000)
     }
 
     private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<Hit>) {
@@ -90,5 +97,11 @@ class VoiceRecognizer(
                 speechTranslateAdapter.setResult(speechText, translatedText, finalList)
             }
         }
+    }
+
+    private fun setMainUI(speechToTextButtonText: String, listeningStatus: String, speak: Boolean) {
+        activity.speech_to_text_button.text = speechToTextButtonText
+        activity.listening_status.text =  listeningStatus
+        isSpeaking = speak
     }
 }

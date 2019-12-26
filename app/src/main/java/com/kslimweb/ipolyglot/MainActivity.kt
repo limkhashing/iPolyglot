@@ -51,16 +51,11 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
         algoliaClient = CredentialsHelper(applicationContext).initAlgoliaClient()
 
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
-        mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
-            getSpeechRecognizeIntent(),
-            this,
-            this@MainActivity,
-            googleTranslateService,
-            algoliaClient))
-
         spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
             speechLanguageCode = getLanguageCode(position)
             if (isSpeaking) {
+//                mSpeechRecognizer.stopListening()
+                setSpeechRecognizerListener()
                 mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
             }
         }
@@ -113,6 +108,7 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
 
     fun inputSpeech(view: View) {
         if (!isSpeaking) {
+            setSpeechRecognizerListener()
             speech_to_text_button.text = "Stop Speech to Text"
             listening_status.text = "Listening..."
             mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
@@ -123,6 +119,15 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
             mSpeechRecognizer.stopListening()
             isSpeaking = false
         }
+    }
+
+    private fun setSpeechRecognizerListener() {
+        mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
+            getSpeechRecognizeIntent(),
+            this,
+            this@MainActivity,
+            googleTranslateService,
+            algoliaClient))
     }
 
     override fun spokenText(spokenText: String) {

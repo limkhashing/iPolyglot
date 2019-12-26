@@ -1,8 +1,7 @@
-package com.kslimweb.ipolyglot.model
+package com.kslimweb.ipolyglot.model.hit
 
 
 data class ContentAra(
     val matchLevel: String,
-    val matchedWords: List<Any>,
     val value: String
 )
