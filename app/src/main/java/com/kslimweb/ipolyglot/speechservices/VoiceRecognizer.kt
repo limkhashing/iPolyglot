@@ -39,10 +39,6 @@ class VoiceRecognizer(
     private val algoliaClient: Client
 ) : RecognitionListener {
 
-    init {
-        Log.d("Main", "Intent: " + intent.getStringExtra("android.speech.extra.LANGUAGE"))
-    }
-
     private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
 
     override fun onReadyForSpeech(params: Bundle?) { setMainUI(speechToTextButtonTextStop, listeningStatus, true) }
@@ -57,11 +53,10 @@ class VoiceRecognizer(
 
     override fun onBeginningOfSpeech() { }
 
-    override fun onEndOfSpeech() { setMainUI(speechToTextButtonTextStart, notListeningStatus, false) }
+    override fun onEndOfSpeech() { }
 
     override fun onError(error: Int) {
-        Log.d("Main", error.toString())
-//        setMainUI(speechToTextButtonTextStart, notListeningStatus, false)
+        setMainUI(speechToTextButtonTextStart, notListeningStatus, false)
     }
 
     override fun onResults(results: Bundle?) {

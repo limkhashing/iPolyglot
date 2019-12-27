@@ -113,11 +113,13 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
             listening_status.text = "Listening..."
             mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
             isSpeaking = true
+            spinner_speech_language.isEnabled = false
         } else {
             speech_to_text_button.text = "Start Speech to Text"
             listening_status.text = "Not Listening..."
             mSpeechRecognizer.stopListening()
             isSpeaking = false
+            spinner_speech_language.isEnabled = true
         }
     }
 
