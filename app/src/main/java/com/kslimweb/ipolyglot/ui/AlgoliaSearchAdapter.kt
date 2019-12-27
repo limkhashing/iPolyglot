@@ -4,11 +4,14 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.text.toSpanned
 import androidx.recyclerview.widget.RecyclerView
+import com.algolia.instantsearch.helper.android.highlighting.toSpannedString
 import com.kslimweb.ipolyglot.R
 import com.kslimweb.ipolyglot.model.hit.Hit
 
@@ -33,18 +36,17 @@ class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapt
         setChapterText(holder, position)
         setReference(holder, position)
         setInBookReference(holder, position)
-        val highlightedResults= getHighlightResult(holder, position)
+        val highlightedResults= getHighlightResult(position)
         setHighlightedResultText(holder, highlightedResults)
     }
 
     private fun setHighlightedResultText(holder: ViewHolder, highlightedResults: MutableList<String>) {
-        // TODO bold found word
         val sb = StringBuilder()
         highlightedResults.forEachIndexed { index, it ->
             if (index != highlightedResults.lastIndex)
                 sb.append((index+1).toString() + ". " + it + "\n\t")
             else
-                sb.append((index+1).toString() + ". " + it)
+                sb.append((index+1).toString() + ". " + it.toSpanned())
         }
         holder.highlightedResults.text = "Highlighted Result: \n\t" + sb.toString()
         holder.highlightedResults.visibility = View.VISIBLE
@@ -109,32 +111,27 @@ class AlgoliaSearchAdapter(private val hitsJson: List<Hit>) : RecyclerView.Adapt
             StyleSpan(Typeface.BOLD))
     }
 
-    private fun getHighlightResult(holder: ViewHolder, position: Int): MutableList<String> {
+    private fun getHighlightResult(position: Int): MutableList<String> {
         val highlightResultList = mutableListOf<String>()
-        hitsJson[position].snippetResult?.let{ snippetResult ->
-            val snippetResultChapterAra = snippetResult.chapterAra
-            val snippetResultChapterEng = snippetResult.chapterEng
-            val snippetResultContentAraList = snippetResult.contentAra
-            val snippetResultContentEngList = snippetResult.contentEng
-
-            if (snippetResultChapterAra.matchLevel == "full" || snippetResultChapterAra.matchLevel == "partial")
-                highlightResultList.add(snippetResultChapterAra.value)
-
-            if (snippetResultChapterEng.matchLevel == "full" || snippetResultChapterEng.matchLevel == "partial")
-                highlightResultList.add(snippetResultChapterEng.value)
-
-            snippetResultContentAraList.forEach {
-                if (it.matchLevel == "full" || it.matchLevel == "partial") {
-                    highlightResultList.add(it.value)
-                }
-            }
-
-            snippetResultContentEngList.forEach {
-                if (it.matchLevel == "full" || it.matchLevel == "partial") {
-                    highlightResultList.add(it.value)
-                }
-            }
-        }
+//        hitsJson[position].highlightResult?.let{ snippetResult ->
+//
+//            val snippetResultChapterAra = snippetResult.highlightedChapterAra
+//            val snippetResultChapterEng = snippetResult.highlightedChapterEng
+//            val snippetResultContentAraList = snippetResult.highlightedContentAra
+//            val snippetResultContentEngList = snippetResult.highlightedContentEng
+//
+//            Log.d("Adapter", snippetResultChapterAra?.toSpannedString().toString() + " abc")
+//            Log.d("Adapter", snippetResultChapterEng?.toSpannedString().toString() + " abc")
+//
+//            snippetResultChapterAra?.let {
+//                highlightResultList.add(it.toSpannedString().toString())
+//            }
+//
+//            snippetResultChapterEng?.let {
+//                highlightResultList.add(it.toSpannedString().toString())
+//            }
+//
+//        }
         return highlightResultList
     }
 

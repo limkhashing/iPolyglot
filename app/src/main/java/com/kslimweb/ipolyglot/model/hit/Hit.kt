@@ -1,8 +1,12 @@
 package com.kslimweb.ipolyglot.model.hit
 
 
+import com.algolia.instantsearch.helper.highlighting.Highlightable
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
+@Serializable
 data class Hit(
     @SerializedName("chapter_ara")
     val chapterAraText: String,
@@ -12,6 +16,5 @@ data class Hit(
     val inBookReference: List<String>?,
     val objectID: String,
     val reference: List<String>?,
-    @SerializedName("_snippetResult")
-    val snippetResult: SnippetResult?
-)
+    override val _highlightResult: JsonObject?
+) : Highlightable

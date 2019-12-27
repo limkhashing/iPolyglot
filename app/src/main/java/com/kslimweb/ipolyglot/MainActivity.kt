@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.algolia.search.saas.Client
+import com.algolia.search.client.ClientSearch
 import com.google.cloud.translate.Translate
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizerInterface
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
     }
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
-    private lateinit var algoliaClient: Client
+    private lateinit var algoliaClient: ClientSearch
     private lateinit var googleTranslateService: Translate
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
         spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
             speechLanguageCode = getLanguageCode(position)
             if (isSpeaking) {
-//                mSpeechRecognizer.stopListening()
                 setSpeechRecognizerListener()
                 mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
             }
@@ -113,11 +112,13 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
             listening_status.text = "Listening..."
             mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
             isSpeaking = true
+            spinner_speech_language.isEnabled = false
         } else {
             speech_to_text_button.text = "Start Speech to Text"
             listening_status.text = "Not Listening..."
             mSpeechRecognizer.stopListening()
             isSpeaking = false
+            spinner_speech_language.isEnabled = true
         }
     }
 

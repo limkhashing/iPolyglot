@@ -7,8 +7,19 @@ import android.os.Handler
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
 import android.util.Log
-import com.algolia.search.saas.Client
+import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.algolia.instantsearch.core.connection.ConnectionHandler
+import com.algolia.instantsearch.core.hits.connectHitsView
+import com.algolia.instantsearch.helper.android.list.SearcherSingleIndexDataSource
+import com.algolia.instantsearch.helper.searcher.SearcherSingleIndex
+import com.algolia.search.client.ClientSearch
+import com.algolia.search.helper.deserialize
+import com.algolia.search.model.IndexName
+import com.algolia.search.model.search.Query
 import com.google.cloud.translate.Translate
+import com.google.gson.Gson
 import com.kslimweb.ipolyglot.ALGOLIA_INDEX_NAME
 import com.kslimweb.ipolyglot.MainActivity.Companion.isSpeaking
 import com.kslimweb.ipolyglot.MainActivity.Companion.translateLanguageCode
@@ -36,12 +47,8 @@ class VoiceRecognizer(
     private val activity: Activity,
     private val signal: VoiceRecognizerInterface,
     private val googleTranslateClient: Translate,
-    private val algoliaClient: Client
+    private val algoliaClient: ClientSearch
 ) : RecognitionListener {
-
-    init {
-        Log.d("Main", "Intent: " + intent.getStringExtra("android.speech.extra.LANGUAGE"))
-    }
 
     private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
 
@@ -57,14 +64,15 @@ class VoiceRecognizer(
 
     override fun onBeginningOfSpeech() { }
 
-    override fun onEndOfSpeech() { setMainUI(speechToTextButtonTextStart, notListeningStatus, false) }
+    override fun onEndOfSpeech() { }
 
     override fun onError(error: Int) {
-        Log.d("Main", error.toString())
-//        setMainUI(speechToTextButtonTextStart, notListeningStatus, false)
+        setMainUI(speechToTextButtonTextStart, notListeningStatus, false)
     }
 
     override fun onResults(results: Bundle?) {
+
+
         if (results != null) {
             val spokenTexts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             spokenTexts?.let {
@@ -72,10 +80,13 @@ class VoiceRecognizer(
                 signal.spokenText(speechText)
                 CoroutineScope(Dispatchers.IO).launch {
                     val translatedText = GoogleTranslate(googleTranslateClient).translateText(speechText, translateLanguageCode, TRANSLATE_MODEL)
-                    val finalList = Algolia().algoliaSearch(speechText, translatedText, algoliaClient.getIndex(
-                        ALGOLIA_INDEX_NAME
-                    ))
-                   setAdapter(speechText, translatedText, finalList)
+
+                    val index = algoliaClient.initIndex(IndexName(ALGOLIA_INDEX_NAME))
+                    val searcher = SearcherSingleIndex(index, Query(query = speechText, hitsPerPage = 20))
+                    val searchResult = searcher.search()
+
+//                    val finalList = Algolia().algoliaSearch(speechText, translatedText, index)
+//                    setAdapter(speechText, translatedText, finalList)
                 }
             }
         }
