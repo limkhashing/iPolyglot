@@ -25,15 +25,12 @@ class SpeechTranslateAdapter(private var speechResult: String,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         holder.speechText.text = speechResult
         holder.translateText.text = translatedText
         holder.searchAppearLabel.visibility = View.VISIBLE
         holder.searchAppearLabel.text = "Appeared in: "
-
         if (hits.isNotEmpty()) {
-            holder.searchRecyclerView.adapter =
-                AlgoliaSearchAdapter(hits)
+            holder.searchRecyclerView.adapter = SearchResponseAdapter(hits)
             holder.searchRecyclerView.visibility = View.VISIBLE
         } else {
             holder.searchAppearLabel.append(" None")

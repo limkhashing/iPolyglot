@@ -6,21 +6,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import com.algolia.instantsearch.core.connection.ConnectionHandler
-import com.algolia.instantsearch.core.hits.connectHitsView
-import com.algolia.instantsearch.helper.android.list.SearcherSingleIndexDataSource
-import com.algolia.instantsearch.helper.searcher.SearcherSingleIndex
-import com.algolia.search.client.ClientSearch
-import com.algolia.search.helper.deserialize
-import com.algolia.search.model.IndexName
-import com.algolia.search.model.search.Query
+import com.algolia.search.client.Index
 import com.google.cloud.translate.Translate
-import com.google.gson.Gson
-import com.kslimweb.ipolyglot.ALGOLIA_INDEX_NAME
 import com.kslimweb.ipolyglot.MainActivity.Companion.isSpeaking
 import com.kslimweb.ipolyglot.MainActivity.Companion.translateLanguageCode
 import com.kslimweb.ipolyglot.TRANSLATE_MODEL
@@ -45,9 +32,8 @@ class VoiceRecognizer(
     private val mSpeechRecognizer: SpeechRecognizer,
     private val intent: Intent,
     private val activity: Activity,
-    private val signal: VoiceRecognizerInterface,
     private val googleTranslateClient: Translate,
-    private val algoliaClient: ClientSearch
+    private val index: Index
 ) : RecognitionListener {
 
     private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
@@ -71,32 +57,21 @@ class VoiceRecognizer(
     }
 
     override fun onResults(results: Bundle?) {
-
-
         if (results != null) {
             val spokenTexts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             spokenTexts?.let {
                 val speechText = it[0]
-                signal.spokenText(speechText)
                 CoroutineScope(Dispatchers.IO).launch {
                     val translatedText = GoogleTranslate(googleTranslateClient).translateText(speechText, translateLanguageCode, TRANSLATE_MODEL)
-
-                    val index = algoliaClient.initIndex(IndexName(ALGOLIA_INDEX_NAME))
-                    val searcher = SearcherSingleIndex(index, Query(query = speechText, hitsPerPage = 20))
-                    val searchResult = searcher.search()
-
-//                    val finalList = Algolia().algoliaSearch(speechText, translatedText, index)
-//                    setAdapter(speechText, translatedText, finalList)
+                    val finalList = Algolia(speechText, translatedText, index).algoliaSearch()
+                    setAdapter(speechText, translatedText, finalList)
                 }
             }
         }
 
-        // TODO play around advanced syntax, deduplication
-        //  fix when changing input speech language during speaking
+        // TODO play around deduplication
         mSpeechRecognizer.stopListening()
-        Handler().postDelayed({
-            mSpeechRecognizer.startListening(intent)
-        }, 2000)
+        Handler().postDelayed({ mSpeechRecognizer.startListening(intent) }, 3000)
     }
 
     private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<Hit>) {

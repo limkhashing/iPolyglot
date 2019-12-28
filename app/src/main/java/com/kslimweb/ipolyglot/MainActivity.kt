@@ -6,15 +6,14 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.algolia.search.client.ClientSearch
+import com.algolia.search.client.Index
+import com.algolia.search.model.IndexName
 import com.google.cloud.translate.Translate
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
-import com.kslimweb.ipolyglot.speechservices.VoiceRecognizerInterface
 import com.kslimweb.ipolyglot.util.CredentialsHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_input_speech.*
@@ -25,7 +24,7 @@ const val REQUEST_AUDIO_PERMISSION = 200
 const val ALGOLIA_INDEX_NAME = "hadith"
 const val TRANSLATE_MODEL = "base"
 
-class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
+class MainActivity : AppCompatActivity() {
 
     companion object {
         lateinit var speechLanguageCode: String
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
     }
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
-    private lateinit var algoliaClient: ClientSearch
+    private lateinit var index: Index
     private lateinit var googleTranslateService: Translate
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,13 +43,13 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
         requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_AUDIO_PERMISSION)
 
         initSpinnerItem()
+        initAlgoliaAndGoogleTranslate()
+
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
+
         speechLanguageCode = getLanguageCode()
         translateLanguageCode = getLanguageCode()
 
-        googleTranslateService = CredentialsHelper(applicationContext).initGoogleTranslateClient()
-        algoliaClient = CredentialsHelper(applicationContext).initAlgoliaClient()
-
-        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
         spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
             speechLanguageCode = getLanguageCode(position)
             if (isSpeaking) {
@@ -81,6 +80,12 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
         )
         spinner_speech_language.setAdapter(adapter)
         spinner_translate_language.setAdapter(adapter)
+    }
+
+    private fun initAlgoliaAndGoogleTranslate() {
+        googleTranslateService = CredentialsHelper(applicationContext).initGoogleTranslateClient()
+        index = CredentialsHelper(applicationContext).initAlgoliaClient()
+            .initIndex(IndexName(ALGOLIA_INDEX_NAME))
     }
 
     private fun showPermissionMessageDialog() {
@@ -125,14 +130,9 @@ class MainActivity : AppCompatActivity(), VoiceRecognizerInterface {
     private fun setSpeechRecognizerListener() {
         mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
             getSpeechRecognizeIntent(),
-            this,
             this@MainActivity,
             googleTranslateService,
-            algoliaClient))
-    }
-
-    override fun spokenText(spokenText: String) {
-        Log.d("Main", spokenText)
+            index))
     }
 
     override fun onStop() {
