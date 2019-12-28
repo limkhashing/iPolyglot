@@ -13,7 +13,7 @@ import com.kslimweb.ipolyglot.ui.SearchResponseAdapter
 
 class SearchResultTextViewHelper(private val hits: List<Hit>) {
 
-    private var highlighNumbering = 0
+    private var highlightNumbering = 0
 
     fun setChapterText(holder: SearchResponseAdapter.ViewHolder, position: Int) {
         holder.chapterArabic.text = "Arabic Chapter: " + hits[position].chapterAraText
@@ -30,13 +30,51 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
     }
 
     fun setSnippetText(holder: SearchResponseAdapter.ViewHolder, position: Int) {
-        holder.chapterTranslated.text = "Contents: \n\t"
-        setTextWithSpan(holder.snippets,
-            holder.snippets.text.toString(),
-            "Contents: ",
-            StyleSpan(Typeface.BOLD))
+        val snippetResult = Gson().fromJson(hits[position]._snippetResult.toString(), SnippetResult::class.java)
+        setSnippetContentsAra(holder, snippetResult.contentsAra)
+        setSnippetContentsEng(holder, snippetResult.contentsEng)
+    }
 
-//        holder.chapterTranslated.append(hits[position].snippetResult.value + "\n")
+    private fun setSnippetContentsAra(holder: SearchResponseAdapter.ViewHolder, contentsAra: List<ContentAra>) {
+        val sb = StringBuilder()
+        contentsAra.forEachIndexed { index, it ->
+            if (it.matchLevel != "none") {
+                if (index != contentsAra.lastIndex)
+                    sb.append((index+1).toString() + ". " +
+                            it.value.replace("<em>", "")
+                                .replace("</em>", "") + "...\n\t")
+                else
+                    sb.append((index+1).toString() + ". " +
+                            it.value.replace("<em>", "")
+                                .replace("</em>", "") + "...")
+            }
+        }
+        holder.snippetsAra.text = "Arabic Contents: \n\t" + sb.toString()
+        setTextWithSpan(holder.snippetsAra,
+            holder.snippetsAra.text.toString(),
+            "Arabic Contents: ",
+            StyleSpan(Typeface.BOLD))
+    }
+
+    private fun setSnippetContentsEng(holder: SearchResponseAdapter.ViewHolder, contentsEng: List<ContentEng>) {
+        val sb = StringBuilder()
+        contentsEng.forEachIndexed { index, it ->
+            if (it.matchLevel != "none") {
+                if (index != contentsEng.lastIndex)
+                    sb.append((index+1).toString() + ". " +
+                            it.value.replace("<em>", "")
+                                .replace("</em>", "") + "...\n\t")
+                else
+                    sb.append((index+1).toString() + ". " +
+                            it.value.replace("<em>", "")
+                                .replace("</em>", "") + "...")
+            }
+        }
+        holder.snippetsEng.text = "English Contents: \n\t" + sb.toString()
+        setTextWithSpan(holder.snippetsEng,
+            holder.snippetsEng.text.toString(),
+            "English Contents: ",
+            StyleSpan(Typeface.BOLD))
     }
 
     fun setInBookReference(holder: SearchResponseAdapter.ViewHolder, position: Int) {
@@ -49,9 +87,9 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
                 else
                     sb.append((index+1).toString() + ". " + it)
             }
-            holder.inBookReference.text = "In-book Reference: \n\t" + sb.toString()
-            setTextWithSpan(holder.inBookReference,
-                holder.inBookReference.text.toString(),
+            holder.inBookReferences.text = "In-book Reference: \n\t" + sb.toString()
+            setTextWithSpan(holder.inBookReferences,
+                holder.inBookReferences.text.toString(),
                 "In-book Reference: ",
                 StyleSpan(Typeface.BOLD))
         }
@@ -67,9 +105,9 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
                 else
                     sb.append((index+1).toString() + ". " + it)
             }
-            holder.reference.text = "Reference: \n\t" + sb.toString()
-            setTextWithSpan(holder.reference,
-                holder.reference.text.toString(),
+            holder.references.text = "Reference: \n\t" + sb.toString()
+            setTextWithSpan(holder.references,
+                holder.references.text.toString(),
                 "Reference: ",
                 StyleSpan(Typeface.BOLD))
         }
@@ -82,20 +120,19 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
             holder.highlightResults.text.toString(),
             "Found in: ",
             StyleSpan(Typeface.BOLD))
-
         val highlightResult = Gson().fromJson(hits[position]._highlightResult.toString(), HighlightResult::class.java)
-
-        setChapterAraHighlightText(position, holder, highlightResult.chapterAra)
-        setContentsAraHighlightText(position, holder, highlightResult.contentsAra)
-        setChapterEngHighlightText(position, holder, highlightResult.chapterEng)
-        setContentsEngHighlightText(position, holder, highlightResult.contentsEng)
+        setHighlightChapterAra(position, holder, highlightResult.chapterAra)
+        setHighlightContentsAra(position, holder, highlightResult.contentsAra)
+        setHighlightChapterEng(position, holder, highlightResult.chapterEng)
+        setHighlightContentsEng(position, holder, highlightResult.contentsEng)
+        highlightNumbering = 0 // reset numbering
     }
 
-    private fun setChapterAraHighlightText(position: Int, holder: SearchResponseAdapter.ViewHolder, chapterAra: ChapterAra) {
+    private fun setHighlightChapterAra(position: Int, holder: SearchResponseAdapter.ViewHolder, chapterAra: ChapterAra) {
         if (chapterAra.matchLevel != "none")  {
             hits[position].highlightedChapterAra?.tokens?.let { tokens ->
-                highlighNumbering += 1
-                holder.highlightResults.append(highlighNumbering.toString() + ". ")
+                highlightNumbering += 1
+                holder.highlightResults.append(highlightNumbering.toString() + ". ")
                 tokens.forEach {
                     if (it.highlighted) {
                         val highlightedContent = SpannableString(it.content)
@@ -114,11 +151,11 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
         }
     }
 
-    private fun setContentsAraHighlightText(position: Int, holder: SearchResponseAdapter.ViewHolder, contentsAra: List<ContentAra>) {
+    private fun setHighlightContentsAra(position: Int, holder: SearchResponseAdapter.ViewHolder, contentsAra: List<ContentAra>) {
         contentsAra.forEachIndexed { index, content ->
             if (content.matchLevel != "none") {
-                highlighNumbering += 1
-                holder.highlightResults.append(highlighNumbering.toString() + ". ")
+                highlightNumbering += 1
+                holder.highlightResults.append(highlightNumbering.toString() + ". ")
                 hits[position].highlightedContentsAra?.get(index)?.tokens?.forEach {
                     if (it.highlighted) {
                         val highlightedContent = SpannableString(it.content)
@@ -138,11 +175,11 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
         }
     }
 
-    private fun setChapterEngHighlightText(position: Int, holder: SearchResponseAdapter.ViewHolder, chapterEng: ChapterEng) {
+    private fun setHighlightChapterEng(position: Int, holder: SearchResponseAdapter.ViewHolder, chapterEng: ChapterEng) {
        if (chapterEng.matchLevel != "none") {
            hits[position].highlightedChapterEng?.tokens?.let { tokens ->
-               highlighNumbering += 1
-               holder.highlightResults.append(highlighNumbering.toString() + ". ")
+               highlightNumbering += 1
+               holder.highlightResults.append(highlightNumbering.toString() + ". ")
                tokens.forEach {
                    if (it.highlighted) {
                        val highlightedContent = SpannableString(it.content)
@@ -162,11 +199,11 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
 
     }
 
-    private fun setContentsEngHighlightText(position: Int, holder: SearchResponseAdapter.ViewHolder, contentsEng: List<ContentEng>) {
+    private fun setHighlightContentsEng(position: Int, holder: SearchResponseAdapter.ViewHolder, contentsEng: List<ContentEng>) {
         contentsEng.forEachIndexed { index, content ->
             if (content.matchLevel != "none") {
-                highlighNumbering += 1
-                holder.highlightResults.append(highlighNumbering.toString() + ". ")
+                highlightNumbering += 1
+                holder.highlightResults.append(highlightNumbering.toString() + ". ")
                 hits[position].highlightedContentsEng?.get(index)?.tokens?.forEach {
                     if (it.highlighted) {
                         val highlightedContent = SpannableString(it.content)

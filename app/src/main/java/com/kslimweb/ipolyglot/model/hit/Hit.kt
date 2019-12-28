@@ -14,17 +14,12 @@ import kotlinx.serialization.json.JsonObject
 data class Hit(
     @SerialName("chapter_ara")
     val chapterAraText: String,
-
     @SerialName("chapter_eng")
     val chapterEngText: String,
-
     @SerialName("in_book_reference")
     val inBookReference: List<String>?,
-
     val reference: List<String>?,
-
-//    val test: HighlightResult,
-
+    val _snippetResult: JsonObject?,
     override val objectID: ObjectID,
     override val _highlightResult: JsonObject?
 ) : Indexable, Highlightable {

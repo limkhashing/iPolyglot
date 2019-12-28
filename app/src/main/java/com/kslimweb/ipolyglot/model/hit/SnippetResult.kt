@@ -1,16 +1,11 @@
 package com.kslimweb.ipolyglot.model.hit
 
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
 data class SnippetResult (
-    @SerialName("chapter_ara")
-    val chapterAra: ChapterAra,
-    @SerialName("chapter_eng")
-    val chapterEng: ChapterEng,
-    @SerialName("content_ara")
+    @SerializedName("content_ara")
     val contentsAra: List<ContentAra>,
-    @SerialName("content_eng")
+    @SerializedName("content_eng")
     val contentsEng: List<ContentEng>
 )
