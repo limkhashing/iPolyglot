@@ -23,7 +23,9 @@ class SearchResponseAdapter(private val hits: List<Hit>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.chapterNumber.text = hits[position].objectID.toString()
+
         searchResultTextViewHelper.setChapterText(holder, position)
+        searchResultTextViewHelper.setSnippetText(holder, position)
         searchResultTextViewHelper.setReference(holder, position)
         searchResultTextViewHelper.setInBookReference(holder, position)
         searchResultTextViewHelper.setHighlightResultText(holder, position)
@@ -34,8 +36,9 @@ class SearchResponseAdapter(private val hits: List<Hit>) : RecyclerView.Adapter<
         val chapterNumber: TextView = itemView.findViewById(R.id.txt_chapter_number) as TextView
         val chapterArabic: TextView = itemView.findViewById(R.id.txt_chapter_arabic) as TextView
         val chapterTranslated: TextView = itemView.findViewById(R.id.txt_chapter_translated) as TextView
+        val snippets: TextView = itemView.findViewById(R.id.txt_snippet_result) as TextView
         val reference: TextView = itemView.findViewById(R.id.txt_reference) as TextView
         val inBookReference: TextView = itemView.findViewById(R.id.txt_in_book_reference) as TextView
-        val highlightResults: TextView = itemView.findViewById(R.id.txt_snippet_result) as TextView
+        val highlightResults: TextView = itemView.findViewById(R.id.txt_highlight_result) as TextView
     }
 }

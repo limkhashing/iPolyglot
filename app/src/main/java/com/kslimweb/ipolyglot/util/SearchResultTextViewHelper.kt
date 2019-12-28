@@ -6,7 +6,6 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import android.view.View
 import android.widget.TextView
 import com.google.gson.Gson
 import com.kslimweb.ipolyglot.model.hit.*
@@ -30,6 +29,16 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
             StyleSpan(Typeface.BOLD))
     }
 
+    fun setSnippetText(holder: SearchResponseAdapter.ViewHolder, position: Int) {
+        holder.chapterTranslated.text = "Contents: \n\t"
+        setTextWithSpan(holder.snippets,
+            holder.snippets.text.toString(),
+            "Contents: ",
+            StyleSpan(Typeface.BOLD))
+
+//        holder.chapterTranslated.append(hits[position].snippetResult.value + "\n")
+    }
+
     fun setInBookReference(holder: SearchResponseAdapter.ViewHolder, position: Int) {
         val inBookReference = hits[position].inBookReference
         if (inBookReference != null) {
@@ -41,7 +50,6 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
                     sb.append((index+1).toString() + ". " + it)
             }
             holder.inBookReference.text = "In-book Reference: \n\t" + sb.toString()
-            holder.inBookReference.visibility = View.VISIBLE
             setTextWithSpan(holder.inBookReference,
                 holder.inBookReference.text.toString(),
                 "In-book Reference: ",
@@ -60,7 +68,6 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
                     sb.append((index+1).toString() + ". " + it)
             }
             holder.reference.text = "Reference: \n\t" + sb.toString()
-            holder.reference.visibility = View.VISIBLE
             setTextWithSpan(holder.reference,
                 holder.reference.text.toString(),
                 "Reference: ",
@@ -71,13 +78,12 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
     fun setHighlightResultText(holder: SearchResponseAdapter.ViewHolder, position: Int) {
         holder.highlightResults.text = ""
         holder.highlightResults.text = "Found in: \n\t"
-        holder.highlightResults.visibility = View.VISIBLE
         setTextWithSpan(holder.highlightResults,
             holder.highlightResults.text.toString(),
             "Found in: ",
             StyleSpan(Typeface.BOLD))
 
-        val highlightResult = Gson().fromJson(hits[position]._highlightResult.toString(), SnippetResult::class.java)
+        val highlightResult = Gson().fromJson(hits[position]._highlightResult.toString(), HighlightResult::class.java)
 
         setChapterAraHighlightText(position, holder, highlightResult.chapterAra)
         setContentsAraHighlightText(position, holder, highlightResult.contentsAra)

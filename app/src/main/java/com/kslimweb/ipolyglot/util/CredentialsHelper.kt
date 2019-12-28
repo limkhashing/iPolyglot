@@ -16,7 +16,7 @@ import io.ktor.client.features.logging.LogLevel
 class CredentialsHelper(private val context: Context) {
 
     fun initGoogleTranslateClient(): Translate {
-        context.resources.openRawResource(R.raw.credential_dev).use { `is` ->
+        context.resources.openRawResource(R.raw.credential).use { `is` ->
             val myCredentials = GoogleCredentials.fromStream(`is`)
             val translateOptions =
                 TranslateOptions.newBuilder().setCredentials(myCredentials).build()
@@ -25,7 +25,7 @@ class CredentialsHelper(private val context: Context) {
     }
 
     fun initAlgoliaClient(): ClientSearch {
-        val algoliaJson = context.resources.openRawResource(R.raw.algolia_dev).bufferedReader().use { it.readText() }
+        val algoliaJson = context.resources.openRawResource(R.raw.algolia).bufferedReader().use { it.readText() }
         val algoliaCredentials = Gson().fromJson(algoliaJson, AlgorliaCredentials::class.java)
         return ClientSearch(
             ConfigurationSearch (
