@@ -6,6 +6,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
+import android.util.Log
 import android.widget.TextView
 import com.google.gson.Gson
 import com.kslimweb.ipolyglot.model.hit.*
@@ -132,8 +133,12 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
         if (chapterAra.matchLevel != "none")  {
             hits[position].highlightedChapterAra?.tokens?.let { tokens ->
                 highlightNumbering += 1
+                var isHighlighted = false
                 holder.highlightResults.append(highlightNumbering.toString() + ". ")
-                tokens.forEach {
+                tokens.forEachIndexed { tokenIndex, it ->
+                    if (tokenIndex > 4 && isHighlighted)
+                        return@forEachIndexed
+
                     if (it.highlighted) {
                         val highlightedContent = SpannableString(it.content)
                         highlightedContent.setSpan(StyleSpan(Typeface.BOLD),
@@ -141,12 +146,12 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
                             it.content.length,
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         holder.highlightResults.append(highlightedContent)
+                        isHighlighted = true
                     }
-                    else {
+                    else
                         holder.highlightResults.append(" " + it.content + " ")
-                    }
                 }
-                holder.highlightResults.append("\n\t")
+                holder.highlightResults.append("...\n\t")
             }
         }
     }
@@ -155,8 +160,12 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
         contentsAra.forEachIndexed { index, content ->
             if (content.matchLevel != "none") {
                 highlightNumbering += 1
+                var isHighlighted = false
                 holder.highlightResults.append(highlightNumbering.toString() + ". ")
-                hits[position].highlightedContentsAra?.get(index)?.tokens?.forEach {
+                hits[position].highlightedContentsAra?.get(index)?.tokens?.forEachIndexed token@{ tokenIndex, it ->
+                    if (tokenIndex > 4 && isHighlighted)
+                        return@token
+
                     if (it.highlighted) {
                         val highlightedContent = SpannableString(it.content)
                         highlightedContent.setSpan(
@@ -166,21 +175,25 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
                         holder.highlightResults.append(highlightedContent)
-                    } else {
+                        isHighlighted = true
+                    } else
                         holder.highlightResults.append(" " + it.content + " ")
-                    }
                 }
-                holder.highlightResults.append("\n\t")
+                holder.highlightResults.append("...\n\t")
             }
         }
     }
 
     private fun setHighlightChapterEng(position: Int, holder: SearchResponseAdapter.ViewHolder, chapterEng: ChapterEng) {
-       if (chapterEng.matchLevel != "none") {
+        if (chapterEng.matchLevel != "none") {
            hits[position].highlightedChapterEng?.tokens?.let { tokens ->
                highlightNumbering += 1
+               var isHighlighted = false
                holder.highlightResults.append(highlightNumbering.toString() + ". ")
-               tokens.forEach {
+               tokens.forEachIndexed { tokenIndex, it ->
+                   if (tokenIndex > 4 && isHighlighted)
+                       return@forEachIndexed
+
                    if (it.highlighted) {
                        val highlightedContent = SpannableString(it.content)
                        highlightedContent.setSpan(StyleSpan(Typeface.BOLD),
@@ -188,37 +201,39 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
                            it.content.length,
                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                        holder.highlightResults.append(highlightedContent)
+                       isHighlighted = true
                    }
-                   else {
+                   else
                        holder.highlightResults.append(" " + it.content + " ")
-                   }
                }
-               holder.highlightResults.append("\n\t")
+               holder.highlightResults.append("...\n\t")
            }
        }
-
     }
 
     private fun setHighlightContentsEng(position: Int, holder: SearchResponseAdapter.ViewHolder, contentsEng: List<ContentEng>) {
         contentsEng.forEachIndexed { index, content ->
             if (content.matchLevel != "none") {
                 highlightNumbering += 1
+                var isHighlighted = false
                 holder.highlightResults.append(highlightNumbering.toString() + ". ")
-                hits[position].highlightedContentsEng?.get(index)?.tokens?.forEach {
+                hits[position].highlightedContentsEng?.get(index)?.tokens?.forEachIndexed token@{ tokenIndex, it ->
+                    if (tokenIndex > 4 && isHighlighted)
+                        return@token
+
                     if (it.highlighted) {
                         val highlightedContent = SpannableString(it.content)
                         highlightedContent.setSpan(
                             StyleSpan(Typeface.BOLD),
                             it.content.indexOf(it.content),
                             it.content.length,
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        isHighlighted = true
                         holder.highlightResults.append(highlightedContent)
-                    } else {
+                    } else
                         holder.highlightResults.append(" " + it.content + " ")
-                    }
                 }
-                holder.highlightResults.append("\n\t")
+                holder.highlightResults.append("...\n\t")
             }
         }
     }

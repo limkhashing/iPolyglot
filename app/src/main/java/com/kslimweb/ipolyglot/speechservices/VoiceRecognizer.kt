@@ -12,7 +12,7 @@ import com.kslimweb.ipolyglot.MainActivity.Companion.isSpeaking
 import com.kslimweb.ipolyglot.MainActivity.Companion.translateLanguageCode
 import com.kslimweb.ipolyglot.TRANSLATE_MODEL
 import com.kslimweb.ipolyglot.model.hit.Hit
-import com.kslimweb.ipolyglot.network.algolia.Algolia
+import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -63,13 +63,12 @@ class VoiceRecognizer(
                 val speechText = it[0]
                 CoroutineScope(Dispatchers.IO).launch {
                     val translatedText = GoogleTranslate(googleTranslateClient).translateText(speechText, translateLanguageCode, TRANSLATE_MODEL)
-                    val finalList = Algolia(speechText, translatedText, index).algoliaSearch()
+                    val finalList = Searcher(speechText, translatedText, index).search()
                     setAdapter(speechText, translatedText, finalList)
                 }
             }
         }
 
-        // TODO play around deduplication
         mSpeechRecognizer.stopListening()
         Handler().postDelayed({ mSpeechRecognizer.startListening(intent) }, 3000)
     }

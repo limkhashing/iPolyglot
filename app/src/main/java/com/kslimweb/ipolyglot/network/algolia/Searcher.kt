@@ -10,23 +10,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
-class Algolia(private val speechText: String,
-              private val translatedText: String,
-              private val index: Index
+class Searcher(private val speechText: String,
+               private val translatedText: String,
+               private val index: Index
 ) {
 
-    private suspend fun indexSearch(queryText: String): ResponseSearch {
+    private suspend fun querySearch(queryText: String): ResponseSearch {
         return SearcherSingleIndex(index, Query(query = queryText)).search()
     }
 
-    suspend fun algoliaSearch(): List<Hit> {
+    suspend fun search(): List<Hit> {
         var finalList = emptyList<Hit>()
         withContext(Dispatchers.IO) {
             val speechTextSearchResponse = async {
-                indexSearch(speechText)
+                querySearch(speechText)
             }
             val translatedTextSearchResponse = async {
-                indexSearch(translatedText)
+                querySearch(translatedText)
             }
             finalList = parseSearchResponse(speechTextSearchResponse.await(), translatedTextSearchResponse.await())
         }

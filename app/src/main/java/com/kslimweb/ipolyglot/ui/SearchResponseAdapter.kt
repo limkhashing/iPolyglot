@@ -23,7 +23,6 @@ class SearchResponseAdapter(private val hits: List<Hit>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.chapterNumber.text = hits[position].objectID.toString()
-
         searchResultTextViewHelper.setChapterText(holder, position)
         searchResultTextViewHelper.setSnippetText(holder, position)
         searchResultTextViewHelper.setReference(holder, position)

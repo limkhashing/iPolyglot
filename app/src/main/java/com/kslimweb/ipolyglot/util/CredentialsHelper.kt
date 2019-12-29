@@ -16,6 +16,7 @@ import io.ktor.client.features.logging.LogLevel
 class CredentialsHelper(private val context: Context) {
 
     fun initGoogleTranslateClient(): Translate {
+        // TODO change your own credential
         context.resources.openRawResource(R.raw.credential_dev).use { `is` ->
             val myCredentials = GoogleCredentials.fromStream(`is`)
             val translateOptions =
