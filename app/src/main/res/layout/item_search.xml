@@ -35,13 +35,27 @@
         tools:text="Chapter English: " />
 
     <TextView
+        android:id="@+id/txt_snippet_ara"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_small"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        tools:text="Arabic Contents: " />
+
+    <TextView
+        android:id="@+id/txt_snippet_eng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_small"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        tools:text="English Contents: " />
+
+    <TextView
         android:id="@+id/txt_reference"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:visibility="gone"
-        tools:visibility="visible"
         tools:text="Reference: " />
 
     <TextView
@@ -50,12 +64,10 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:visibility="gone"
-        tools:visibility="visible"
         tools:text="In-book Reference: " />
 
     <TextView
-        android:id="@+id/txt_snippet_result"
+        android:id="@+id/txt_highlight_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"

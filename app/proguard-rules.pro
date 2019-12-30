@@ -21,3 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.google.api.** { *; }
+-keep class com.algolia.search.model.** { *; }

@@ -6,15 +6,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
-import android.util.Log
-import com.algolia.search.saas.Client
+import com.algolia.search.client.Index
 import com.google.cloud.translate.Translate
-import com.kslimweb.ipolyglot.ALGOLIA_INDEX_NAME
 import com.kslimweb.ipolyglot.MainActivity.Companion.isSpeaking
 import com.kslimweb.ipolyglot.MainActivity.Companion.translateLanguageCode
 import com.kslimweb.ipolyglot.TRANSLATE_MODEL
 import com.kslimweb.ipolyglot.model.hit.Hit
-import com.kslimweb.ipolyglot.network.algolia.Algolia
+import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -34,9 +32,8 @@ class VoiceRecognizer(
     private val mSpeechRecognizer: SpeechRecognizer,
     private val intent: Intent,
     private val activity: Activity,
-    private val signal: VoiceRecognizerInterface,
     private val googleTranslateClient: Translate,
-    private val algoliaClient: Client
+    private val index: Index
 ) : RecognitionListener {
 
     private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
@@ -64,23 +61,16 @@ class VoiceRecognizer(
             val spokenTexts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             spokenTexts?.let {
                 val speechText = it[0]
-                signal.spokenText(speechText)
                 CoroutineScope(Dispatchers.IO).launch {
                     val translatedText = GoogleTranslate(googleTranslateClient).translateText(speechText, translateLanguageCode, TRANSLATE_MODEL)
-                    val finalList = Algolia().algoliaSearch(speechText, translatedText, algoliaClient.getIndex(
-                        ALGOLIA_INDEX_NAME
-                    ))
-                   setAdapter(speechText, translatedText, finalList)
+                    val finalList = Searcher(speechText, translatedText, index).search()
+                    setAdapter(speechText, translatedText, finalList)
                 }
             }
         }
 
-        // TODO play around advanced syntax, deduplication
-        //  fix when changing input speech language during speaking
         mSpeechRecognizer.stopListening()
-        Handler().postDelayed({
-            mSpeechRecognizer.startListening(intent)
-        }, 2000)
+        Handler().postDelayed({ mSpeechRecognizer.startListening(intent) }, 3000)
     }
 
     private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<Hit>) {
