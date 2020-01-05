@@ -12,8 +12,7 @@ import kotlinx.coroutines.withContext
 
 class Searcher(private val speechText: String,
                private val translatedText: String,
-               private val index: Index
-) {
+               private val index: Index) {
 
     private suspend fun querySearch(queryText: String): ResponseSearch {
         return SearcherSingleIndex(index, Query(query = queryText)).search()

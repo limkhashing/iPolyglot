@@ -11,18 +11,18 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.algolia.search.client.Index
-import com.algolia.search.model.IndexName
 import com.google.cloud.translate.Translate
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
-import com.kslimweb.ipolyglot.util.CredentialsHelper
+import com.kslimweb.ipolyglot.util.AppConstants.REQUEST_AUDIO_PERMISSION
+import com.kslimweb.ipolyglot.util.AppConstants.listeningStatus
+import com.kslimweb.ipolyglot.util.AppConstants.notListeningStatus
+import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStart
+import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStop
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_input_speech.*
 import kotlinx.android.synthetic.main.layout_select_translate.*
 import java.util.*
-
-const val REQUEST_AUDIO_PERMISSION = 200
-const val ALGOLIA_INDEX_NAME = "hadith"
-const val TRANSLATE_MODEL = "base"
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,8 +33,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
-    private lateinit var index: Index
-    private lateinit var googleTranslateService: Translate
+
+    @Inject
+    lateinit var googleTranslateClient: Translate
+
+    @Inject
+    lateinit var index: Index
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_AUDIO_PERMISSION)
 
         initSpinnerItem()
-        initAlgoliaAndGoogleTranslate()
 
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
 
@@ -60,6 +63,11 @@ class MainActivity : AppCompatActivity() {
         spinner_translate_language.setOnItemSelectedListener { view, position, id, item ->
             translateLanguageCode = getLanguageCode(position)
         }
+
+        val component = (application as BaseApplication).getAppComponent()
+            .getActivityComponentFactory()
+            .create()
+        component.inject(this)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -80,12 +88,6 @@ class MainActivity : AppCompatActivity() {
         )
         spinner_speech_language.setAdapter(adapter)
         spinner_translate_language.setAdapter(adapter)
-    }
-
-    private fun initAlgoliaAndGoogleTranslate() {
-        googleTranslateService = CredentialsHelper(applicationContext).initGoogleTranslateClient()
-        index = CredentialsHelper(applicationContext).initAlgoliaClient()
-            .initIndex(IndexName(ALGOLIA_INDEX_NAME))
     }
 
     private fun showPermissionMessageDialog() {
@@ -113,14 +115,14 @@ class MainActivity : AppCompatActivity() {
     fun inputSpeech(view: View) {
         if (!isSpeaking) {
             setSpeechRecognizerListener()
-            speech_to_text_button.text = "Stop Speech to Text"
-            listening_status.text = "Listening..."
+            speech_to_text_button.text = speechToTextButtonTextStop
+            listening_status.text = listeningStatus
             mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
             isSpeaking = true
             spinner_speech_language.isEnabled = false
         } else {
-            speech_to_text_button.text = "Start Speech to Text"
-            listening_status.text = "Not Listening..."
+            speech_to_text_button.text = speechToTextButtonTextStart
+            listening_status.text = notListeningStatus
             mSpeechRecognizer.stopListening()
             isSpeaking = false
             spinner_speech_language.isEnabled = true
@@ -131,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
             getSpeechRecognizeIntent(),
             this@MainActivity,
-            googleTranslateService,
+            googleTranslateClient,
             index))
     }
 
