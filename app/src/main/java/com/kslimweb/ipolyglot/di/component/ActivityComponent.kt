@@ -9,7 +9,7 @@ import dagger.Subcomponent
 @Subcomponent
 interface ActivityComponent {
 
-    fun inject(mainActivity: MainActivity)
+    fun injectActivity(mainActivity: MainActivity)
 
     @Subcomponent.Factory
     interface Factory {

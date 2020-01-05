@@ -12,6 +12,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.algolia.search.client.Index
 import com.google.cloud.translate.Translate
+import com.kslimweb.ipolyglot.network.algolia.Searcher
+import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
 import com.kslimweb.ipolyglot.util.AppConstants.REQUEST_AUDIO_PERMISSION
 import com.kslimweb.ipolyglot.util.AppConstants.listeningStatus
@@ -27,18 +29,15 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        lateinit var speechLanguageCode: String
         lateinit var translateLanguageCode: String
         var isSpeaking = false
     }
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
+    private lateinit var speechLanguageCode: String
 
-    @Inject
-    lateinit var googleTranslateClient: Translate
-
-    @Inject
-    lateinit var index: Index
+    @Inject lateinit var googleTranslate: GoogleTranslate
+    @Inject lateinit var searcher: Searcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +48,6 @@ class MainActivity : AppCompatActivity() {
         initSpinnerItem()
 
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
-
         speechLanguageCode = getLanguageCode()
         translateLanguageCode = getLanguageCode()
 
@@ -67,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         val component = (application as BaseApplication).getAppComponent()
             .getActivityComponentFactory()
             .create()
-        component.inject(this)
+        component.injectActivity(this)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -120,6 +118,7 @@ class MainActivity : AppCompatActivity() {
             mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
             isSpeaking = true
             spinner_speech_language.isEnabled = false
+            spinner_translate_language.isEnabled = false
         } else {
             speech_to_text_button.text = speechToTextButtonTextStart
             listening_status.text = notListeningStatus
@@ -133,8 +132,8 @@ class MainActivity : AppCompatActivity() {
         mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
             getSpeechRecognizeIntent(),
             this@MainActivity,
-            googleTranslateClient,
-            index))
+            googleTranslate,
+            searcher))
     }
 
     override fun onStop() {

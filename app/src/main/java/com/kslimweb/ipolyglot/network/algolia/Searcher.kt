@@ -9,16 +9,15 @@ import com.kslimweb.ipolyglot.model.hit.Hit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class Searcher(private val speechText: String,
-               private val translatedText: String,
-               private val index: Index) {
+class Searcher @Inject constructor(private val index: Index) {
 
     private suspend fun querySearch(queryText: String): ResponseSearch {
         return SearcherSingleIndex(index, Query(query = queryText)).search()
     }
 
-    suspend fun search(): List<Hit> {
+    suspend fun search(speechText: String, translatedText: String): List<Hit> {
         var finalList = emptyList<Hit>()
         withContext(Dispatchers.IO) {
             val speechTextSearchResponse = async {
