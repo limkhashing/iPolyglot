@@ -3,12 +3,8 @@ package com.kslimweb.ipolyglot.speechservices
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
-import android.util.Log
-import com.algolia.search.client.Index
-import com.google.cloud.translate.Translate
 import com.kslimweb.ipolyglot.MainActivity.Companion.isSpeaking
 import com.kslimweb.ipolyglot.MainActivity.Companion.translateLanguageCode
 import com.kslimweb.ipolyglot.model.hit.Hit
@@ -16,11 +12,11 @@ import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
 import com.kslimweb.ipolyglot.util.AppConstants.TRANSLATE_MODEL
-import com.kslimweb.ipolyglot.util.AppConstants.listeningStatus
 import com.kslimweb.ipolyglot.util.AppConstants.notListeningStatus
 import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStart
-import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStop
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_input_speech.*
+import kotlinx.android.synthetic.main.layout_select_translate.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,14 +26,13 @@ class VoiceRecognizer(
     private val mSpeechRecognizer: SpeechRecognizer,
     private val intent: Intent,
     private val activity: Activity,
-    private val googleTranslateClient: Translate,
-    private val index: Index
+    private val googleTranslate: GoogleTranslate,
+    private val searcher: Searcher
 ) : RecognitionListener {
-
 
     private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
 
-    override fun onReadyForSpeech(params: Bundle?) { setMainUI(speechToTextButtonTextStop, listeningStatus, true) }
+    override fun onReadyForSpeech(params: Bundle?) { }
 
     override fun onRmsChanged(rmsdB: Float) { }
 
@@ -64,8 +59,8 @@ class VoiceRecognizer(
             spokenTexts?.let {
                 val speechText = it[0]
                 CoroutineScope(Dispatchers.IO).launch {
-                    val translatedText = GoogleTranslate(googleTranslateClient).translateText(speechText, translateLanguageCode, TRANSLATE_MODEL)
-                    val finalList = Searcher(speechText, translatedText, index).search()
+                    val translatedText = googleTranslate.translateText(speechText, translateLanguageCode, TRANSLATE_MODEL)
+                    val finalList = searcher.search(speechText, translatedText)
                     setAdapter(speechText, translatedText, finalList)
                 }
             }
@@ -91,5 +86,7 @@ class VoiceRecognizer(
         activity.speech_to_text_button.text = speechToTextButtonText
         activity.listening_status.text =  listeningStatus
         isSpeaking = speak
+        activity.spinner_speech_language.isEnabled = true
+        activity.spinner_translate_language.isEnabled = true
     }
 }

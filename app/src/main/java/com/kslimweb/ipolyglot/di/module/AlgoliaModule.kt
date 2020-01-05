@@ -18,7 +18,7 @@ object AlgoliaModule {
 
     @Provides
     @JvmStatic
-    fun provideAlgoliaClientIndexSearch(): Index = ClientSearch(
+    fun provideIndexSearchClient(): Index = ClientSearch(
         ConfigurationSearch (
             ApplicationID(BuildConfig.AlgoliaAppID),
             APIKey(BuildConfig.AlgoliaSearchKey),
