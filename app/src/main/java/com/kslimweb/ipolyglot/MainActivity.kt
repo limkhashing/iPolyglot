@@ -10,8 +10,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.algolia.search.client.Index
-import com.google.cloud.translate.Translate
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
@@ -45,27 +43,27 @@ class MainActivity : AppCompatActivity() {
 
         requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_AUDIO_PERMISSION)
 
-        initSpinnerItem()
-
-        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
-        speechLanguageCode = getLanguageCode()
-        translateLanguageCode = getLanguageCode()
-
-        spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
-            speechLanguageCode = getLanguageCode(position)
-            if (isSpeaking) {
-                setSpeechRecognizerListener()
-                mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
-            }
-        }
-        spinner_translate_language.setOnItemSelectedListener { view, position, id, item ->
-            translateLanguageCode = getLanguageCode(position)
-        }
-
         val component = (application as BaseApplication).getAppComponent()
             .getActivityComponentFactory()
             .create()
         component.injectActivity(this)
+
+        initSpinnerItem()
+        speechLanguageCode = getLanguageCode()
+        translateLanguageCode = getLanguageCode()
+
+        initSpeechRecognizerListener()
+
+        spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
+            speechLanguageCode = getLanguageCode(position)
+//            if (isSpeaking) {
+//                setSpeechRecognizerListener()
+//                mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
+//            }
+        }
+        spinner_translate_language.setOnItemSelectedListener { view, position, id, item ->
+            translateLanguageCode = getLanguageCode(position)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -103,6 +101,23 @@ class MainActivity : AppCompatActivity() {
         //Customize language by passing language code
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, speechLanguageCode)
+        if (speechLanguageCode == "ar") {
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-IL")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-JO")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-AE")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-BH")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-DZ")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-SA")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-IQ")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-KW")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-MA")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-TN")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-OM")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-PS")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-QA")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-LB")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-EG")
+        }
 
         //To receive partial results on the callback
         intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS,true)
@@ -112,25 +127,27 @@ class MainActivity : AppCompatActivity() {
 
     fun inputSpeech(view: View) {
         if (!isSpeaking) {
-            setSpeechRecognizerListener()
+//            setSpeechRecognizerListener()
+            mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
             speech_to_text_button.text = speechToTextButtonTextStop
             listening_status.text = listeningStatus
-            mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
             isSpeaking = true
             spinner_speech_language.isEnabled = false
             spinner_translate_language.isEnabled = false
         } else {
+            mSpeechRecognizer.cancel()
             speech_to_text_button.text = speechToTextButtonTextStart
             listening_status.text = notListeningStatus
-            mSpeechRecognizer.stopListening()
             isSpeaking = false
             spinner_speech_language.isEnabled = true
+            spinner_translate_language.isEnabled = true
         }
     }
 
-    private fun setSpeechRecognizerListener() {
+    private fun initSpeechRecognizerListener() {
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
         mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
-            getSpeechRecognizeIntent(),
+//            getSpeechRecognizeIntent(),
             this@MainActivity,
             googleTranslate,
             searcher))
@@ -138,9 +155,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        mSpeechRecognizer.cancel()
         mSpeechRecognizer.stopListening()
+        mSpeechRecognizer.cancel()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         mSpeechRecognizer.destroy()
