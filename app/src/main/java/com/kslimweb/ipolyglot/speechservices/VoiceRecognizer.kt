@@ -1,7 +1,6 @@
 package com.kslimweb.ipolyglot.speechservices
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
@@ -11,7 +10,6 @@ import com.kslimweb.ipolyglot.model.hit.Hit
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
-import com.kslimweb.ipolyglot.util.AppConstants.TRANSLATE_MODEL
 import com.kslimweb.ipolyglot.util.AppConstants.notListeningStatus
 import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStart
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,7 +22,7 @@ import kotlinx.coroutines.withContext
 
 class VoiceRecognizer(
     private val mSpeechRecognizer: SpeechRecognizer,
-    private val intent: Intent,
+//    private val intent: Intent,
     private val activity: Activity,
     private val googleTranslate: GoogleTranslate,
     private val searcher: Searcher
@@ -47,6 +45,7 @@ class VoiceRecognizer(
     override fun onEndOfSpeech() { }
 
     override fun onError(error: Int) {
+        mSpeechRecognizer.cancel()
         setMainUI(speechToTextButtonTextStart, notListeningStatus, false)
     }
 
@@ -59,9 +58,9 @@ class VoiceRecognizer(
             spokenTexts?.let {
                 val speechText = it[0]
                 CoroutineScope(Dispatchers.IO).launch {
-                    val translatedText = googleTranslate.translateText(speechText, translateLanguageCode, TRANSLATE_MODEL)
-                    val finalList = searcher.search(speechText, translatedText)
-                    setAdapter(speechText, translatedText, finalList)
+                    val translatedText = googleTranslate.translateText(speechText, translateLanguageCode)
+                    val searchHits = searcher.search(speechText, translatedText)
+                    setAdapter(speechText, translatedText, searchHits)
                 }
             }
         }

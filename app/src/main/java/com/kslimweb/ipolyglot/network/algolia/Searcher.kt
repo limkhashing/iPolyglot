@@ -18,7 +18,7 @@ class Searcher @Inject constructor(private val index: Index) {
     }
 
     suspend fun search(speechText: String, translatedText: String): List<Hit> {
-        var finalList = emptyList<Hit>()
+        var searchHits = emptyList<Hit>()
         withContext(Dispatchers.IO) {
             val speechTextSearchResponse = async {
                 querySearch(speechText)
@@ -26,9 +26,9 @@ class Searcher @Inject constructor(private val index: Index) {
             val translatedTextSearchResponse = async {
                 querySearch(translatedText)
             }
-            finalList = parseSearchResponse(speechTextSearchResponse.await(), translatedTextSearchResponse.await())
+            searchHits = parseSearchResponse(speechTextSearchResponse.await(), translatedTextSearchResponse.await())
         }
-        return finalList
+        return searchHits
     }
 
     private fun parseSearchResponse(speechTextSearchResponse: ResponseSearch, translatedTextSearchResponse: ResponseSearch): List<Hit> {

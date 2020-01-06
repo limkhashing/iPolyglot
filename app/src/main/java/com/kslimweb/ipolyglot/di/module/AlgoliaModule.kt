@@ -18,6 +18,7 @@ object AlgoliaModule {
 
     @Provides
     @JvmStatic
+    @Singleton
     fun provideIndexSearchClient(): Index = ClientSearch(
         ConfigurationSearch (
             ApplicationID(BuildConfig.AlgoliaAppID),
