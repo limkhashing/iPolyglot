@@ -6,7 +6,6 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import android.util.Log
 import android.widget.TextView
 import com.google.gson.Gson
 import com.kslimweb.ipolyglot.model.hit.*
@@ -32,13 +31,17 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
 
     fun setSnippetText(holder: SearchResponseAdapter.ViewHolder, position: Int) {
         val snippetResult = Gson().fromJson(hits[position]._snippetResult.toString(), SnippetResult::class.java)
-        setSnippetContentsAra(holder, snippetResult.contentsAra)
-        setSnippetContentsEng(holder, snippetResult.contentsEng)
+        if (!snippetResult.contentsAra.isNullOrEmpty())
+            setSnippetContentsAra(holder, snippetResult.contentsAra)
+        if (!snippetResult.contentsEng.isNullOrEmpty())
+            setSnippetContentsEng(holder, snippetResult.contentsEng)
     }
 
     private fun setSnippetContentsAra(holder: SearchResponseAdapter.ViewHolder, contentsAra: List<ContentAra>) {
+        holder.snippetsAra.typeface = Typeface.DEFAULT
         val sb = StringBuilder()
         contentsAra.forEachIndexed { index, it ->
+            // TODO need to see whether had to check on matchLevel
             if (it.matchLevel != "none") {
                 if (index != contentsAra.lastIndex)
                     sb.append((index+1).toString() + ". " +
@@ -58,8 +61,10 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
     }
 
     private fun setSnippetContentsEng(holder: SearchResponseAdapter.ViewHolder, contentsEng: List<ContentEng>) {
+        holder.snippetsEng.typeface = Typeface.DEFAULT
         val sb = StringBuilder()
         contentsEng.forEachIndexed { index, it ->
+            // TODO need to see whether had to check on matchLevel
             if (it.matchLevel != "none") {
                 if (index != contentsEng.lastIndex)
                     sb.append((index+1).toString() + ". " +
@@ -123,9 +128,13 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
             StyleSpan(Typeface.BOLD))
         val highlightResult = Gson().fromJson(hits[position]._highlightResult.toString(), HighlightResult::class.java)
         setHighlightChapterAra(position, holder, highlightResult.chapterAra)
-        setHighlightContentsAra(position, holder, highlightResult.contentsAra)
         setHighlightChapterEng(position, holder, highlightResult.chapterEng)
-        setHighlightContentsEng(position, holder, highlightResult.contentsEng)
+
+        if (!highlightResult.contentsAra.isNullOrEmpty())
+            setHighlightContentsAra(position, holder, highlightResult.contentsAra)
+        if (!highlightResult.contentsEng.isNullOrEmpty())
+            setHighlightContentsEng(position, holder, highlightResult.contentsEng)
+
         highlightNumbering = 0 // reset numbering
     }
 
@@ -163,7 +172,7 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
                 var isHighlighted = false
                 holder.highlightResults.append(highlightNumbering.toString() + ". ")
                 hits[position].highlightedContentsAra?.get(index)?.tokens?.forEachIndexed token@{ tokenIndex, it ->
-                    if (tokenIndex > 4 && isHighlighted)
+                    if (tokenIndex > 1 && isHighlighted)
                         return@token
 
                     if (it.highlighted) {
@@ -218,7 +227,7 @@ class SearchResultTextViewHelper(private val hits: List<Hit>) {
                 var isHighlighted = false
                 holder.highlightResults.append(highlightNumbering.toString() + ". ")
                 hits[position].highlightedContentsEng?.get(index)?.tokens?.forEachIndexed token@{ tokenIndex, it ->
-                    if (tokenIndex > 4 && isHighlighted)
+                    if (tokenIndex > 1 && isHighlighted)
                         return@token
 
                     if (it.highlighted) {
