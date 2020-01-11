@@ -9,7 +9,7 @@ data class HighlightResult (
     @SerializedName("chapter_eng")
     val chapterEng: ChapterEng,
     @SerializedName("content_ara")
-    val contentsAra: List<ContentAra>,
+    val contentsAra: List<ContentAra>?,
     @SerializedName("content_eng")
-    val contentsEng: List<ContentEng>
+    val contentsEng: List<ContentEng>?
 )
