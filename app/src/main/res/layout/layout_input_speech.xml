@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Input Speech Language"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:textStyle="bold" />
+    <data>
+        <variable
+            name="viewModel"
+            type="com.kslimweb.ipolyglot.MainViewModel" />
+    </data>
 
-    <com.jaredrummler.materialspinner.MaterialSpinner
-        android:id="@+id/spinner_speech_language"
+    <LinearLayout
+        android:padding="16dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_marginTop="6dp"
-        app:ms_background_color="#f2f2f2"
-        app:ms_dropdown_height="200dp" />
+        android:layout_height="wrap_content">
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Input Speech Language"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/spinner_speech_language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginTop="6dp"
+            android:enabled="@{viewModel.isSpeaking}"
+            app:ms_background_color="#f2f2f2"
+            app:ms_dropdown_height="200dp" />
+    </LinearLayout>
+
+</layout>
