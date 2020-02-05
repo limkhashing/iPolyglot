@@ -4,17 +4,12 @@ import android.app.Activity
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
-import com.kslimweb.ipolyglot.MainActivity.Companion.isSpeaking
-import com.kslimweb.ipolyglot.MainActivity.Companion.translateLanguageCode
+import com.kslimweb.ipolyglot.MainViewModel
 import com.kslimweb.ipolyglot.model.hit.Hit
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
-import com.kslimweb.ipolyglot.util.AppConstants.notListeningStatus
-import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStart
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.layout_input_speech.*
-import kotlinx.android.synthetic.main.layout_select_translate.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +20,8 @@ class VoiceRecognizer(
 //    private val intent: Intent,
     private val activity: Activity,
     private val googleTranslate: GoogleTranslate,
-    private val searcher: Searcher
+    private val searcher: Searcher,
+    private val viewModel: MainViewModel
 ) : RecognitionListener {
 
     private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
@@ -46,7 +42,7 @@ class VoiceRecognizer(
 
     override fun onError(error: Int) {
         mSpeechRecognizer.cancel()
-        setMainUI(speechToTextButtonTextStart, notListeningStatus, false)
+        viewModel.setMainUI()
     }
 
     override fun onResults(results: Bundle?) {
@@ -58,7 +54,7 @@ class VoiceRecognizer(
             spokenTexts?.let {
                 val speechText = it[0]
                 CoroutineScope(Dispatchers.IO).launch {
-                    val translatedText = googleTranslate.translateText(speechText, translateLanguageCode)
+                    val translatedText = googleTranslate.translateText(speechText, viewModel.translateLanguageCode)
                     val searchHits = searcher.search(speechText, translatedText)
                     setAdapter(speechText, translatedText, searchHits)
                 }
@@ -67,7 +63,7 @@ class VoiceRecognizer(
 
         mSpeechRecognizer.stopListening()
 //        Handler().postDelayed({ mSpeechRecognizeening(intent) }, 3000)
-        setMainUI(speechToTextButtonTextStart, notListeningStatus, false)
+        viewModel.setMainUI()
     }
 
     private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<Hit>) {
@@ -79,13 +75,5 @@ class VoiceRecognizer(
                 speechTranslateAdapter.setResult(speechText, translatedText, finalList)
             }
         }
-    }
-
-    private fun setMainUI(speechToTextButtonText: String, listeningStatus: String, speak: Boolean) {
-        activity.speech_to_text_button.text = speechToTextButtonText
-        activity.listening_status.text =  listeningStatus
-        isSpeaking = speak
-        activity.spinner_speech_language.isEnabled = true
-        activity.spinner_translate_language.isEnabled = true
     }
 }
