@@ -44,6 +44,7 @@ class MainViewModel(private val context: Context, private val mSpeechRecognizer:
 
     fun onInputSpeechClicked() {
         if (isSpeaking.get()) {
+
             isSpeaking.set(false)
             mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
             textButtonSpeechToText.set(speechToTextButtonTextStop)
