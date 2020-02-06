@@ -22,6 +22,11 @@
         <include layout="@layout/layout_select_translate"
             bind:viewModel="@{viewModel}"/>
 
+        <com.dnkilic.waveform.WaveView
+            android:id="@+id/waveview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/speech_to_text_button"
             style="@style/Widget.AppCompat.Button.Colored"
