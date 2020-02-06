@@ -22,6 +22,15 @@
         <include layout="@layout/layout_select_translate"
             bind:viewModel="@{viewModel}"/>
 
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="101dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:onClick="@{() -> viewModel.onInputSpeechClicked()}"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_google_mic" />
+
         <com.dnkilic.waveform.WaveView
             android:id="@+id/waveview"
             android:layout_width="wrap_content"
