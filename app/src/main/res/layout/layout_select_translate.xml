@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:layout_marginTop="6dp"
-            android:enabled="@{viewModel.isSpeaking}"
+            android:enabled="@{!viewModel.isSpeaking}"
             app:ms_background_color="#f2f2f2"
             app:ms_dropdown_height="200dp" />
     </LinearLayout>

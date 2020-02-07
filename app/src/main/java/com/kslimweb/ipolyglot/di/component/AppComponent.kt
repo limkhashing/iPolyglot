@@ -1,12 +1,13 @@
 package com.kslimweb.ipolyglot.di.component
 
 import com.kslimweb.ipolyglot.di.module.AlgoliaModule
+import com.kslimweb.ipolyglot.di.module.MediaActionSoundModule
 import com.kslimweb.ipolyglot.di.module.TranslateModule
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [TranslateModule::class, AlgoliaModule::class])
+@Component(modules = [TranslateModule::class, AlgoliaModule::class, MediaActionSoundModule::class])
 interface AppComponent {
 
     fun getActivityComponentFactory() : ActivityComponent.Factory
@@ -15,6 +16,7 @@ interface AppComponent {
     interface Factory {
         // if you have other dependencies, put as arguments in methods
         fun create(translateModule: TranslateModule,
-                   algoliaModule: AlgoliaModule): AppComponent
+                   algoliaModule: AlgoliaModule,
+                   mediaActionSoundModule: MediaActionSoundModule): AppComponent
     }
 }

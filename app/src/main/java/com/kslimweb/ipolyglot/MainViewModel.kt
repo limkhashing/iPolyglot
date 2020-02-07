@@ -2,6 +2,7 @@ package com.kslimweb.ipolyglot
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaActionSound
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import androidx.databinding.ObservableBoolean
@@ -15,45 +16,49 @@ import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStop
 import java.util.*
 
 
-class MainViewModel(private val context: Context, private val mSpeechRecognizer: SpeechRecognizer) :
+class MainViewModel(private val context: Context, private val mSpeechRecognizer: SpeechRecognizer, private val mediaActionSound: MediaActionSound) :
     ViewModelProvider.Factory, ViewModel() {
 
-    val isSpeaking = ObservableBoolean(true)
-    val textButtonSpeechToText = ObservableField<String>(speechToTextButtonTextStart)
-    val textListeningStatus = ObservableField<String>(notListeningStatus)
+    val isSpeaking = ObservableBoolean(false)
+//    val textButtonSpeechToText = ObservableField<String>(speechToTextButtonTextStart)
+//    val textListeningStatus = ObservableField<String>(notListeningStatus)
     var speechLanguageCode = getLanguageCode()
     var translateLanguageCode = getLanguageCode()
 
+    // For ViewModel to accept constructor from ViewModelProvider
+    // https://stackoverflow.com/questions/46283981/android-viewmodel-additional-arguments
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             // Or better use here if it doesn't provides error @SuppressWarnings("unchecked")
             return MainViewModel(
                 context,
-                mSpeechRecognizer
+                mSpeechRecognizer,
+                mediaActionSound
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 
-    fun setMainUI() {
-        textButtonSpeechToText.set(speechToTextButtonTextStart)
-        textListeningStatus.set(notListeningStatus)
-        isSpeaking.set(true)
+    fun onVoiceFinished(error: Boolean = false) {
+//        textButtonSpeechToText.set(speechToTextButtonTextStart)
+//        textListeningStatus.set(notListeningStatus)
+        if (error)
+            mediaActionSound.play(MediaActionSound.STOP_VIDEO_RECORDING)
+        isSpeaking.set(!isSpeaking.get())
     }
 
     fun onInputSpeechClicked() {
-        if (isSpeaking.get()) {
+        isSpeaking.set(!isSpeaking.get()) // flip the boolean isSpeaking
 
-            isSpeaking.set(false)
-            mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
-            textButtonSpeechToText.set(speechToTextButtonTextStop)
-            textListeningStatus.set(listeningStatus)
-        } else {
-            isSpeaking.set(true)
+        if (!isSpeaking.get()) {
             mSpeechRecognizer.cancel()
-            textButtonSpeechToText.set(speechToTextButtonTextStart)
-            textListeningStatus.set(notListeningStatus)
+//            textButtonSpeechToText.set(speechToTextButtonTextStart)
+//            textListeningStatus.set(notListeningStatus)
+        } else {
+            mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
+//            textButtonSpeechToText.set(speechToTextButtonTextStop)
+//            textListeningStatus.set(listeningStatus)
         }
     }
 

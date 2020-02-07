@@ -42,7 +42,7 @@ class VoiceRecognizer(
 
     override fun onError(error: Int) {
         mSpeechRecognizer.cancel()
-        viewModel.setMainUI()
+        viewModel.onVoiceFinished(true)
     }
 
     override fun onResults(results: Bundle?) {
@@ -63,7 +63,7 @@ class VoiceRecognizer(
 
         mSpeechRecognizer.stopListening()
 //        Handler().postDelayed({ mSpeechRecognizeening(intent) }, 3000)
-        viewModel.setMainUI()
+        viewModel.onVoiceFinished()
     }
 
     private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<Hit>) {
