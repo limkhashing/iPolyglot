@@ -2,6 +2,7 @@ package com.kslimweb.ipolyglot
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.media.MediaActionSound
 import android.os.Bundle
 import android.speech.SpeechRecognizer
 import android.widget.ArrayAdapter
@@ -18,10 +19,12 @@ import kotlinx.android.synthetic.main.layout_input_speech.*
 import kotlinx.android.synthetic.main.layout_select_translate.*
 import javax.inject.Inject
 
+
 class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var googleTranslate: GoogleTranslate
     @Inject lateinit var searcher: Searcher
+    @Inject lateinit var mediaActionSound: MediaActionSound
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
     private lateinit var mainViewModel: MainViewModel
@@ -64,7 +67,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindData() {
-        mainViewModel = ViewModelProvider(this, MainViewModel(this, mSpeechRecognizer))
+        mainViewModel = ViewModelProvider(this, MainViewModel(this, mSpeechRecognizer, mediaActionSound))
             .get(MainViewModel::class.java)
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
             .apply {
