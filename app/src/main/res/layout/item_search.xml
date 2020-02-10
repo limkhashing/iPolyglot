@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        tools:text="Search Result: " />
+        tools:text="Found in: " />
 
     <include layout="@layout/divider_vertical" />
 

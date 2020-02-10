@@ -30,7 +30,6 @@
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:onClick="@{() -> viewModel.onInputSpeechClicked()}"
-            android:backgroundTintMode="src_in"
             android:scaleType="fitXY"
             android:src="@{viewModel.isSpeaking ? @drawable/ic_google_mic_disable : @drawable/ic_google_mic}" />
 
@@ -60,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            tools:listitem="@layout/cardview_speech_translate"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:paddingTop="@dimen/spacing_small"
             android:paddingBottom="@dimen/spacing_small" />

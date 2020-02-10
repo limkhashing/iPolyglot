@@ -8,6 +8,7 @@ import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.IndexName
 import com.kslimweb.ipolyglot.BuildConfig
 import com.kslimweb.ipolyglot.util.AppConstants.ALGOLIA_INDEX_NAME
+import com.kslimweb.ipolyglot.util.AppConstants.AL_QURAN_INDEX_NAME
 import dagger.Module
 import dagger.Provides
 import io.ktor.client.features.logging.LogLevel
@@ -25,5 +26,5 @@ object AlgoliaModule {
             APIKey(BuildConfig.AlgoliaSearchKey),
             logLevel = LogLevel.ALL
         )
-    ).initIndex(IndexName(ALGOLIA_INDEX_NAME))
+    ).initIndex(IndexName(AL_QURAN_INDEX_NAME))
 }
