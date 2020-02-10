@@ -7,8 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_tiny"
-    android:layout_marginLeft="@dimen/spacing_medium"
-    android:layout_marginRight="@dimen/spacing_medium"
+    android:layout_marginLeft="@dimen/spacing_large"
+    android:layout_marginRight="@dimen/spacing_large"
     android:layout_marginTop="@dimen/spacing_tiny"
     android:theme="@style/ThemeOverlay.AppCompat.Light"
     app:cardCornerRadius="4dp"
@@ -20,17 +20,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/spacing_small"
-        android:paddingLeft="@dimen/spacing_medium"
-        android:paddingRight="@dimen/spacing_medium"
-        android:paddingTop="@dimen/spacing_small">
+        android:paddingBottom="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_large"
+        android:paddingTop="@dimen/spacing_normal">
 
         <TextView
             android:id="@+id/speech_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing_small"
-            android:paddingTop="@dimen/spacing_small"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_normal"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             tools:text="It is fine today."/>
 
@@ -40,8 +40,8 @@
             android:id="@+id/translate_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing_small"
-            android:paddingTop="@dimen/spacing_small"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_normal"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             tools:text="It is fine today."/>
 
@@ -49,7 +49,7 @@
             android:id="@+id/txt_label_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/spacing_small"
+            android:paddingTop="@dimen/spacing_normal"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:text="Appeared in: "
             tools:visibility="visible"
@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_search"
+            tools:listitem="@layout/item_search_alquran"
             android:visibility="gone"
             tools:visibility="visible">
         </androidx.recyclerview.widget.RecyclerView>

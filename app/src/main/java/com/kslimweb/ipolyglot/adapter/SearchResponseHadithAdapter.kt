@@ -1,4 +1,4 @@
-package com.kslimweb.ipolyglot.ui
+package com.kslimweb.ipolyglot.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,28 +6,28 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kslimweb.ipolyglot.R
 import com.kslimweb.ipolyglot.model.hadith.HitHadith
-import com.kslimweb.ipolyglot.util.SearchResultTextViewHelper
+import com.kslimweb.ipolyglot.util.AdapterTextViewHelperHadith
 
 
-class SearchResponseAdapter(private val hitHadiths: List<HitHadith>) : RecyclerView.Adapter<SearchResponseAdapter.ViewHolder>() {
+class SearchResponseHadithAdapter(private val hitsHadiths: List<HitHadith>) : RecyclerView.Adapter<SearchResponseHadithAdapter.ViewHolder>() {
 
-    private val searchResultTextViewHelper = SearchResultTextViewHelper(hitHadiths)
+    private val adapterTextViewHelperHadith = AdapterTextViewHelperHadith(hitsHadiths)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context), parent)
     }
 
     override fun getItemCount(): Int {
-        return hitHadiths.size
+        return hitsHadiths.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.chapterNumber.text = hitHadiths[position].objectID.toString()
-        searchResultTextViewHelper.setChapterText(holder, position)
-        searchResultTextViewHelper.setSnippetText(holder, position)
-        searchResultTextViewHelper.setReference(holder, position)
-        searchResultTextViewHelper.setInBookReference(holder, position)
-        searchResultTextViewHelper.setHighlightResultText(holder, position)
+        holder.chapterNumber.text = hitsHadiths[position].objectID.toString()
+        adapterTextViewHelperHadith.setChapterText(holder, position)
+        adapterTextViewHelperHadith.setSnippetText(holder, position)
+        adapterTextViewHelperHadith.setReference(holder, position)
+        adapterTextViewHelperHadith.setInBookReference(holder, position)
+        adapterTextViewHelperHadith.setHighlightResultText(holder, position)
     }
 
     class ViewHolder internal constructor(inflater: LayoutInflater, parent: ViewGroup) :
