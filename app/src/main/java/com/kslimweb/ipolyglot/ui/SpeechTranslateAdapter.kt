@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kslimweb.ipolyglot.R
-import com.kslimweb.ipolyglot.model.hit.Hit
+import com.kslimweb.ipolyglot.model.hadith.HitHadith
 
 class SpeechTranslateAdapter(private var speechResult: String,
                              private var translatedText: String,
-                             private var hits: List<Hit>)
+                             private var hitHadiths: List<HitHadith>)
     : RecyclerView.Adapter<SpeechTranslateAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
@@ -29,8 +29,8 @@ class SpeechTranslateAdapter(private var speechResult: String,
         holder.translateText.text = translatedText
         holder.searchAppearLabel.visibility = View.VISIBLE
         holder.searchAppearLabel.text = "Appeared in: "
-        if (hits.isNotEmpty()) {
-            holder.searchRecyclerView.adapter = SearchResponseAdapter(hits)
+        if (hitHadiths.isNotEmpty()) {
+            holder.searchRecyclerView.adapter = SearchResponseAdapter(hitHadiths)
             holder.searchRecyclerView.visibility = View.VISIBLE
         } else {
             holder.searchAppearLabel.append(" None")
@@ -38,10 +38,10 @@ class SpeechTranslateAdapter(private var speechResult: String,
         }
     }
 
-    fun setResult(speechResult: String, translateText: String, hits: List<Hit>) {
+    fun setResult(speechResult: String, translateText: String, hitHadiths: List<HitHadith>) {
         this.speechResult = speechResult
         this.translatedText = translateText
-        this.hits = hits
+        this.hitHadiths = hitHadiths
         notifyDataSetChanged()
     }
 

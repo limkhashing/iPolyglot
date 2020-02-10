@@ -1,4 +1,4 @@
-package com.kslimweb.ipolyglot.model.hit
+package com.kslimweb.ipolyglot.model.hadith
 
 data class ChapterEng(
     val matchLevel: String,

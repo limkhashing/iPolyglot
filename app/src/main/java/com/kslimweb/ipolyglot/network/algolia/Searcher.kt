@@ -1,11 +1,13 @@
 package com.kslimweb.ipolyglot.network.algolia
 
+import android.util.Log
 import com.algolia.instantsearch.helper.searcher.SearcherSingleIndex
 import com.algolia.search.client.Index
 import com.algolia.search.helper.deserialize
 import com.algolia.search.model.response.ResponseSearch
 import com.algolia.search.model.search.Query
-import com.kslimweb.ipolyglot.model.hit.Hit
+import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
+import com.kslimweb.ipolyglot.model.hadith.HitHadith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -17,8 +19,8 @@ class Searcher @Inject constructor(private val index: Index) {
         return SearcherSingleIndex(index, Query(query = queryText)).search()
     }
 
-    suspend fun search(speechText: String, translatedText: String): List<Hit> {
-        var searchHits = emptyList<Hit>()
+    suspend fun search(speechText: String, translatedText: String): List<HitHadith> {
+        var searchHits = emptyList<HitHadith>()
         withContext(Dispatchers.IO) {
             val speechTextSearchResponse = async {
                 querySearch(speechText)
@@ -31,14 +33,18 @@ class Searcher @Inject constructor(private val index: Index) {
         return searchHits
     }
 
-    private fun parseSearchResponse(speechTextSearchResponse: ResponseSearch, translatedTextSearchResponse: ResponseSearch): List<Hit> {
-        val speechTextSearchHits = speechTextSearchResponse.hits.deserialize(Hit.serializer())
-        val translatedTextSearchHits = translatedTextSearchResponse.hits.deserialize(Hit.serializer())
-        return combineSearchList(speechTextSearchHits, translatedTextSearchHits)
+    private fun parseSearchResponse(speechTextSearchResponse: ResponseSearch, translatedTextSearchResponse: ResponseSearch): List<HitHadith> {
+        Log.d("Searcher", speechTextSearchResponse.hits.size.toString())
+        Log.d("Searcher", speechTextSearchResponse.hits.toString())
+
+        val speechTextSearchHits = speechTextSearchResponse.hits.deserialize(HitAlQuran.serializer())
+//        val translatedTextSearchHits = translatedTextSearchResponse.hits.deserialize(HitAlQuran.serializer())
+//        return combineSearchList(speechTextSearchHits, translatedTextSearchHits)
+        return emptyList()
     }
 
-    private fun combineSearchList(speechSearchList: List<Hit>, translatedTextSearchList: List<Hit>): List<Hit> {
-        val combinedHits = mutableListOf<Hit>()
+    private fun combineSearchList(speechSearchList: List<HitHadith>, translatedTextSearchList: List<HitHadith>): List<HitHadith> {
+        val combinedHits = mutableListOf<HitHadith>()
         speechSearchList.forEach {
             if (!combinedHits.contains(it))
                 combinedHits.add(it)

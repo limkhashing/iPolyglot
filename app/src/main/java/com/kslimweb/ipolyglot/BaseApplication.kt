@@ -14,7 +14,9 @@ class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         component = DaggerAppComponent.factory()
-            .create(TranslateModule(applicationContext), AlgoliaModule, MediaActionSoundModule)
+            .create(TranslateModule(applicationContext),
+                AlgoliaModule,
+                MediaActionSoundModule)
     }
 
     fun getAppComponent(): AppComponent {

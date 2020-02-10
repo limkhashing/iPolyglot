@@ -1,4 +1,4 @@
-package com.kslimweb.ipolyglot.model.hit
+package com.kslimweb.ipolyglot.model.hadith
 
 
 import com.google.gson.annotations.SerializedName

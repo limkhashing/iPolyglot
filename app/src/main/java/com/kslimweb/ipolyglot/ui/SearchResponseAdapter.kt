@@ -5,24 +5,24 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kslimweb.ipolyglot.R
-import com.kslimweb.ipolyglot.model.hit.Hit
+import com.kslimweb.ipolyglot.model.hadith.HitHadith
 import com.kslimweb.ipolyglot.util.SearchResultTextViewHelper
 
 
-class SearchResponseAdapter(private val hits: List<Hit>) : RecyclerView.Adapter<SearchResponseAdapter.ViewHolder>() {
+class SearchResponseAdapter(private val hitHadiths: List<HitHadith>) : RecyclerView.Adapter<SearchResponseAdapter.ViewHolder>() {
 
-    private val searchResultTextViewHelper = SearchResultTextViewHelper(hits)
+    private val searchResultTextViewHelper = SearchResultTextViewHelper(hitHadiths)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context), parent)
     }
 
     override fun getItemCount(): Int {
-        return hits.size
+        return hitHadiths.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.chapterNumber.text = hits[position].objectID.toString()
+        holder.chapterNumber.text = hitHadiths[position].objectID.toString()
         searchResultTextViewHelper.setChapterText(holder, position)
         searchResultTextViewHelper.setSnippetText(holder, position)
         searchResultTextViewHelper.setReference(holder, position)
