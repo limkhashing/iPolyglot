@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
 import com.kslimweb.ipolyglot.MainViewModel
-import com.kslimweb.ipolyglot.model.hadith.HitHadith
+import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
-import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
+import com.kslimweb.ipolyglot.adapter.SpeechTranslateAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -65,13 +65,13 @@ class VoiceRecognizer(
         viewModel.onVoiceFinished()
     }
 
-    private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<HitHadith>) {
+    private suspend fun setAdapter(speechText: String, translatedText: String, searchHits: List<HitAlQuran>) {
         withContext(Dispatchers.Main) {
             if (!::speechTranslateAdapter.isInitialized) {
-                speechTranslateAdapter = SpeechTranslateAdapter(speechText, translatedText, finalList)
+                speechTranslateAdapter = SpeechTranslateAdapter(speechText, translatedText, hitsAlQuran = searchHits)
                 activity.rv_speech_translate_search.adapter = speechTranslateAdapter
             } else {
-                speechTranslateAdapter.setResult(speechText, translatedText, finalList)
+                speechTranslateAdapter.setResult(speechText, translatedText, hitsAlQuran = searchHits)
             }
         }
     }

@@ -6,6 +6,7 @@
 
     <!-- A light Holo shade of gray -->
     <color name="transparent">#00000000</color>
+    <color name="dark">#000</color>
     <color name="gray_light">#33999999</color>
     <color name="light_grey">#D3D3D3</color>
     <color name="dark_gray">#A9A9A9</color>
