@@ -1,12 +1,13 @@
 package com.kslimweb.ipolyglot
 
-import android.content.Context
+import android.app.Application
 import android.content.Intent
 import android.media.MediaActionSound
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kslimweb.ipolyglot.util.AppConstants.listeningStatus
@@ -16,8 +17,10 @@ import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStop
 import java.util.*
 
 
-class MainViewModel(private val context: Context, private val mSpeechRecognizer: SpeechRecognizer, private val mediaActionSound: MediaActionSound) :
-    ViewModelProvider.Factory, ViewModel() {
+class MainViewModel(application: Application, private val mSpeechRecognizer: SpeechRecognizer, private val mediaActionSound: MediaActionSound) :
+    ViewModelProvider.Factory, AndroidViewModel(application) {
+
+    private val context = application.applicationContext
 
     val isSpeaking = ObservableBoolean(false)
 //    val textButtonSpeechToText = ObservableField<String>(speechToTextButtonTextStart)
@@ -32,7 +35,7 @@ class MainViewModel(private val context: Context, private val mSpeechRecognizer:
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             // Or better use here if it doesn't provides error @SuppressWarnings("unchecked")
             return MainViewModel(
-                context,
+                context as Application,
                 mSpeechRecognizer,
                 mediaActionSound
             ) as T
@@ -52,7 +55,7 @@ class MainViewModel(private val context: Context, private val mSpeechRecognizer:
         isSpeaking.set(!isSpeaking.get()) // flip the boolean isSpeaking
 
         if (!isSpeaking.get()) {
-            mSpeechRecognizer.cancel()
+            mSpeechRecognizer.stopListening()
 //            textButtonSpeechToText.set(speechToTextButtonTextStart)
 //            textListeningStatus.set(notListeningStatus)
         } else {

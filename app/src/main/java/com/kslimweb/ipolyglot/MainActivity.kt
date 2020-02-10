@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindData() {
-        mainViewModel = ViewModelProvider(this, MainViewModel(this, mSpeechRecognizer, mediaActionSound))
+        mainViewModel = ViewModelProvider(this, MainViewModel(application, mSpeechRecognizer, mediaActionSound))
             .get(MainViewModel::class.java)
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
             .apply {

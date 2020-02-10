@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
 import com.kslimweb.ipolyglot.MainViewModel
-import com.kslimweb.ipolyglot.model.hit.Hit
+import com.kslimweb.ipolyglot.model.hadith.HitHadith
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.ui.SpeechTranslateAdapter
@@ -61,12 +61,11 @@ class VoiceRecognizer(
             }
         }
 
-        mSpeechRecognizer.stopListening()
 //        Handler().postDelayed({ mSpeechRecognizeening(intent) }, 3000)
         viewModel.onVoiceFinished()
     }
 
-    private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<Hit>) {
+    private suspend fun setAdapter(speechText: String, translatedText: String, finalList: List<HitHadith>) {
         withContext(Dispatchers.Main) {
             if (!::speechTranslateAdapter.isInitialized) {
                 speechTranslateAdapter = SpeechTranslateAdapter(speechText, translatedText, finalList)
