@@ -1,21 +1,19 @@
 package com.kslimweb.ipolyglot.util
 
 import android.graphics.Typeface
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import android.widget.TextView
 import com.google.gson.Gson
 import com.kslimweb.ipolyglot.model.hadith.*
-import com.kslimweb.ipolyglot.ui.SearchResponseAdapter
+import com.kslimweb.ipolyglot.adapter.SearchResponseHadithAdapter
+import com.kslimweb.ipolyglot.util.TextUtils.setTextWithSpan
 
-class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
+class AdapterTextViewHelperHadith(private val hitHadiths: List<HitHadith>) {
 
     private var highlightNumbering = 0
 
-    fun setChapterText(holder: SearchResponseAdapter.ViewHolder, position: Int) {
+    fun setChapterText(holder: SearchResponseHadithAdapter.ViewHolder, position: Int) {
         holder.chapterArabic.text = "Arabic Chapter: " + hitHadiths[position].chapterAraText
         setTextWithSpan(holder.chapterArabic,
             holder.chapterArabic.text.toString(),
@@ -29,7 +27,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
             StyleSpan(Typeface.BOLD))
     }
 
-    fun setSnippetText(holder: SearchResponseAdapter.ViewHolder, position: Int) {
+    fun setSnippetText(holder: SearchResponseHadithAdapter.ViewHolder, position: Int) {
         val snippetResult = Gson().fromJson(hitHadiths[position]._snippetResult.toString(), SnippetResult::class.java)
         if (!snippetResult.contentsAra.isNullOrEmpty())
             setSnippetContentsAra(holder, snippetResult.contentsAra)
@@ -37,7 +35,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
             setSnippetContentsEng(holder, snippetResult.contentsEng)
     }
 
-    private fun setSnippetContentsAra(holder: SearchResponseAdapter.ViewHolder, contentsAra: List<ContentAra>) {
+    private fun setSnippetContentsAra(holder: SearchResponseHadithAdapter.ViewHolder, contentsAra: List<ContentAra>) {
         holder.snippetsAra.typeface = Typeface.DEFAULT
         val sb = StringBuilder()
         contentsAra.forEachIndexed { index, it ->
@@ -59,7 +57,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
             StyleSpan(Typeface.BOLD))
     }
 
-    private fun setSnippetContentsEng(holder: SearchResponseAdapter.ViewHolder, contentsEng: List<ContentEng>) {
+    private fun setSnippetContentsEng(holder: SearchResponseHadithAdapter.ViewHolder, contentsEng: List<ContentEng>) {
         holder.snippetsEng.typeface = Typeface.DEFAULT
         val sb = StringBuilder()
         contentsEng.forEachIndexed { index, it ->
@@ -81,7 +79,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
             StyleSpan(Typeface.BOLD))
     }
 
-    fun setInBookReference(holder: SearchResponseAdapter.ViewHolder, position: Int) {
+    fun setInBookReference(holder: SearchResponseHadithAdapter.ViewHolder, position: Int) {
         val inBookReference = hitHadiths[position].inBookReference
         if (inBookReference != null) {
             val sb = StringBuilder()
@@ -99,7 +97,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
         }
     }
 
-    fun setReference(holder: SearchResponseAdapter.ViewHolder, position: Int) {
+    fun setReference(holder: SearchResponseHadithAdapter.ViewHolder, position: Int) {
         val reference = hitHadiths[position].reference
         if (reference != null) {
             val sb = StringBuilder()
@@ -117,8 +115,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
         }
     }
 
-    // TODO set for al quran only
-    fun setHighlightResultText(holder: SearchResponseAdapter.ViewHolder, position: Int) {
+    fun setHighlightResultText(holder: SearchResponseHadithAdapter.ViewHolder, position: Int) {
         holder.highlightResults.text = ""
         holder.highlightResults.text = "Found in: \n\t"
         setTextWithSpan(holder.highlightResults,
@@ -137,7 +134,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
         highlightNumbering = 0 // reset numbering
     }
 
-    private fun setHighlightChapterAra(position: Int, holder: SearchResponseAdapter.ViewHolder, chapterAra: ChapterAra) {
+    private fun setHighlightChapterAra(position: Int, holder: SearchResponseHadithAdapter.ViewHolder, chapterAra: ChapterAra) {
         if (chapterAra.matchLevel != "none")  {
             hitHadiths[position].highlightedChapterAra?.tokens?.let { tokens ->
                 highlightNumbering += 1
@@ -164,7 +161,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
         }
     }
 
-    private fun setHighlightContentsAra(position: Int, holder: SearchResponseAdapter.ViewHolder, contentsAra: List<ContentAra>) {
+    private fun setHighlightContentsAra(position: Int, holder: SearchResponseHadithAdapter.ViewHolder, contentsAra: List<ContentAra>) {
         contentsAra.forEachIndexed { index, content ->
             if (content.matchLevel != "none") {
                 highlightNumbering += 1
@@ -192,7 +189,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
         }
     }
 
-    private fun setHighlightChapterEng(position: Int, holder: SearchResponseAdapter.ViewHolder, chapterEng: ChapterEng) {
+    private fun setHighlightChapterEng(position: Int, holder: SearchResponseHadithAdapter.ViewHolder, chapterEng: ChapterEng) {
         if (chapterEng.matchLevel != "none") {
            hitHadiths[position].highlightedChapterEng?.tokens?.let { tokens ->
                highlightNumbering += 1
@@ -219,7 +216,7 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
        }
     }
 
-    private fun setHighlightContentsEng(position: Int, holder: SearchResponseAdapter.ViewHolder, contentsEng: List<ContentEng>) {
+    private fun setHighlightContentsEng(position: Int, holder: SearchResponseHadithAdapter.ViewHolder, contentsEng: List<ContentEng>) {
         contentsEng.forEachIndexed { index, content ->
             if (content.matchLevel != "none") {
                 highlightNumbering += 1
@@ -244,13 +241,5 @@ class SearchResultTextViewHelper(private val hitHadiths: List<HitHadith>) {
                 holder.highlightResults.append("...\n\t")
             }
         }
-    }
-
-    private fun setTextWithSpan(textView: TextView, text: String, spanText: String, style: StyleSpan?) {
-        val sb = SpannableStringBuilder(text)
-        val start = text.indexOf(spanText)
-        val end = start + spanText.length
-        sb.setSpan(style, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        textView.text = sb
     }
 }
