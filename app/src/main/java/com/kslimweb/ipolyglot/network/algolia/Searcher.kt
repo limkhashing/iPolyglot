@@ -42,7 +42,8 @@ class Searcher @Inject constructor(private val index: Index) {
         Log.d("Searcher", speechTextSearchHits.toString())
         val translatedTextSearchHits = translatedTextSearchResponse.hits.deserialize(HitAlQuran.serializer())
         Log.d("Searcher", translatedTextSearchHits.toString())
-        return combineSearchAlQuranList(speechTextSearchHits, translatedTextSearchHits)
+        return speechTextSearchHits
+//        return combineSearchAlQuranList(speechTextSearchHits, translatedTextSearchHits)
 //        return emptyList()
     }
 

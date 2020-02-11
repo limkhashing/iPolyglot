@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_normal"
-    android:paddingLeft="@dimen/spacing_large"
-    android:paddingRight="@dimen/spacing_large"
-    android:paddingTop="@dimen/spacing_normal">
+    android:padding="@dimen/spacing_tiny">
 
     <TextView
         android:id="@+id/txt_al_quran_chapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textStyle="bold"
-        android:textSize="@dimen/text_size_12"
-        android:drawableEnd="@android:drawable/arrow_down_float"
-        android:drawableTint="@color/dark"
         tools:text="Chapter 1"/>
+
+    <TextView
+        android:id="@+id/txt_meaning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:padding="@dimen/spacing_normal"
+        android:text="Meaning"/>
+
+    <TextView
+        android:id="@+id/txt_translation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_normal"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:text="Translation"/>
+
+    <include layout="@layout/divider_vertical" />
 
 </LinearLayout>

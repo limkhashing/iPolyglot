@@ -15,6 +15,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="@dimen/spacing_large"
         android:orientation="vertical">
 
         <include layout="@layout/layout_input_speech"
@@ -29,6 +30,8 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
+            android:padding="@dimen/spacing_normal"
+            tools:src="@drawable/ic_google_mic"
             android:onClick="@{() -> viewModel.onInputSpeechClicked()}"
             android:scaleType="fitXY"
             android:src="@{viewModel.isSpeaking ? @drawable/ic_google_mic_disable : @drawable/ic_google_mic}" />
@@ -61,7 +64,6 @@
             android:clipToPadding="false"
             tools:listitem="@layout/cardview_speech_translate"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:paddingTop="@dimen/spacing_normal"
             android:paddingBottom="@dimen/spacing_normal" />
 
     </LinearLayout>
