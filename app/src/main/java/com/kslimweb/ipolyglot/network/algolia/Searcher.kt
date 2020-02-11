@@ -39,10 +39,9 @@ class Searcher @Inject constructor(private val index: Index) {
     private fun parseSearchResponse(speechTextSearchResponse: ResponseSearch, translatedTextSearchResponse: ResponseSearch)
             : List<HitAlQuran> {
         val speechTextSearchHits = speechTextSearchResponse.hits.deserialize(HitAlQuran.serializer())
-        Log.d("Searcher", speechTextSearchHits.toString())
         val translatedTextSearchHits = translatedTextSearchResponse.hits.deserialize(HitAlQuran.serializer())
-        Log.d("Searcher", translatedTextSearchHits.toString())
-        return speechTextSearchHits
+        return speechTextSearchHits.sortedWith(compareBy {
+            it.objectID.raw.toInt() })
 //        return combineSearchAlQuranList(speechTextSearchHits, translatedTextSearchHits)
 //        return emptyList()
     }
