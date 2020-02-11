@@ -23,7 +23,7 @@ class SearchResponseAlQuranAdapter(private val hitsAlQuran: List<HitAlQuran>)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.alQuranChapter.text = "Chapter " + hitsAlQuran[position].objectID.toString()
+        holder.alQuranChapter.text = "Chapter " + hitsAlQuran[position].objectID.raw
         adapterTextViewHelperAlQuran.setHighlightResultText(holder, position)
     }
 
