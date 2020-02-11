@@ -54,7 +54,7 @@ class SpeechTranslateAdapter(private var speechResult: String,
         notifyDataSetChanged()
     }
 
-    class ViewHolder internal constructor(inflater: LayoutInflater, parent: ViewGroup) :
+    class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.cardview_speech_translate, parent, false)) {
         val speechText: TextView = itemView.findViewById(R.id.speech_text) as TextView
         val translateText: TextView = itemView.findViewById(R.id.translate_text) as TextView
