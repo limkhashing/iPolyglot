@@ -1,6 +1,7 @@
 package com.kslimweb.ipolyglot
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.media.MediaActionSound
 import android.speech.RecognizerIntent
@@ -20,7 +21,7 @@ import java.util.*
 class MainViewModel(application: Application, private val mSpeechRecognizer: SpeechRecognizer, private val mediaActionSound: MediaActionSound) :
     ViewModelProvider.Factory, AndroidViewModel(application) {
 
-    private val context = application.applicationContext
+    val context: Context = application.applicationContext
 
     val isSpeaking = ObservableBoolean(false)
 //    val textButtonSpeechToText = ObservableField<String>(speechToTextButtonTextStart)

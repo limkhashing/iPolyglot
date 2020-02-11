@@ -1,25 +1,27 @@
 package com.kslimweb.ipolyglot.util
 
+import com.google.gson.Gson
+import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
+import com.kslimweb.ipolyglot.model.alquran.HighlightResult
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
-import com.kslimweb.ipolyglot.model.hadith.*
-import com.kslimweb.ipolyglot.adapter.SearchResponseHadithAdapter
 
 class AdapterTextViewHelperAlQuran(private val hitAlQuran: List<HitAlQuran>) {
 
-    fun setChapterText(holder: SearchResponseHadithAdapter.ViewHolder, position: Int) {
+    fun setChapterText(holder: SearchResponseAlQuranAdapter.ViewHolder, position: Int) {
 
     }
 
     // TODO set for al quran only
-    fun setHighlightResultText(holder: SearchResponseHadithAdapter.ViewHolder, position: Int) {
+    fun setHighlightResultText(holder: SearchResponseAlQuranAdapter.ViewHolder, position: Int) {
+        val highlightResult = Gson().fromJson(hitAlQuran[position]._highlightResult.toString(), HighlightResult::class.java)
+        setHighlightMeaning(position, holder)
+    }
+
+    private fun setHighlightMeaning(position: Int, holder: SearchResponseAlQuranAdapter.ViewHolder) {
 
     }
 
-    private fun setHighlightArabicMeaning(position: Int, holder: SearchResponseHadithAdapter.ViewHolder, chapterAra: ChapterAra) {
-
-    }
-
-    private fun setHighlightTranslation(position: Int, holder: SearchResponseHadithAdapter.ViewHolder, chapterEng: ChapterEng) {
+    private fun setHighlightTranslation(position: Int, holder: SearchResponseAlQuranAdapter.ViewHolder) {
 
     }
 }
