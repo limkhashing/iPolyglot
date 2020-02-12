@@ -4,12 +4,13 @@ import android.app.Activity
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
+import android.util.Log
 import com.kslimweb.ipolyglot.MainViewModel
+import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
-import com.kslimweb.ipolyglot.adapter.SpeechTranslateAdapter
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.cardview_speech_translate.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +25,8 @@ class VoiceRecognizer(
     private val viewModel: MainViewModel
 ) : RecognitionListener {
 
-    private lateinit var speechTranslateAdapter: SpeechTranslateAdapter
+    // SearchResponseHadithAdapter
+    private lateinit var searchResponseAlQuranAdapter: SearchResponseAlQuranAdapter
 
     override fun onReadyForSpeech(params: Bundle?) { }
 
@@ -41,7 +43,6 @@ class VoiceRecognizer(
     override fun onEndOfSpeech() { }
 
     override fun onError(error: Int) {
-        mSpeechRecognizer.cancel()
         viewModel.onVoiceFinished(true)
     }
 
@@ -56,7 +57,8 @@ class VoiceRecognizer(
                 CoroutineScope(Dispatchers.IO).launch {
                     val translatedText = googleTranslate.translateText(speechText, viewModel.translateLanguageCode)
                     val searchHits = searcher.search(speechText, translatedText)
-                    setAdapter(speechText, translatedText, searchHits)
+                    setSpeechAndTranslationText(speechText, translatedText)
+                    setRecyclerViewSearchData(searchHits)
                 }
             }
         }
@@ -65,13 +67,26 @@ class VoiceRecognizer(
         viewModel.onVoiceFinished()
     }
 
-    private suspend fun setAdapter(speechText: String, translatedText: String, searchHits: List<HitAlQuran>) {
+    private suspend fun setSpeechAndTranslationText(speechText: String, translatedText: String) {
         withContext(Dispatchers.Main) {
-            if (!::speechTranslateAdapter.isInitialized) {
-                speechTranslateAdapter = SpeechTranslateAdapter(speechText, translatedText, hitsAlQuran = searchHits)
-                activity.rv_speech_translate_search.adapter = speechTranslateAdapter
+            viewModel.setSpeechAndTranslationText(speechText, translatedText)
+        }
+    }
+
+    private suspend fun setRecyclerViewSearchData(searchHits: List<HitAlQuran>) {
+        withContext(Dispatchers.Main) {
+            if (searchHits.isNotEmpty()) {
+                viewModel.appearInLabelText.set("Appear In: ")
+                viewModel.searchRecyclerViewVisibility.set(true)
+                if (!::searchResponseAlQuranAdapter.isInitialized) {
+                    //        SearchResponseHadithAdapter(searchHits)
+                    searchResponseAlQuranAdapter = SearchResponseAlQuranAdapter(searchHits)
+                    activity.rv_search.adapter = searchResponseAlQuranAdapter
+                } else
+                    searchResponseAlQuranAdapter.setData(searchHits)
             } else {
-                speechTranslateAdapter.setResult(speechText, translatedText, hitsAlQuran = searchHits)
+                viewModel.appearInLabelText.set("Appear In: None")
+                viewModel.searchRecyclerViewVisibility.set(false)
             }
         }
     }

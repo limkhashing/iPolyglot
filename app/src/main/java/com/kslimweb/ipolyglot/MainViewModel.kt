@@ -6,25 +6,31 @@ import android.content.Intent
 import android.media.MediaActionSound
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.kslimweb.ipolyglot.util.AppConstants.listeningStatus
-import com.kslimweb.ipolyglot.util.AppConstants.notListeningStatus
-import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStart
-import com.kslimweb.ipolyglot.util.AppConstants.speechToTextButtonTextStop
+import androidx.recyclerview.widget.RecyclerView
+import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
+import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import java.util.*
 
 
-class MainViewModel(application: Application, private val mSpeechRecognizer: SpeechRecognizer, private val mediaActionSound: MediaActionSound) :
-    ViewModelProvider.Factory, AndroidViewModel(application) {
+class MainViewModel(application: Application,
+                    private val mSpeechRecognizer: SpeechRecognizer,
+                    private val mediaActionSound: MediaActionSound) : ViewModelProvider.Factory, AndroidViewModel(application) {
 
-    val context: Context = application.applicationContext
+    private val context: Context = application.applicationContext
+
+    var speechText = ObservableField<String>("Speech Text will display here")
+    var translationText = ObservableField<String>("Translation Text will display here")
+    var appearInLabelText = ObservableField<String>("Appear In: ")
+    var searchRecyclerViewVisibility = ObservableBoolean(false)
 
     val isSpeaking = ObservableBoolean(false)
-//    val textButtonSpeechToText = ObservableField<String>(speechToTextButtonTextStart)
+    //    val textButtonSpeechToText = ObservableField<String>(speechToTextButtonTextStart)
 //    val textListeningStatus = ObservableField<String>(notListeningStatus)
     var speechLanguageCode = getLanguageCode()
     var translateLanguageCode = getLanguageCode()
@@ -47,23 +53,28 @@ class MainViewModel(application: Application, private val mSpeechRecognizer: Spe
     fun onVoiceFinished(error: Boolean = false) {
 //        textButtonSpeechToText.set(speechToTextButtonTextStart)
 //        textListeningStatus.set(notListeningStatus)
-        if (error)
-            mediaActionSound.play(MediaActionSound.STOP_VIDEO_RECORDING)
-        isSpeaking.set(!isSpeaking.get())
+//        if (error)
+//            mediaActionSound.play(MediaActionSound.STOP_VIDEO_RECORDING)
+        mSpeechRecognizer.stopListening()
+        isSpeaking.set(false)
     }
 
     fun onInputSpeechClicked() {
         isSpeaking.set(!isSpeaking.get()) // flip the boolean isSpeaking
-
-        if (!isSpeaking.get()) {
-            mSpeechRecognizer.stopListening()
-//            textButtonSpeechToText.set(speechToTextButtonTextStart)
-//            textListeningStatus.set(notListeningStatus)
-        } else {
+        if (isSpeaking.get()) {
             mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
 //            textButtonSpeechToText.set(speechToTextButtonTextStop)
 //            textListeningStatus.set(listeningStatus)
+        } else {
+            mSpeechRecognizer.stopListening()
+//            textButtonSpeechToText.set(speechToTextButtonTextStart)
+//            textListeningStatus.set(notListeningStatus)
         }
+    }
+
+    fun setSpeechAndTranslationText(speechText: String, translatedText: String) {
+        this.speechText.set(speechText)
+        this.translationText.set(translatedText)
     }
 
     private fun getSpeechRecognizeIntent(): Intent {

@@ -15,6 +15,7 @@ import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
 import com.kslimweb.ipolyglot.util.AppConstants.REQUEST_AUDIO_PERMISSION
+import kotlinx.android.synthetic.main.cardview_speech_translate.*
 import kotlinx.android.synthetic.main.layout_input_speech.*
 import kotlinx.android.synthetic.main.layout_select_translate.*
 import javax.inject.Inject
@@ -67,11 +68,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindData() {
-        mainViewModel = ViewModelProvider(this, MainViewModel(application, mSpeechRecognizer, mediaActionSound))
+        mainViewModel = ViewModelProvider(this,
+            MainViewModel(application, mSpeechRecognizer, mediaActionSound))
             .get(MainViewModel::class.java)
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
             .apply {
                 this.viewModel = mainViewModel
+                this.lifecycleOwner = this@MainActivity
             }
     }
 
