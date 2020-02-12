@@ -1,59 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    android:id="@+id/card"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/ThemeOverlay.AppCompat.Light"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="1dp"
-    app:cardUseCompatPadding="true">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:id="@+id/linear"
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="viewModel"
+            type="com.kslimweb.ipolyglot.MainViewModel" />
+    </data>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="1dp"
+        app:cardUseCompatPadding="true">
 
-        <TextView
-            android:id="@+id/speech_text"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_normal"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            tools:text="It is fine today."/>
+            android:orientation="vertical">
 
-        <include layout="@layout/divider_vertical" />
+            <TextView
+                android:id="@+id/speech_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="@={viewModel.speechText}"
+                tools:text="Speech Text will display here" />
 
-        <TextView
-            android:id="@+id/translate_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_normal"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            tools:text="It is fine today."/>
+            <include layout="@layout/divider_vertical" />
 
-        <TextView
-            android:id="@+id/txt_label_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_tiny"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textStyle="bold"
-            android:text="Appeared in: "
-            tools:visibility="visible"
-            android:visibility="gone"/>
+            <TextView
+                android:id="@+id/translate_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="@={viewModel.translationText}"
+                tools:text="Translation Text will display here"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_search_alquran"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            <TextView
+                android:id="@+id/txt_label_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_tiny"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textStyle="bold"
+                tools:text="Appeared in: "
+                android:text="@{viewModel.appearInLabelText}" />
 
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_search_alquran"
+                android:layout_marginStart="@dimen/spacing_large"
+                android:visibility="@{viewModel.searchRecyclerViewVisibility ? View.VISIBLE : View.GONE}" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>

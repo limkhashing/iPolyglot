@@ -31,7 +31,7 @@ class SearchResponseHadithAdapter(private val hitsHadiths: List<HitHadith>) : Re
     }
 
     class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.item_search, parent, false)) {
+        RecyclerView.ViewHolder(inflater.inflate(R.layout.item_search_hadith, parent, false)) {
         val chapterNumber: TextView = itemView.findViewById(R.id.txt_chapter_number) as TextView
         val chapterArabic: TextView = itemView.findViewById(R.id.txt_chapter_arabic) as TextView
         val chapterTranslated: TextView = itemView.findViewById(R.id.txt_chapter_translated) as TextView

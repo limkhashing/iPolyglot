@@ -10,7 +10,7 @@
         android:id="@+id/txt_al_quran_chapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textStyle="bold"
         tools:text="Chapter 1"/>
 
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:padding="@dimen/spacing_normal"
-        android:text="Meaning"/>
+        tools:text="Meaning"/>
 
     <TextView
         android:id="@+id/txt_translation"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_normal"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:text="Translation"/>
+        tools:text="Translation"/>
 
     <include layout="@layout/divider_vertical" />
 
