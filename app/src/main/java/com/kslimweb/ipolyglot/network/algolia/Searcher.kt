@@ -67,9 +67,8 @@ class Searcher @Inject constructor(private val index: Index) {
         
         // TODO update json objects
         // check Arabic Meaning Match Level first before replacing
-        if (highlightResult.verse1[0].matchLevel == "none") {
+        if (highlightResult.verse1?.get(0)?.matchLevel == "none") {
             // replace arabic
-
             speechSearchList.forEachIndexed { index, hit ->
                 val speechSearchJson = hit._highlightResult?.get("verse_" + index+1)?.jsonArray?.get(0)?.jsonObject
                 val translateSearchJson = translatedTextSearchList[index]._highlightResult?.get("verse_" + index+1)?.jsonArray?.get(0)?.jsonObject

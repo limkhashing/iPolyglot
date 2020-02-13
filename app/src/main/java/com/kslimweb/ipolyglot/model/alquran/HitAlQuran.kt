@@ -15,65 +15,65 @@ data class HitAlQuran(
 ) : Indexable, Highlightable {
 
     @Transient
-    val verse_1 = getHighlight(Attribute("verse_1"))
+    val verse_1 = getHighlights(Attribute("verse_1"))
 
     @Transient
-    val verse_2= getHighlight(Attribute("verse_2"))
+    val verse_2= getHighlights(Attribute("verse_2"))
 
     @Transient
-    val verse_3 = getHighlight(Attribute("verse_3"))
+    val verse_3 = getHighlights(Attribute("verse_3"))
 
     @Transient
-    val verse_4 = getHighlight(Attribute("verse_4"))
+    val verse_4 = getHighlights(Attribute("verse_4"))
 
     @Transient
-    val verse_5 = getHighlight(Attribute("verse_5"))
+    val verse_5 = getHighlights(Attribute("verse_5"))
 
     @Transient
-    val verse_6 = getHighlight(Attribute("verse_6"))
+    val verse_6 = getHighlights(Attribute("verse_6"))
 
     @Transient
-    val verse_7 = getHighlight(Attribute("verse_7"))
+    val verse_7 = getHighlights(Attribute("verse_7"))
 
     @Transient
-    val verse_8 = getHighlight(Attribute("verse_8"))
+    val verse_8 = getHighlights(Attribute("verse_8"))
 
     @Transient
-    val verse_9 = getHighlight(Attribute("verse_9"))
+    val verse_9 = getHighlights(Attribute("verse_9"))
 
     @Transient
-    val verse_10 = getHighlight(Attribute("verse_10"))
+    val verse_10 = getHighlights(Attribute("verse_10"))
 
     @Transient
-    val verse_11 = getHighlight(Attribute("verse_11"))
+    val verse_11 = getHighlights(Attribute("verse_11"))
 
     @Transient
-    val verse_12 = getHighlight(Attribute("verse_12"))
+    val verse_12 = getHighlights(Attribute("verse_12"))
 
     @Transient
-    val verse_13 = getHighlight(Attribute("verse_13"))
+    val verse_13 = getHighlights(Attribute("verse_13"))
 
     @Transient
-    val verse_14 = getHighlight(Attribute("verse_14"))
+    val verse_14 = getHighlights(Attribute("verse_14"))
 
     @Transient
-    val verse_15 = getHighlight(Attribute("verse_15"))
+    val verse_15 = getHighlights(Attribute("verse_15"))
 
     @Transient
-    val verse_16 = getHighlight(Attribute("verse_16"))
+    val verse_16 = getHighlights(Attribute("verse_16"))
 
     @Transient
-    val verse_17 = getHighlight(Attribute("verse_17"))
+    val verse_17 = getHighlights(Attribute("verse_17"))
 
     @Transient
-    val verse_18 = getHighlight(Attribute("verse_18"))
+    val verse_18 = getHighlights(Attribute("verse_18"))
 
     @Transient
-    val verse_19 = getHighlight(Attribute("verse_19"))
+    val verse_19 = getHighlights(Attribute("verse_19"))
 
     @Transient
-    val verse_20 = getHighlight(Attribute("verse_20"))
+    val verse_20 = getHighlights(Attribute("verse_20"))
 
     @Transient
-    val verse_21 = getHighlight(Attribute("verse_21"))
+    val verse_21 = getHighlights(Attribute("verse_21"))
 }

@@ -4,7 +4,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_tiny">
+    android:paddingTop="@dimen/spacing_tiny"
+    android:paddingStart="@dimen/spacing_tiny"
+    android:paddingEnd="@dimen/spacing_tiny">
 
     <TextView
         android:id="@+id/txt_al_quran_chapter"
@@ -19,14 +21,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:padding="@dimen/spacing_normal"
+        android:padding="@dimen/spacing_tiny"
         tools:text="Meaning"/>
 
     <TextView
         android:id="@+id/txt_translation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_normal"
+        android:padding="@dimen/spacing_tiny"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         tools:text="Translation"/>
 
