@@ -12,7 +12,7 @@ import com.kslimweb.ipolyglot.util.AdapterTextViewHelperAlQuran
 class SearchResponseAlQuranAdapter(private var hitsAlQuran: List<HitAlQuran>)
     : RecyclerView.Adapter<SearchResponseAlQuranAdapter.ViewHolder>() {
 
-    private val adapterTextViewHelperAlQuran = AdapterTextViewHelperAlQuran(hitsAlQuran)
+    private val adapterTextViewHelperAlQuran = AdapterTextViewHelperAlQuran()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context), parent)
@@ -24,10 +24,9 @@ class SearchResponseAlQuranAdapter(private var hitsAlQuran: List<HitAlQuran>)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.alQuranChapter.text = "Chapter " + hitsAlQuran[position].objectID.raw
-        // TODO set UI al-quran
-        holder.textMeaning.text = "Chapter " + hitsAlQuran[position].objectID.raw
-        holder.textTranslation.text = "Chapter " + hitsAlQuran[position].objectID.raw
-        adapterTextViewHelperAlQuran.setHighlightResultText(holder, position)
+        holder.textMeaning.text = ""
+        holder.textTranslation.text = ""
+        adapterTextViewHelperAlQuran.setHighlightResultText(holder, position, hitsAlQuran)
     }
 
     fun setData(hitsAlQuran: List<HitAlQuran>) {
