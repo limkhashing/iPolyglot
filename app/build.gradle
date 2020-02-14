@@ -42,12 +42,20 @@ android {
             minifyEnabled false
             multiDexEnabled true
             applicationIdSuffix = '.dev'
+            firebaseAppDistribution {
+                testers="kslim5703@gmail.com"
+                serviceCredentialsFile = "$rootProject.projectDir/ipolygot-96fda3515e8a.json"
+            }
         }
         release {
             minifyEnabled false
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            firebaseAppDistribution {
+                testers="kslim5703@gmail.com"
+                serviceCredentialsFile = "$rootProject.projectDir/ipolygot-96fda3515e8a.json"
+            }
         }
     }
     buildTypes.each {
@@ -63,12 +71,6 @@ android {
         pickFirst 'META-INF/kotlinx-coroutines-core.kotlin_module'
         pickFirst 'META-INF/kotlinx-serialization-runtime.kotlin_module'
         pickFirst 'META-INF/ktor-*'
-    }
-    firebaseAppDistribution {
-        testers="kslim5703@gmail.com"
-//        releaseNotes="Release notes for demo version"
-//        groups="fave-developer, engineering-qa"
-//        serviceCredentialsFile="$rootProject.projectDir/fir-native-staging-7213d66fb685.json"
     }
     dataBinding.enabled = true
 }
