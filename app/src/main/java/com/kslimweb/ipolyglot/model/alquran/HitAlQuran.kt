@@ -7,7 +7,9 @@ import com.algolia.search.model.indexing.Indexable
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonObject
+import oliviazoe0.processor.AutoUnpack
 
+@AutoUnpack
 @Serializable
 data class HitAlQuran(
     override val objectID: ObjectID,
@@ -15,65 +17,65 @@ data class HitAlQuran(
 ) : Indexable, Highlightable {
 
     @Transient
-    val verse_1 = getHighlights(Attribute("verse_1"))
+    val verse1 = getHighlights(Attribute("verse_1"))
 
     @Transient
-    val verse_2= getHighlights(Attribute("verse_2"))
+    val verse2= getHighlights(Attribute("verse_2"))
 
     @Transient
-    val verse_3 = getHighlights(Attribute("verse_3"))
+    val verse3 = getHighlights(Attribute("verse_3"))
 
     @Transient
-    val verse_4 = getHighlights(Attribute("verse_4"))
+    val verse4 = getHighlights(Attribute("verse_4"))
 
     @Transient
-    val verse_5 = getHighlights(Attribute("verse_5"))
+    val verse5 = getHighlights(Attribute("verse_5"))
 
     @Transient
-    val verse_6 = getHighlights(Attribute("verse_6"))
+    val verse6 = getHighlights(Attribute("verse_6"))
 
     @Transient
-    val verse_7 = getHighlights(Attribute("verse_7"))
+    val verse7 = getHighlights(Attribute("verse_7"))
 
     @Transient
-    val verse_8 = getHighlights(Attribute("verse_8"))
+    val verse8 = getHighlights(Attribute("verse_8"))
 
     @Transient
-    val verse_9 = getHighlights(Attribute("verse_9"))
+    val verse9 = getHighlights(Attribute("verse_9"))
 
     @Transient
-    val verse_10 = getHighlights(Attribute("verse_10"))
+    val verse10 = getHighlights(Attribute("verse_10"))
 
     @Transient
-    val verse_11 = getHighlights(Attribute("verse_11"))
+    val verse11 = getHighlights(Attribute("verse_11"))
 
     @Transient
-    val verse_12 = getHighlights(Attribute("verse_12"))
+    val verse12 = getHighlights(Attribute("verse_12"))
 
     @Transient
-    val verse_13 = getHighlights(Attribute("verse_13"))
+    val verse13 = getHighlights(Attribute("verse_13"))
 
     @Transient
-    val verse_14 = getHighlights(Attribute("verse_14"))
+    val verse14 = getHighlights(Attribute("verse_14"))
 
     @Transient
-    val verse_15 = getHighlights(Attribute("verse_15"))
+    val verse15 = getHighlights(Attribute("verse_15"))
 
     @Transient
-    val verse_16 = getHighlights(Attribute("verse_16"))
+    val verse16 = getHighlights(Attribute("verse_16"))
 
     @Transient
-    val verse_17 = getHighlights(Attribute("verse_17"))
+    val verse17 = getHighlights(Attribute("verse_17"))
 
     @Transient
-    val verse_18 = getHighlights(Attribute("verse_18"))
+    val verse18 = getHighlights(Attribute("verse_18"))
 
     @Transient
-    val verse_19 = getHighlights(Attribute("verse_19"))
+    val verse19 = getHighlights(Attribute("verse_19"))
 
     @Transient
-    val verse_20 = getHighlights(Attribute("verse_20"))
+    val verse20 = getHighlights(Attribute("verse_20"))
 
     @Transient
-    val verse_21 = getHighlights(Attribute("verse_21"))
+    val verse21 = getHighlights(Attribute("verse_21"))
 }

@@ -3,7 +3,6 @@ package com.kslimweb.ipolyglot.model.alquran
 
 import com.google.gson.annotations.SerializedName
 import oliviazoe0.processor.AutoUnpack
-import kotlin.reflect.full.declaredMemberProperties
 
 @AutoUnpack
 data class HighlightResult(
@@ -49,18 +48,4 @@ data class HighlightResult(
     val verse20: List<Verse>?,
     @SerializedName("verse_21")
     val verse21: List<Verse>?
-) {
-    fun getData() : List<List<Verse>?> = listOf(verse1, verse2)
-
-//    fun get() {
-//        HighlightResult::class.declaredMemberProperties.forEach {
-//            val verseField = it.get(highlightResult)
-//            if (verseField != null) {
-//                val verseNumber = it.name
-//                val verseList = verseField as List<Verse>
-//                setHighlightMeaning(position, holder, verseNumber, verseList, highlightResult)
-////                setHighlightTranslation(position, holder, verseNumber)
-//            }
-//        }
-//    }
-}
+)
