@@ -1,5 +1,7 @@
 package com.kslimweb.ipolyglot.model.alquran
 
+import com.algolia.instantsearch.core.highlighting.HighlightedString
+
 data class Verse(
     val matchLevel: String,
     val value: String
@@ -7,5 +9,6 @@ data class Verse(
 
 data class VerseData(
     val verseNumber: String,
-    val verseList: List<Verse>
+    val verseList: List<Verse>,
+    val listOfHighlightedStrings: List<List<HighlightedString>>
 )
