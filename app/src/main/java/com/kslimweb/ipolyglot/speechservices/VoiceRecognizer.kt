@@ -34,7 +34,9 @@ class VoiceRecognizer(
 
     override fun onBufferReceived(buffer: ByteArray?) { }
 
-    override fun onPartialResults(partialResults: Bundle?) {}
+    override fun onPartialResults(partialResults: Bundle?) {
+        Log.d("VoiceRecognizer", partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).toString())
+    }
 
     override fun onEvent(eventType: Int, params: Bundle?) { }
 

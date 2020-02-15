@@ -13,7 +13,7 @@ import javax.inject.Singleton
 class TranslateModule(private val context: Context) {
     @Provides
     @Singleton
-    fun provideTranslateClient(): Translate = context.resources.openRawResource(R.raw.google_service_account).use { `is` ->
+    fun provideTranslateClient(): Translate = context.resources.openRawResource(R.raw.translation_services_account).use { `is` ->
         val myCredentials = GoogleCredentials.fromStream(`is`)
         val translateOptions =
             TranslateOptions.newBuilder().setCredentials(myCredentials).build()
