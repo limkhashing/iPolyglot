@@ -8,7 +8,7 @@ import com.kslimweb.ipolyglot.R
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.util.AdapterTextViewHelperAlQuran
 
-
+// TODO set a better UI - Sticky Header
 class SearchResponseAlQuranAdapter(private var hitsAlQuran: List<HitAlQuran>)
     : RecyclerView.Adapter<SearchResponseAlQuranAdapter.ViewHolder>() {
 

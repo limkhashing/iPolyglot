@@ -35,6 +35,7 @@ class VoiceRecognizer(
     override fun onBufferReceived(buffer: ByteArray?) { }
 
     override fun onPartialResults(partialResults: Bundle?) {
+        // TODO perform async display
         Log.d("VoiceRecognizer", partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).toString())
     }
 
