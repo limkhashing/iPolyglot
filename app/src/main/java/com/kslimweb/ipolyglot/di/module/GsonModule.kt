@@ -1,17 +1,14 @@
 package com.kslimweb.ipolyglot.di.module
 
-import android.media.MediaActionSound
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-object MediaActionSoundModule {
-
+object GsonModule {
     @Provides
     @JvmStatic
     @Singleton
-    fun provideMediaActionSound(): MediaActionSound {
-        return MediaActionSound()
-    }
+    fun provideGson(): Gson = Gson()
 }

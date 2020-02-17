@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import com.kslimweb.ipolyglot.databinding.ActivityMainBinding
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var googleTranslate: GoogleTranslate
     @Inject lateinit var searcher: Searcher
-    @Inject lateinit var mediaActionSound: MediaActionSound
+    @Inject lateinit var gson: Gson
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
     private lateinit var mainViewModel: MainViewModel
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindData() {
         mainViewModel = ViewModelProvider(this,
-            MainViewModel(application, mSpeechRecognizer, mediaActionSound))
+            MainViewModel(application, mSpeechRecognizer))
             .get(MainViewModel::class.java)
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
             .apply {
@@ -94,7 +95,8 @@ class MainActivity : AppCompatActivity() {
             this@MainActivity,
             googleTranslate,
             searcher,
-            mainViewModel))
+            mainViewModel,
+            gson))
     }
 
     private fun showPermissionMessageDialog() {

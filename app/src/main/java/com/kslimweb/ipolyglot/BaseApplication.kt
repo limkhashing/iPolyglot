@@ -1,25 +1,25 @@
 package com.kslimweb.ipolyglot
 
 import android.app.Application
-import com.kslimweb.ipolyglot.di.component.AppComponent
-import com.kslimweb.ipolyglot.di.component.DaggerAppComponent
+import com.kslimweb.ipolyglot.di.component.ApplicationComponent
+import com.kslimweb.ipolyglot.di.component.DaggerApplicationComponent
 import com.kslimweb.ipolyglot.di.module.AlgoliaModule
-import com.kslimweb.ipolyglot.di.module.MediaActionSoundModule
+import com.kslimweb.ipolyglot.di.module.GsonModule
 import com.kslimweb.ipolyglot.di.module.TranslateModule
 
 class BaseApplication : Application() {
 
-    private lateinit var component: AppComponent
+    private lateinit var component: ApplicationComponent
 
     override fun onCreate() {
         super.onCreate()
-        component = DaggerAppComponent.factory()
+        component = DaggerApplicationComponent.factory()
             .create(TranslateModule(applicationContext),
                 AlgoliaModule,
-                MediaActionSoundModule)
+                GsonModule)
     }
 
-    fun getAppComponent(): AppComponent {
+    fun getAppComponent(): ApplicationComponent {
         return component
     }
 }

@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
-class Searcher @Inject constructor(private val index: Index) {
+class Searcher @Inject constructor(private val index: Index, private val gson: Gson) {
 
     private suspend fun querySearch(queryText: String): ResponseSearch {
         return SearcherSingleIndex(index, Query(query = queryText)).search()
@@ -62,7 +62,7 @@ class Searcher @Inject constructor(private val index: Index) {
     private fun combineSearchAlQuranList(speechSearchList: List<HitAlQuran>,
                                          translatedTextSearchList: List<HitAlQuran>): List<HitAlQuran> {
 
-        val highlightResult = Gson().fromJson(speechSearchList[0]._highlightResult.toString(),
+        val highlightResult = gson.fromJson(speechSearchList[0]._highlightResult.toString(),
             HighlightResult::class.java)
         
         // TODO update json objects

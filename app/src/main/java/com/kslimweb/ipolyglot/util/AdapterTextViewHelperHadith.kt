@@ -9,7 +9,7 @@ import com.kslimweb.ipolyglot.model.hadith.*
 import com.kslimweb.ipolyglot.adapter.SearchResponseHadithAdapter
 import com.kslimweb.ipolyglot.util.TextUtils.setTextWithSpan
 
-class AdapterTextViewHelperHadith(private val hitHadiths: List<HitHadith>) {
+class AdapterTextViewHelperHadith(private val hitHadiths: List<HitHadith>, private val gson: Gson) {
 
     private var highlightNumbering = 0
 
@@ -28,7 +28,7 @@ class AdapterTextViewHelperHadith(private val hitHadiths: List<HitHadith>) {
     }
 
     fun setSnippetText(holder: SearchResponseHadithAdapter.ViewHolder, position: Int) {
-        val snippetResult = Gson().fromJson(hitHadiths[position]._snippetResult.toString(), SnippetResult::class.java)
+        val snippetResult = gson.fromJson(hitHadiths[position]._snippetResult.toString(), SnippetResult::class.java)
         if (!snippetResult.contentsAra.isNullOrEmpty())
             setSnippetContentsAra(holder, snippetResult.contentsAra)
         if (!snippetResult.contentsEng.isNullOrEmpty())
@@ -122,7 +122,7 @@ class AdapterTextViewHelperHadith(private val hitHadiths: List<HitHadith>) {
             holder.highlightResults.text.toString(),
             "Found in: ",
             StyleSpan(Typeface.BOLD))
-        val highlightResult = Gson().fromJson(hitHadiths[position]._highlightResult.toString(), HighlightResult::class.java)
+        val highlightResult = gson.fromJson(hitHadiths[position]._highlightResult.toString(), HighlightResult::class.java)
         setHighlightChapterAra(position, holder, highlightResult.chapterAra)
         setHighlightChapterEng(position, holder, highlightResult.chapterEng)
 

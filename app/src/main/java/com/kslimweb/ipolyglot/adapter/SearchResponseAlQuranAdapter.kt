@@ -4,15 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.kslimweb.ipolyglot.R
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.util.AdapterTextViewHelperAlQuran
 
 // TODO set a better UI - Sticky Header
-class SearchResponseAlQuranAdapter(private var hitsAlQuran: List<HitAlQuran>)
+class SearchResponseAlQuranAdapter(private var hitsAlQuran: List<HitAlQuran>, gson: Gson)
     : RecyclerView.Adapter<SearchResponseAlQuranAdapter.ViewHolder>() {
 
-    private val adapterTextViewHelperAlQuran = AdapterTextViewHelperAlQuran()
+    private val adapterTextViewHelperAlQuran = AdapterTextViewHelperAlQuran(gson)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context), parent)

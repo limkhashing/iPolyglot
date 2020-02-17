@@ -7,7 +7,6 @@ import com.algolia.search.model.APIKey
 import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.IndexName
 import com.kslimweb.ipolyglot.BuildConfig
-import com.kslimweb.ipolyglot.util.AppConstants.ALGOLIA_INDEX_NAME
 import com.kslimweb.ipolyglot.util.AppConstants.AL_QURAN_INDEX_NAME
 import dagger.Module
 import dagger.Provides
