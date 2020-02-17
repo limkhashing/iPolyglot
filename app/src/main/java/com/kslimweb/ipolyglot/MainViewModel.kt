@@ -19,8 +19,7 @@ import java.util.*
 
 
 class MainViewModel(application: Application,
-                    private val mSpeechRecognizer: SpeechRecognizer,
-                    private val mediaActionSound: MediaActionSound) : ViewModelProvider.Factory, AndroidViewModel(application) {
+                    private val mSpeechRecognizer: SpeechRecognizer) : ViewModelProvider.Factory, AndroidViewModel(application) {
 
     private val context: Context = application.applicationContext
 
@@ -43,8 +42,7 @@ class MainViewModel(application: Application,
             // Or better use here if it doesn't provides error @SuppressWarnings("unchecked")
             return MainViewModel(
                 context as Application,
-                mSpeechRecognizer,
-                mediaActionSound
+                mSpeechRecognizer
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

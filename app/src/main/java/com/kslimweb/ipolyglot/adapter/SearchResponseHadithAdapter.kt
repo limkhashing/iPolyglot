@@ -4,14 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.kslimweb.ipolyglot.R
 import com.kslimweb.ipolyglot.model.hadith.HitHadith
 import com.kslimweb.ipolyglot.util.AdapterTextViewHelperHadith
 
 
-class SearchResponseHadithAdapter(private val hitsHadiths: List<HitHadith>) : RecyclerView.Adapter<SearchResponseHadithAdapter.ViewHolder>() {
+class SearchResponseHadithAdapter(private val hitsHadiths: List<HitHadith>, gson: Gson) : RecyclerView.Adapter<SearchResponseHadithAdapter.ViewHolder>() {
 
-    private val adapterTextViewHelperHadith = AdapterTextViewHelperHadith(hitsHadiths)
+    private val adapterTextViewHelperHadith = AdapterTextViewHelperHadith(hitsHadiths, gson)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context), parent)

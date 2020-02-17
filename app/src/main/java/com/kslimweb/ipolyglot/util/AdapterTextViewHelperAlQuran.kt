@@ -9,7 +9,7 @@ import com.kslimweb.ipolyglot.model.alquran.Verse
 import com.kslimweb.ipolyglot.model.alquran.VerseData
 import kotlin.reflect.full.declaredMemberProperties
 
-class AdapterTextViewHelperAlQuran {
+class AdapterTextViewHelperAlQuran(private val gson: Gson) {
 
     // TODO set bold for highlighted text and verse number
     //  show progress dialog
@@ -20,7 +20,7 @@ class AdapterTextViewHelperAlQuran {
         val verseData = mutableListOf<VerseData>()
         val listOfHighlightedStrings = mutableListOf<List<HighlightedString>>()
 
-        val highlightResult = Gson().fromJson(
+        val highlightResult = gson.fromJson(
             hitsAlQuran[position]._highlightResult.toString(),
             HighlightResult::class.java
         )

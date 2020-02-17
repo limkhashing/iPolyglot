@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
 import android.util.Log
+import com.google.gson.Gson
 import com.kslimweb.ipolyglot.MainViewModel
 import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
@@ -22,7 +23,8 @@ class VoiceRecognizer(
     private val activity: Activity,
     private val googleTranslate: GoogleTranslate,
     private val searcher: Searcher,
-    private val viewModel: MainViewModel
+    private val viewModel: MainViewModel,
+    private val gson: Gson
 ) : RecognitionListener {
 
     // SearchResponseHadithAdapter
@@ -82,8 +84,8 @@ class VoiceRecognizer(
                 viewModel.appearInLabelText.set("Appear In: ")
                 viewModel.searchRecyclerViewVisibility.set(true)
                 if (!::searchResponseAlQuranAdapter.isInitialized) {
-                    //        SearchResponseHadithAdapter(searchHits)
-                    searchResponseAlQuranAdapter = SearchResponseAlQuranAdapter(searchHits)
+                    //        SearchResponseHadithAdapter(searchHits, gson)
+                    searchResponseAlQuranAdapter = SearchResponseAlQuranAdapter(searchHits, gson)
                     activity.rv_search.adapter = searchResponseAlQuranAdapter
                 } else
                     searchResponseAlQuranAdapter.setData(searchHits)
