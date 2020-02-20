@@ -4,7 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
-import android.util.Log
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.kslimweb.ipolyglot.MainViewModel
 import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
@@ -20,15 +20,18 @@ import kotlinx.coroutines.withContext
 class VoiceRecognizer(
     private val mSpeechRecognizer: SpeechRecognizer,
 //    private val intent: Intent,
-    private val activity: Activity,
     private val googleTranslate: GoogleTranslate,
     private val searcher: Searcher,
     private val viewModel: MainViewModel,
-    private val gson: Gson
+    private val gson: Gson,
+    private val rvSearch: RecyclerView
 ) : RecognitionListener {
 
     // SearchResponseHadithAdapter
     private lateinit var searchResponseAlQuranAdapter: SearchResponseAlQuranAdapter
+
+    private val uiScope = CoroutineScope(Dispatchers.Main)
+    private val bgScope = CoroutineScope(Dispatchers.IO)
 
     override fun onReadyForSpeech(params: Bundle?) { }
 
@@ -37,8 +40,13 @@ class VoiceRecognizer(
     override fun onBufferReceived(buffer: ByteArray?) { }
 
     override fun onPartialResults(partialResults: Bundle?) {
-        // TODO perform async display
-        Log.d("VoiceRecognizer", partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).toString())
+        val partialText = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.get(0)
+        bgScope.launch {
+            partialText?.let {
+                val translatedText = googleTranslate.translateText(partialText, viewModel.translateLanguageCode)
+                viewModel.setSpeechAndTranslationText(partialText, translatedText)
+            }
+        }
     }
 
     override fun onEvent(eventType: Int, params: Bundle?) { }
@@ -59,10 +67,10 @@ class VoiceRecognizer(
 //            Log.d("Results", confidences?.contentToString() + " abc")
             spokenTexts?.let {
                 val speechText = it[0]
-                CoroutineScope(Dispatchers.IO).launch {
+                bgScope.launch {
                     val translatedText = googleTranslate.translateText(speechText, viewModel.translateLanguageCode)
                     val searchHits = searcher.search(speechText, translatedText)
-                    setSpeechAndTranslationText(speechText, translatedText)
+                    viewModel.setSpeechAndTranslationText(speechText, translatedText)
                     setRecyclerViewSearchData(searchHits)
                 }
             }
@@ -72,13 +80,8 @@ class VoiceRecognizer(
         viewModel.onVoiceFinished()
     }
 
-    private suspend fun setSpeechAndTranslationText(speechText: String, translatedText: String) {
-        withContext(Dispatchers.Main) {
-            viewModel.setSpeechAndTranslationText(speechText, translatedText)
-        }
-    }
-
     private suspend fun setRecyclerViewSearchData(searchHits: List<HitAlQuran>) {
+        // TODO async search data
         withContext(Dispatchers.Main) {
             if (searchHits.isNotEmpty()) {
                 viewModel.appearInLabelText.set("Appear In: ")
@@ -86,7 +89,7 @@ class VoiceRecognizer(
                 if (!::searchResponseAlQuranAdapter.isInitialized) {
                     //        SearchResponseHadithAdapter(searchHits, gson)
                     searchResponseAlQuranAdapter = SearchResponseAlQuranAdapter(searchHits, gson)
-                    activity.rv_search.adapter = searchResponseAlQuranAdapter
+                    rvSearch.adapter = searchResponseAlQuranAdapter
                 } else
                     searchResponseAlQuranAdapter.setData(searchHits)
             } else {

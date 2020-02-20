@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -70,9 +72,11 @@ class MainViewModel(application: Application,
         }
     }
 
-    fun setSpeechAndTranslationText(speechText: String, translatedText: String) {
-        this.speechText.set(speechText)
-        this.translationText.set(translatedText)
+    suspend fun setSpeechAndTranslationText(speechText: String, translatedText: String) {
+        withContext(Dispatchers.Main) {
+            this@MainViewModel.speechText.set(speechText)
+            this@MainViewModel.translationText.set(translatedText)
+        }
     }
 
     private fun getSpeechRecognizeIntent(): Intent {
