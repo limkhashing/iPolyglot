@@ -2,7 +2,6 @@ package com.kslimweb.ipolyglot
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.media.MediaActionSound
 import android.os.Bundle
 import android.speech.SpeechRecognizer
 import android.widget.ArrayAdapter
@@ -92,11 +91,11 @@ class MainActivity : AppCompatActivity() {
     private fun initSpeechRecognizerListener() {
         mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
 //            getSpeechRecognizeIntent(),
-            this@MainActivity,
             googleTranslate,
             searcher,
             mainViewModel,
-            gson))
+            gson,
+            rv_search))
     }
 
     private fun showPermissionMessageDialog() {
