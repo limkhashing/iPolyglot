@@ -12,16 +12,16 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
-import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
-import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.*
 
 
-class MainViewModel(application: Application,
-                    private val mSpeechRecognizer: SpeechRecognizer) : ViewModelProvider.Factory, AndroidViewModel(application) {
+class MainViewModel(
+    application: Application,
+    private val mSpeechRecognizer: SpeechRecognizer,
+    private val mainDispatcher: MainCoroutineDispatcher
+) : ViewModelProvider.Factory, AndroidViewModel(application) {
 
     private val context: Context = application.applicationContext
 
@@ -44,7 +44,8 @@ class MainViewModel(application: Application,
             // Or better use here if it doesn't provides error @SuppressWarnings("unchecked")
             return MainViewModel(
                 context as Application,
-                mSpeechRecognizer
+                mSpeechRecognizer,
+                mainDispatcher
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
@@ -73,7 +74,7 @@ class MainViewModel(application: Application,
     }
 
     suspend fun setSpeechAndTranslationText(speechText: String, translatedText: String) {
-        withContext(Dispatchers.Main) {
+        withContext(mainDispatcher) {
             this@MainViewModel.speechText.set(speechText)
             this@MainViewModel.translationText.set(translatedText)
         }

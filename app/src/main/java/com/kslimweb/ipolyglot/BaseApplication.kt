@@ -3,9 +3,7 @@ package com.kslimweb.ipolyglot
 import android.app.Application
 import com.kslimweb.ipolyglot.di.component.ApplicationComponent
 import com.kslimweb.ipolyglot.di.component.DaggerApplicationComponent
-import com.kslimweb.ipolyglot.di.module.AlgoliaModule
-import com.kslimweb.ipolyglot.di.module.GsonModule
-import com.kslimweb.ipolyglot.di.module.TranslateModule
+import com.kslimweb.ipolyglot.di.module.*
 
 class BaseApplication : Application() {
 
@@ -16,7 +14,8 @@ class BaseApplication : Application() {
         component = DaggerApplicationComponent.factory()
             .create(TranslateModule(applicationContext),
                 AlgoliaModule,
-                GsonModule)
+                GsonModule,
+                CoroutineModule)
     }
 
     fun getAppComponent(): ApplicationComponent {
