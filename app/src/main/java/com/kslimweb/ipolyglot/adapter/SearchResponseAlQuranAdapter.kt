@@ -10,10 +10,10 @@ import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.util.AdapterTextViewHelperAlQuran
 
 // TODO set a better UI - Sticky Header
-class SearchResponseAlQuranAdapter(private var hitsAlQuran: List<HitAlQuran>, gson: Gson)
-    : RecyclerView.Adapter<SearchResponseAlQuranAdapter.ViewHolder>() {
+class SearchResponseAlQuranAdapter(gson: Gson) : RecyclerView.Adapter<SearchResponseAlQuranAdapter.ViewHolder>() {
 
     private val adapterTextViewHelperAlQuran = AdapterTextViewHelperAlQuran(gson)
+    private var hitsAlQuran: List<HitAlQuran> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context), parent)

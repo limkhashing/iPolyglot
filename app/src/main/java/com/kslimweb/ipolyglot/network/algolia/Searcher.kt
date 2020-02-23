@@ -1,6 +1,5 @@
 package com.kslimweb.ipolyglot.network.algolia
 
-import android.util.Log
 import com.algolia.instantsearch.helper.searcher.SearcherSingleIndex
 import com.algolia.search.client.Index
 import com.algolia.search.helper.deserialize
@@ -10,38 +9,37 @@ import com.google.gson.Gson
 import com.kslimweb.ipolyglot.model.alquran.HighlightResult
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.model.hadith.HitHadith
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
-class Searcher @Inject constructor(private val index: Index, private val gson: Gson) {
+class Searcher @Inject constructor(private val index: Index,
+                                   private val gson: Gson,
+                                   private val bgDispatcher: CoroutineDispatcher) {
 
     private suspend fun querySearch(queryText: String): ResponseSearch {
         return SearcherSingleIndex(index, Query(query = queryText)).search()
     }
 
-    suspend fun search(speechText: String, translatedText: String): List<HitAlQuran> {
-        var searchHits = emptyList<HitAlQuran>()
-        withContext(Dispatchers.IO) {
+    suspend fun search(speechText: String, translatedText: String) = mutableListOf<HitAlQuran>().apply {
+        withContext(bgDispatcher) {
             val speechTextSearchResponse = async {
                 querySearch(speechText)
             }
             val translatedTextSearchResponse = async {
                 querySearch(translatedText)
             }
-            searchHits = parseSearchResponse(speechTextSearchResponse.await(), translatedTextSearchResponse.await())
+            addAll(parseSearchResponse(speechTextSearchResponse.await(), translatedTextSearchResponse.await()))
         }
-        return searchHits
     }
 
     private fun parseSearchResponse(speechTextSearchResponse: ResponseSearch, translatedTextSearchResponse: ResponseSearch)
             : List<HitAlQuran> {
         val speechTextSearchHits = speechTextSearchResponse.hits.deserialize(HitAlQuran.serializer())
         val translatedTextSearchHits = translatedTextSearchResponse.hits.deserialize(HitAlQuran.serializer())
-        return speechTextSearchHits.sortedWith(compareBy {
-            it.objectID.raw.toInt() })
+        return speechTextSearchHits.sortedWith(compareBy { it.objectID.raw.toInt() })
 //        return combineSearchAlQuranList(speechTextSearchHits, translatedTextSearchHits)
 //        return emptyList()
     }
@@ -64,7 +62,7 @@ class Searcher @Inject constructor(private val index: Index, private val gson: G
 
         val highlightResult = gson.fromJson(speechSearchList[0]._highlightResult.toString(),
             HighlightResult::class.java)
-        
+
         // TODO update json objects
         // check Arabic Meaning Match Level first before replacing
         if (highlightResult.verse1?.get(0)?.matchLevel == "none") {

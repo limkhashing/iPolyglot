@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
+import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
 import com.kslimweb.ipolyglot.databinding.ActivityMainBinding
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
@@ -18,6 +19,8 @@ import com.kslimweb.ipolyglot.util.AppConstants.REQUEST_AUDIO_PERMISSION
 import kotlinx.android.synthetic.main.cardview_speech_translate.*
 import kotlinx.android.synthetic.main.layout_input_speech.*
 import kotlinx.android.synthetic.main.layout_select_translate.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainCoroutineDispatcher
 import javax.inject.Inject
 
 
@@ -26,8 +29,12 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var googleTranslate: GoogleTranslate
     @Inject lateinit var searcher: Searcher
     @Inject lateinit var gson: Gson
+    @Inject lateinit var bgScope: CoroutineScope
+    @Inject lateinit var mainDispatcher: MainCoroutineDispatcher
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
+    // SearchResponseHadithAdapter
+    private lateinit var searchResponseAlQuranAdapter: SearchResponseAlQuranAdapter
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(applicationContext)
         bindData()
+        initAdapter()
         initSpeechRecognizerListener()
         initSpinnerItem()
 
@@ -69,13 +77,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindData() {
         mainViewModel = ViewModelProvider(this,
-            MainViewModel(application, mSpeechRecognizer))
+            MainViewModel(application, mSpeechRecognizer, mainDispatcher))
             .get(MainViewModel::class.java)
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
             .apply {
                 this.viewModel = mainViewModel
                 this.lifecycleOwner = this@MainActivity
             }
+    }
+
+    private fun initAdapter() {
+        searchResponseAlQuranAdapter = SearchResponseAlQuranAdapter(gson)
+        rv_search.adapter = searchResponseAlQuranAdapter
     }
 
     private fun initSpinnerItem() {
@@ -95,7 +108,10 @@ class MainActivity : AppCompatActivity() {
             searcher,
             mainViewModel,
             gson,
-            rv_search))
+            rv_search,
+            bgScope,
+            mainDispatcher,
+            searchResponseAlQuranAdapter))
     }
 
     private fun showPermissionMessageDialog() {

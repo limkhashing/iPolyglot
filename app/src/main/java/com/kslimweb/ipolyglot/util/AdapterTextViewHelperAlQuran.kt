@@ -12,7 +12,6 @@ import kotlin.reflect.full.declaredMemberProperties
 class AdapterTextViewHelperAlQuran(private val gson: Gson) {
 
     // TODO set bold for highlighted text and verse number
-    //  show progress dialog
     fun setHighlightResultText(holder: SearchResponseAlQuranAdapter.ViewHolder,
                                position: Int,
                                hitsAlQuran: List<HitAlQuran>) {
