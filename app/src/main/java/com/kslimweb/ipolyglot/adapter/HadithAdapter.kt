@@ -10,7 +10,7 @@ import com.kslimweb.ipolyglot.model.hadith.HitHadith
 import com.kslimweb.ipolyglot.util.AdapterTextViewHelperHadith
 
 
-class SearchResponseHadithAdapter(private val hitsHadiths: List<HitHadith>, gson: Gson) : RecyclerView.Adapter<SearchResponseHadithAdapter.ViewHolder>() {
+class HadithAdapter(private val hitsHadiths: List<HitHadith>, gson: Gson) : RecyclerView.Adapter<HadithAdapter.ViewHolder>() {
 
     private val adapterTextViewHelperHadith = AdapterTextViewHelperHadith(hitsHadiths, gson)
 

@@ -3,26 +3,22 @@ package com.kslimweb.ipolyglot.speechservices
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
-import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.kslimweb.ipolyglot.MainViewModel
-import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
+import com.kslimweb.ipolyglot.adapter.AlQuranAdapter
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import kotlinx.coroutines.*
 
 class VoiceRecognizer(
-    private val mSpeechRecognizer: SpeechRecognizer,
+//    private val mSpeechRecognizer: SpeechRecognizer,
 //    private val intent: Intent,
     private val googleTranslate: GoogleTranslate,
     private val searcher: Searcher,
     private val viewModel: MainViewModel,
-    private val gson: Gson,
-    private val rvSearch: RecyclerView,
     private val bgScope: CoroutineScope,
     private val mainDispatcher: MainCoroutineDispatcher,
-    private val searchResponseAlQuranAdapter: SearchResponseAlQuranAdapter
+    private val searchResponseAlQuranAdapter: AlQuranAdapter
 ) : RecognitionListener {
 
     override fun onReadyForSpeech(params: Bundle?) { }
@@ -37,7 +33,7 @@ class VoiceRecognizer(
             partialSpeechText?.let {
                 val translatedText = googleTranslate.translateText(partialSpeechText, viewModel.translateLanguageCode)
                 viewModel.setSpeechAndTranslationText(partialSpeechText, translatedText)
-                val searchHits = searcher.search(partialSpeechText, translatedText)
+                val searchHits = searcher.search(partialSpeechText)
                 setRecyclerViewSearchData(searchHits)
             }
         }
@@ -63,7 +59,7 @@ class VoiceRecognizer(
                 val speechText = it[0]
                 bgScope.launch {
                     val translatedText = googleTranslate.translateText(speechText, viewModel.translateLanguageCode)
-                    val searchHits = searcher.search(speechText, translatedText)
+                    val searchHits = searcher.search(speechText)
                     viewModel.setSpeechAndTranslationText(speechText, translatedText)
                     setRecyclerViewSearchData(searchHits)
                 }

@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
-import com.kslimweb.ipolyglot.adapter.SearchResponseAlQuranAdapter
+import com.kslimweb.ipolyglot.adapter.AlQuranAdapter
 import com.kslimweb.ipolyglot.databinding.ActivityMainBinding
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
     // SearchResponseHadithAdapter
-    private lateinit var searchResponseAlQuranAdapter: SearchResponseAlQuranAdapter
+    private lateinit var searchResponseAlQuranAdapter: AlQuranAdapter
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initAdapter() {
-        searchResponseAlQuranAdapter = SearchResponseAlQuranAdapter(gson)
+        searchResponseAlQuranAdapter = AlQuranAdapter(gson)
         rv_search.adapter = searchResponseAlQuranAdapter
     }
 
@@ -102,13 +102,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initSpeechRecognizerListener() {
-        mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(mSpeechRecognizer,
+        mSpeechRecognizer.setRecognitionListener(VoiceRecognizer(
+//            mSpeechRecognizer,
 //            getSpeechRecognizeIntent(),
             googleTranslate,
             searcher,
             mainViewModel,
-            gson,
-            rv_search,
             bgScope,
             mainDispatcher,
             searchResponseAlQuranAdapter))

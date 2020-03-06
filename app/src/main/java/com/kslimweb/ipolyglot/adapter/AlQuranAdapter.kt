@@ -7,12 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.kslimweb.ipolyglot.R
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
-import com.kslimweb.ipolyglot.util.AdapterTextViewHelperAlQuran
 
-// TODO set a better UI - Sticky Header
-class SearchResponseAlQuranAdapter(gson: Gson) : RecyclerView.Adapter<SearchResponseAlQuranAdapter.ViewHolder>() {
+class AlQuranAdapter(gson: Gson) : RecyclerView.Adapter<AlQuranAdapter.ViewHolder>() {
 
-    private val adapterTextViewHelperAlQuran = AdapterTextViewHelperAlQuran(gson)
     private var hitsAlQuran: List<HitAlQuran> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,10 +21,15 @@ class SearchResponseAlQuranAdapter(gson: Gson) : RecyclerView.Adapter<SearchResp
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.alQuranChapter.text = "Chapter " + hitsAlQuran[position].objectID.raw
-        holder.textMeaning.text = ""
-        holder.textTranslation.text = ""
-        adapterTextViewHelperAlQuran.setHighlightResultText(holder, position, hitsAlQuran)
+        val chapter =  hitsAlQuran[position].objectID.raw.split("_")[0]
+        val verseNumber =  hitsAlQuran[position].objectID.raw.split("_")[1]
+        holder.alQuranChapter.text = "Chapter " + chapter + ", Verse " + verseNumber
+
+        // TODO put highlighted words
+        holder.textMeaning.text = hitsAlQuran[position].meaning
+        holder.textTranslation.text = hitsAlQuran[position].translation
+
+
     }
 
     fun setData(hitsAlQuran: List<HitAlQuran>) {
