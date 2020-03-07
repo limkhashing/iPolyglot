@@ -19,6 +19,8 @@ data class HitAlQuran(
 ) : Indexable, Highlightable {
 
     @Transient
-    val highlightedMeaningString = getHighlight(Attribute("meaning"))
+    val highlightedMeanings = getHighlight(Attribute("meaning"))
 
+    @Transient
+    val highlightedTranslations = getHighlight(Attribute("translation"))
 }

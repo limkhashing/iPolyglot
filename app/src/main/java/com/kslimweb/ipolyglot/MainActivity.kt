@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var googleTranslate: GoogleTranslate
     @Inject lateinit var searcher: Searcher
-    @Inject lateinit var gson: Gson
     @Inject lateinit var bgScope: CoroutineScope
     @Inject lateinit var mainDispatcher: MainCoroutineDispatcher
 
@@ -87,7 +86,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initAdapter() {
-        searchResponseAlQuranAdapter = AlQuranAdapter(gson)
+        searchResponseAlQuranAdapter = AlQuranAdapter()
         rv_search.adapter = searchResponseAlQuranAdapter
     }
 
