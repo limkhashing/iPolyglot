@@ -1,4 +1,4 @@
-package com.kslimweb.ipolyglot.model.alquran
+package com.kslimweb.ipolyglot.model.alquran.test
 
 import com.algolia.instantsearch.core.highlighting.HighlightedString
 
