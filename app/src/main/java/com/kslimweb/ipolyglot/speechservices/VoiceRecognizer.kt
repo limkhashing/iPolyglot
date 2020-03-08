@@ -8,6 +8,7 @@ import com.kslimweb.ipolyglot.adapter.AlQuranAdapter
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.network.algolia.Searcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
+import com.kslimweb.ipolyglot.util.extension.SearchResultHelper
 import kotlinx.coroutines.*
 
 class VoiceRecognizer(
@@ -18,14 +19,15 @@ class VoiceRecognizer(
     private val viewModel: MainViewModel,
     private val bgScope: CoroutineScope,
     private val mainDispatcher: MainCoroutineDispatcher,
-    private val searchResponseAlQuranAdapter: AlQuranAdapter
+    private val searchResponseAlQuranAdapter: AlQuranAdapter,
+    private val searchResultHelper: SearchResultHelper
 ) : RecognitionListener {
 
-    override fun onReadyForSpeech(params: Bundle?) { }
+    override fun onReadyForSpeech(params: Bundle?) {}
 
-    override fun onRmsChanged(rmsdB: Float) { }
+    override fun onRmsChanged(rmsdB: Float) {}
 
-    override fun onBufferReceived(buffer: ByteArray?) { }
+    override fun onBufferReceived(buffer: ByteArray?) {}
 
     override fun onPartialResults(partialResults: Bundle?) {
         val partialSpeechText = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.get(0)
@@ -39,11 +41,11 @@ class VoiceRecognizer(
         }
     }
 
-    override fun onEvent(eventType: Int, params: Bundle?) { }
+    override fun onEvent(eventType: Int, params: Bundle?) {}
 
-    override fun onBeginningOfSpeech() { }
+    override fun onBeginningOfSpeech() {}
 
-    override fun onEndOfSpeech() { }
+    override fun onEndOfSpeech() {}
 
     override fun onError(error: Int) {
         viewModel.onVoiceFinished(true)
@@ -55,13 +57,28 @@ class VoiceRecognizer(
 //            val confidences = results.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)
 //            Log.d("Results", spokenTexts?.toString() + " abc")
 //            Log.d("Results", confidences?.contentToString() + " abc")
+
             spokenTexts?.let {
                 val speechText = it[0]
                 bgScope.launch {
+                    val alQuranSearchHits = searcher.search(speechText)
                     val translatedText = googleTranslate.translateText(speechText, viewModel.translateLanguageCode)
-                    val searchHits = searcher.search(speechText)
+                    val storedResult = searchResultHelper.getStoredSearchResult()
+
+
+                    if (speechText.contains("اللّه اكْبر")) {
+                        // clear stored search result, search and store again
+                        searchResultHelper.clearStoredResult()
+
+                    } else if (storedResult != null) {
+                        // TODO use stored result
+
+                    } else if (alQuranSearchHits.isNotEmpty()) {
+                        storeCurrentChapterVerses(alQuranSearchHits[0].chapter.toString())
+                    }
+
                     viewModel.setSpeechAndTranslationText(speechText, translatedText)
-                    setRecyclerViewSearchData(searchHits)
+                    setRecyclerViewSearchData(alQuranSearchHits)
                 }
             }
         }
@@ -69,6 +86,9 @@ class VoiceRecognizer(
 //        Handler().postDelayed({ mSpeechRecognizeening(intent) }, 3000)
         viewModel.onVoiceFinished()
     }
+
+    private suspend fun storeCurrentChapterVerses(chapter: String) =
+        searchResultHelper.storeSearchResultObject(searcher.searchVersesInChapter(chapter))
 
     private suspend fun setRecyclerViewSearchData(searchHits: List<HitAlQuran>) {
         withContext(mainDispatcher) {

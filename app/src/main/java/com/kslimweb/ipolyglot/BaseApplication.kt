@@ -12,10 +12,9 @@ class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         component = DaggerApplicationComponent.factory()
-            .create(TranslateModule(applicationContext),
-                AlgoliaModule,
-                GsonModule,
-                CoroutineModule)
+            .create(applicationContext,
+                ApplicationModule,
+                DataModule)
     }
 
     fun getAppComponent(): ApplicationComponent {
