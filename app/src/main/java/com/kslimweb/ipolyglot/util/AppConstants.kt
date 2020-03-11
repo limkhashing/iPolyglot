@@ -9,6 +9,9 @@ object AppConstants {
     const val TRANSLATE_MODEL_NMT = "nmt"
     const val TRANSLATE_MODEL_BASE = "base"
 
+    const val STORED_SEARCH_RESULT = "STORED_SEARCH_RESULT"
+    const val BUFFERED_SEARCH_RESULT = "BUFFERED_SEARCH_RESULT"
+
     const val speechToTextButtonTextStart = "Start Speech to Text"
     const val notListeningStatus = "Not Listening..."
 

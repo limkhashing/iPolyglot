@@ -13,8 +13,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
-class Searcher @Inject constructor(private val index: Index,
-                                   private val bgDispatcher: CoroutineDispatcher) {
+class AlgoliaSearcher(private val index: Index,
+                      private val bgDispatcher: CoroutineDispatcher) {
 
     private suspend fun querySearch(queryText: String): ResponseSearch {
         return SearcherSingleIndex(index, Query(query = queryText)).search()

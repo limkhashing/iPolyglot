@@ -15,8 +15,9 @@ import com.google.gson.Gson
 import com.kslimweb.ipolyglot.BuildConfig
 import com.kslimweb.ipolyglot.R
 import com.kslimweb.ipolyglot.di.module.DataModule.ALGOLIA_SEARCH_PREF
+import com.kslimweb.ipolyglot.network.algolia.AlgoliaSearcher
 import com.kslimweb.ipolyglot.util.AppConstants
-import com.kslimweb.ipolyglot.util.extension.SearchResultHelper
+import com.kslimweb.ipolyglot.util.extension.AlQuranSearchHelper
 import dagger.Module
 import dagger.Provides
 import io.ktor.client.features.logging.LogLevel
@@ -43,6 +44,7 @@ object ApplicationModule {
         )
     ).initIndex(IndexName(AppConstants.DEV_AL_QURAN_INDEX_NAME))
 
+
     @Provides
     @JvmStatic
     @Singleton
@@ -54,7 +56,6 @@ object ApplicationModule {
     fun provideKotlinxJson(): Json = Json(JsonConfiguration.Stable)
 
     @Provides
-    @JvmStatic
     @Singleton
     fun provideBgScope(bgDispatcher: CoroutineDispatcher): CoroutineScope {
         return CoroutineScope(bgDispatcher)
@@ -85,8 +86,14 @@ object ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideSearchResultHelper(@Named(ALGOLIA_SEARCH_PREF) sharedPreferences: SharedPreferences,
-                                  json: Json): SearchResultHelper {
-        return SearchResultHelper(sharedPreferences, json)
+    fun provideAlQuranSearchResultHelper(@Named(ALGOLIA_SEARCH_PREF) sharedPreferences: SharedPreferences,
+                                         json: Json, searcher: AlgoliaSearcher): AlQuranSearchHelper {
+        return AlQuranSearchHelper(sharedPreferences, json, searcher)
     }
+
+    @Provides
+    @JvmStatic
+    @Singleton
+    fun provideAlgoliaSearcher(index: Index, bgDispatcher: CoroutineDispatcher): AlgoliaSearcher =
+        AlgoliaSearcher(index, bgDispatcher)
 }

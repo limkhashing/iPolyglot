@@ -11,11 +11,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.kslimweb.ipolyglot.adapter.AlQuranAdapter
 import com.kslimweb.ipolyglot.databinding.ActivityMainBinding
-import com.kslimweb.ipolyglot.network.algolia.Searcher
+import com.kslimweb.ipolyglot.network.algolia.AlgoliaSearcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
 import com.kslimweb.ipolyglot.util.AppConstants.REQUEST_AUDIO_PERMISSION
-import com.kslimweb.ipolyglot.util.extension.SearchResultHelper
+import com.kslimweb.ipolyglot.util.extension.AlQuranSearchHelper
 import kotlinx.android.synthetic.main.cardview_speech_translate.*
 import kotlinx.android.synthetic.main.layout_input_speech.*
 import kotlinx.android.synthetic.main.layout_select_translate.*
@@ -27,10 +27,10 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var googleTranslate: GoogleTranslate
-    @Inject lateinit var searcher: Searcher
+    @Inject lateinit var algoliaSearcher: AlgoliaSearcher
     @Inject lateinit var bgScope: CoroutineScope
     @Inject lateinit var mainDispatcher: MainCoroutineDispatcher
-    @Inject lateinit var searchResultHelper: SearchResultHelper
+    @Inject lateinit var alQuranSearchHelper: AlQuranSearchHelper
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
     // SearchResponseHadithAdapter
@@ -106,12 +106,12 @@ class MainActivity : AppCompatActivity() {
 //            mSpeechRecognizer,
 //            getSpeechRecognizeIntent(),
             googleTranslate,
-            searcher,
+            algoliaSearcher,
             mainViewModel,
             bgScope,
             mainDispatcher,
             searchResponseAlQuranAdapter,
-            searchResultHelper))
+            alQuranSearchHelper))
     }
 
     private fun showPermissionMessageDialog() {
