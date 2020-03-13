@@ -23,6 +23,8 @@ class VoiceRecognizer(
     private val alQuranSearchHelper: AlQuranSearchHelper
 ) : RecognitionListener {
 
+    private var isFreshStart = false
+
     override fun onReadyForSpeech(params: Bundle?) {}
 
     override fun onRmsChanged(rmsdB: Float) {}
@@ -63,28 +65,36 @@ class VoiceRecognizer(
                 val speechText = it[0]
                 bgScope.launch {
                     val alQuranSearchHits = algoliaSearcher.search(speechText)
+                    val storedAlQuran = alQuranSearchHelper.getCurrentChapterVerses()
                     val translatedText = googleTranslate.translateText(speechText, viewModel.translateLanguageCode)
-                    val storedAlQuran = alQuranSearchHelper.getStoredAlQuranResult()
 
-                    // means is at first start of reciting
+                    // can be either at start or at stop current chapter
                     if (speechText.contains("اللّه اكْبر") || speechText.contains("بسم الله الرحمان الرحيم")) {
-                        // this can be either at start or at stop current chapter
                         alQuranSearchHelper.clearAlQuran()
-                    }
-                    else if (storedAlQuran == null) {
+                        isFreshStart = true
+                    } else if (storedAlQuran.isEmpty()) {
                         if (alQuranSearchHits.isNotEmpty()) {
                             alQuranSearchHelper.storeCurrentChapterVerses(alQuranSearchHits[0].chapter.toString())
-                            alQuranSearchHelper.bufferChapterVerses(alQuranSearchHits[0])
+                            alQuranSearchHelper.getCurrentChapterVerses()
+                            alQuranSearchHelper.setBufferAlQuran(alQuranSearchHits[0])
                         }
                     } else {
                         val bufferedAlQuran = alQuranSearchHelper.getBufferedAlQuran()
-                        // TODO compare buffered result of n, n+1, n-1, n-2
-                        // TODO no need store in sp. Just save it in memory
-                        // compare with speech text, if the whole string is match, retrieve it
-                        // if is forward, take verse+1 in the stored SP and store into buffer.
+                        val nextAlQuran = bufferedAlQuran[bufferedAlQuran.size - 1]
+
+                        if (alQuranSearchHits.isNotEmpty()) {
+
+                            // means i know reciter is reciting the next verse, buffer the next incoming verse
+                            if (alQuranSearchHits[0].verse == nextAlQuran.verse) {
+                                alQuranSearchHelper.addBufferedAlQuran()
+                            }
+                            viewModel.setSpeechAndTranslationText(alQuranSearchHits[0].meaning, alQuranSearchHits[0].translation)
+                        }
+                        isFreshStart = false
                     }
 
-                    viewModel.setSpeechAndTranslationText(speechText, translatedText)
+                    if (isFreshStart)
+                        viewModel.setSpeechAndTranslationText(speechText, translatedText)
                     setRecyclerViewSearchData(alQuranSearchHits)
                 }
             }

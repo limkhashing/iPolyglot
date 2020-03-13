@@ -18,6 +18,7 @@ import com.kslimweb.ipolyglot.di.module.DataModule.ALGOLIA_SEARCH_PREF
 import com.kslimweb.ipolyglot.network.algolia.AlgoliaSearcher
 import com.kslimweb.ipolyglot.util.AppConstants
 import com.kslimweb.ipolyglot.util.extension.AlQuranSearchHelper
+import com.kslimweb.ipolyglot.util.extension.VersionUtils
 import dagger.Module
 import dagger.Provides
 import io.ktor.client.features.logging.LogLevel
@@ -42,7 +43,7 @@ object ApplicationModule {
             APIKey(BuildConfig.AlgoliaSearchKey),
             logLevel = LogLevel.ALL
         )
-    ).initIndex(IndexName(AppConstants.DEV_AL_QURAN_INDEX_NAME))
+    ).initIndex(IndexName(VersionUtils.algoliaIndexName()))
 
 
     @Provides

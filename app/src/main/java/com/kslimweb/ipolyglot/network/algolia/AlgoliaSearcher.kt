@@ -31,11 +31,8 @@ class AlgoliaSearcher(private val index: Index,
         }
     }
 
-    suspend fun searchVersesInChapter(currentChapter: String) = mutableListOf<HitAlQuran>().apply {
-        withContext(bgDispatcher) {
-            val currentAlQuranChapterVerses = parseSearchResponse(querySearchChapter(currentChapter))
-            addAll(currentAlQuranChapterVerses)
-        }
+    suspend fun searchVersesInChapter(currentChapter: String): List<HitAlQuran> {
+        return parseSearchResponse(querySearchChapter(currentChapter))
     }
 
     private fun parseSearchResponse(speechTextSearchResponse: ResponseSearch) = listOf<HitAlQuran>().apply {
