@@ -5,17 +5,16 @@ import com.kslimweb.ipolyglot.di.component.ApplicationComponent
 import com.kslimweb.ipolyglot.di.component.DaggerApplicationComponent
 import com.kslimweb.ipolyglot.di.module.*
 
-class BaseApplication : Application() {
+open class BaseApplication : Application() {
 
     private lateinit var component: ApplicationComponent
 
     override fun onCreate() {
         super.onCreate()
         component = DaggerApplicationComponent.factory()
-            .create(TranslateModule(applicationContext),
-                AlgoliaModule,
-                GsonModule,
-                CoroutineModule)
+            .create(applicationContext,
+                ApplicationModule,
+                DataModule)
     }
 
     fun getAppComponent(): ApplicationComponent {

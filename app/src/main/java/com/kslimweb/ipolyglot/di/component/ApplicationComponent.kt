@@ -1,17 +1,13 @@
 package com.kslimweb.ipolyglot.di.component
 
-import com.kslimweb.ipolyglot.di.module.AlgoliaModule
-import com.kslimweb.ipolyglot.di.module.CoroutineModule
-import com.kslimweb.ipolyglot.di.module.GsonModule
-import com.kslimweb.ipolyglot.di.module.TranslateModule
+import android.content.Context
+import com.kslimweb.ipolyglot.di.module.*
+import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [TranslateModule::class,
-    AlgoliaModule::class,
-    GsonModule::class,
-    CoroutineModule::class])
+@Component(modules = [ApplicationModule::class, DataModule::class])
 interface ApplicationComponent {
 
     fun getActivityComponentFactory() : ActivityComponent.Factory
@@ -19,10 +15,10 @@ interface ApplicationComponent {
     @Component.Factory
     interface Factory {
         // if you have other dependencies, put as arguments in methods
-        fun create(translateModule: TranslateModule,
-                   algoliaModule: AlgoliaModule,
-                   gsonModule: GsonModule,
-                   coroutineModule: CoroutineModule
+        fun create(
+            @BindsInstance applicationContext: Context,
+            applicationModule: ApplicationModule,
+            dataModule: DataModule
         ): ApplicationComponent
     }
 }

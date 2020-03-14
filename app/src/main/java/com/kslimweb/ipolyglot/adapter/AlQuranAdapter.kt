@@ -25,8 +25,8 @@ class AlQuranAdapter : RecyclerView.Adapter<AlQuranAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val chapter =  hitsAlQuran[position].objectID.raw.split("_")[0]
-        val verseNumber =  hitsAlQuran[position].objectID.raw.split("_")[1]
+        val chapter =  hitsAlQuran[position].chapter
+        val verseNumber =  hitsAlQuran[position].verse
         holder.alQuranChapter.text = "Chapter " + chapter + ", Verse " + verseNumber
         holder.textMeaning.text = ""
         holder.textTranslation.text = ""

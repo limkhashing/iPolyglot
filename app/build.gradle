@@ -42,6 +42,7 @@ android {
         debug {
             minifyEnabled false
             multiDexEnabled true
+            debuggable true
             applicationIdSuffix = '.dev'
             firebaseAppDistribution {
                 testers="kslim5703@gmail.com"
@@ -50,6 +51,7 @@ android {
         }
         release {
             minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             firebaseAppDistribution {
@@ -110,12 +112,17 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.22'
 
     // Utilities for getting all Member Properties of a class
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.61"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.70"
     kapt 'com.github.LunarWatcher:KClassUnpacker:v1.0.1'
     compileOnly "com.github.LunarWatcher:KClassUnpacker:v1.0.1"
     annotationProcessor 'com.github.LunarWatcher:KClassUnpacker:v1.0.1'
 
     implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
+
+    // Debug only dependencies
+    debugImplementation 'com.facebook.stetho:stetho:1.5.0'
+    debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+
 //    implementation 'com.github.Omega-R:OmegaRecyclerView:1.9.7@aar' // AndroidX
 //    implementation 'com.trading212:sticky-headers:0.1.7'
 }
