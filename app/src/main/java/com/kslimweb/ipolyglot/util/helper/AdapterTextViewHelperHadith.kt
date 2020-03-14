@@ -1,4 +1,4 @@
-package com.kslimweb.ipolyglot.util
+package com.kslimweb.ipolyglot.util.helper
 
 import android.graphics.Typeface
 import android.text.SpannableString

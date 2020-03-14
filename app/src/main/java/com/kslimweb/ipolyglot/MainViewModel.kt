@@ -25,9 +25,9 @@ class MainViewModel(
 
     private val context: Context = application.applicationContext
 
-    var speechText = ObservableField<String>("Speech Text will display here")
-    var translationText = ObservableField<String>("Translation Text will display here")
-    var appearInLabelText = ObservableField<String>("Appear In: ")
+    var speechText = ObservableField("Speech Text will display here")
+    var translationText = ObservableField("Translation Text will display here")
+    var appearInLabelText = ObservableField("Appear In: ")
     var searchRecyclerViewVisibility = ObservableBoolean(false)
 
     val isSpeaking = ObservableBoolean(false)

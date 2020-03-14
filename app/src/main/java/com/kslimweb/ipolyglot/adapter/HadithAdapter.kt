@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.kslimweb.ipolyglot.R
 import com.kslimweb.ipolyglot.model.hadith.HitHadith
-import com.kslimweb.ipolyglot.util.AdapterTextViewHelperHadith
+import com.kslimweb.ipolyglot.util.helper.AdapterTextViewHelperHadith
 
 
 class HadithAdapter(private val hitsHadiths: List<HitHadith>, gson: Gson) : RecyclerView.Adapter<HadithAdapter.ViewHolder>() {

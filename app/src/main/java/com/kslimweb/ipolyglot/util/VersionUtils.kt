@@ -1,7 +1,6 @@
-package com.kslimweb.ipolyglot.util.extension
+package com.kslimweb.ipolyglot.util
 
 import com.kslimweb.ipolyglot.BuildConfig
-import com.kslimweb.ipolyglot.util.AppConstants
 
 object VersionUtils {
 

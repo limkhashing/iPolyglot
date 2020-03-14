@@ -14,11 +14,9 @@ import com.google.cloud.translate.TranslateOptions
 import com.google.gson.Gson
 import com.kslimweb.ipolyglot.BuildConfig
 import com.kslimweb.ipolyglot.R
-import com.kslimweb.ipolyglot.di.module.DataModule.ALGOLIA_SEARCH_PREF
 import com.kslimweb.ipolyglot.network.algolia.AlgoliaSearcher
-import com.kslimweb.ipolyglot.util.AppConstants
-import com.kslimweb.ipolyglot.util.extension.AlQuranSearchHelper
-import com.kslimweb.ipolyglot.util.extension.VersionUtils
+import com.kslimweb.ipolyglot.util.helper.AlQuranSearchHelper
+import com.kslimweb.ipolyglot.util.VersionUtils
 import dagger.Module
 import dagger.Provides
 import io.ktor.client.features.logging.LogLevel
@@ -87,9 +85,8 @@ object ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideAlQuranSearchResultHelper(@Named(ALGOLIA_SEARCH_PREF) sharedPreferences: SharedPreferences,
-                                         json: Json, searcher: AlgoliaSearcher): AlQuranSearchHelper {
-        return AlQuranSearchHelper(sharedPreferences, json, searcher)
+    fun provideAlQuranSearchResultHelper(json: Json, searcher: AlgoliaSearcher): AlQuranSearchHelper {
+        return AlQuranSearchHelper(json, searcher)
     }
 
     @Provides

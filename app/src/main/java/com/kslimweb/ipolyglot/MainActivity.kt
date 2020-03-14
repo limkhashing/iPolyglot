@@ -15,7 +15,6 @@ import com.kslimweb.ipolyglot.network.algolia.AlgoliaSearcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import com.kslimweb.ipolyglot.speechservices.VoiceRecognizer
 import com.kslimweb.ipolyglot.util.AppConstants.REQUEST_AUDIO_PERMISSION
-import com.kslimweb.ipolyglot.util.extension.AlQuranSearchHelper
 import kotlinx.android.synthetic.main.cardview_speech_translate.*
 import kotlinx.android.synthetic.main.layout_input_speech.*
 import kotlinx.android.synthetic.main.layout_select_translate.*
@@ -30,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var algoliaSearcher: AlgoliaSearcher
     @Inject lateinit var bgScope: CoroutineScope
     @Inject lateinit var mainDispatcher: MainCoroutineDispatcher
-    @Inject lateinit var alQuranSearchHelper: AlQuranSearchHelper
 
     private lateinit var mSpeechRecognizer: SpeechRecognizer
     // SearchResponseHadithAdapter
@@ -110,8 +108,7 @@ class MainActivity : AppCompatActivity() {
             mainViewModel,
             bgScope,
             mainDispatcher,
-            searchResponseAlQuranAdapter,
-            alQuranSearchHelper))
+            searchResponseAlQuranAdapter))
     }
 
     private fun showPermissionMessageDialog() {

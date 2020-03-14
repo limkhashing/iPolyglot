@@ -1,11 +1,10 @@
-package com.kslimweb.ipolyglot.util.extension
+package com.kslimweb.ipolyglot.util.helper
 
-import android.content.SharedPreferences
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.network.algolia.AlgoliaSearcher
 import kotlinx.serialization.json.Json
 
-class AlQuranSearchHelper(private val sharedPreferences: SharedPreferences, private val json: Json, private val searcher: AlgoliaSearcher) {
+class AlQuranSearchHelper(private val json: Json, private val searcher: AlgoliaSearcher) {
 
     private var indexNextVerse = 0
     private val storedCurrentChapterVerses = mutableListOf<HitAlQuran>()
