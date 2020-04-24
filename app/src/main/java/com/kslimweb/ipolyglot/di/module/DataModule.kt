@@ -15,6 +15,7 @@ object DataModule {
 
     @Provides
     @Singleton
+    @JvmStatic
     @Named(ALGOLIA_SEARCH_PREF)
     fun provideAlgoliaSearchSharedPreference(context: Context): SharedPreferences {
         return context.getSharedPreferences(ALGOLIA_SEARCH_PREF, Context.MODE_PRIVATE)
