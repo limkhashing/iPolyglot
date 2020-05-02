@@ -3,3 +3,5 @@
 
 
 An Android app that listen and translate to several languages
+
+Additional Feature: It will search the meaning and translation in Algolia
