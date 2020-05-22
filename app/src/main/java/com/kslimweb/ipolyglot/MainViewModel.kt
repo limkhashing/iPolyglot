@@ -25,14 +25,12 @@ class MainViewModel(
 
     private val context: Context = application.applicationContext
 
-    var speechText = ObservableField("Speech Text will display here")
-    var translationText = ObservableField("Translation Text will display here")
-    var appearInLabelText = ObservableField("Appear In: ")
+    var speechText = ObservableField(context.getString(R.string.speech_text))
+    var translationText = ObservableField(context.getString(R.string.translation_text))
+    var appearInLabelText = ObservableField(context.getString(R.string.label_search))
     var searchRecyclerViewVisibility = ObservableBoolean(false)
 
     val isSpeaking = ObservableBoolean(false)
-    //    val textButtonSpeechToText = ObservableField<String>(speechToTextButtonTextStart)
-//    val textListeningStatus = ObservableField<String>(notListeningStatus)
     var speechLanguageCode = getLanguageCode()
     var translateLanguageCode = getLanguageCode()
 
@@ -52,10 +50,6 @@ class MainViewModel(
     }
 
     fun onVoiceFinished(error: Boolean = false) {
-//        textButtonSpeechToText.set(speechToTextButtonTextStart)
-//        textListeningStatus.set(notListeningStatus)
-//        if (error)
-//            mediaActionSound.play(MediaActionSound.STOP_VIDEO_RECORDING)
         mSpeechRecognizer.stopListening()
         isSpeaking.set(false)
     }
@@ -64,12 +58,8 @@ class MainViewModel(
         isSpeaking.set(!isSpeaking.get()) // flip the boolean isSpeaking
         if (isSpeaking.get()) {
             mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
-//            textButtonSpeechToText.set(speechToTextButtonTextStop)
-//            textListeningStatus.set(listeningStatus)
         } else {
             mSpeechRecognizer.stopListening()
-//            textButtonSpeechToText.set(speechToTextButtonTextStart)
-//            textListeningStatus.set(notListeningStatus)
         }
     }
 

@@ -11,9 +11,7 @@
             type="com.kslimweb.ipolyglot.MainViewModel" />
     </data>
 
-
     <androidx.cardview.widget.CardView
-        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
@@ -22,13 +20,14 @@
         app:cardUseCompatPadding="true">
 
         <LinearLayout
+            android:id="@+id/card_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/spacing_normal"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/speech_text"
+                android:id="@+id/txt_speech"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_normal"
@@ -40,7 +39,7 @@
             <include layout="@layout/divider_vertical" />
 
             <TextView
-                android:id="@+id/translate_text"
+                android:id="@+id/txt_translation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_normal"

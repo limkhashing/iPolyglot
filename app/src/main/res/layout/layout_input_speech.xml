@@ -17,7 +17,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Input Speech Language"
+            android:id="@+id/txt_input_speech"
+            android:text="@string/spinner_text_input_speech"
             android:textSize="16sp"
             android:textColor="@android:color/black"
             android:textStyle="bold" />

@@ -55,10 +55,6 @@ class MainActivity : AppCompatActivity() {
 
         spinner_speech_language.setOnItemSelectedListener { view, position, id, item ->
              mainViewModel.speechLanguageCode = mainViewModel.getLanguageCode(position)
-//            if (isSpeaking) {
-//                setSpeechRecognizerListener()
-//                mSpeechRecognizer.startListening(getSpeechRecognizeIntent())
-//            }
         }
         spinner_translate_language.setOnItemSelectedListener { view, position, id, item ->
             mainViewModel.translateLanguageCode = mainViewModel.getLanguageCode(position)

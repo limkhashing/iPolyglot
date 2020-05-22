@@ -7,7 +7,6 @@ import com.algolia.search.model.indexing.Indexable
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonObject
-import oliviazoe0.processor.AutoUnpack
 
 @Serializable
 data class HitAlQuran(
