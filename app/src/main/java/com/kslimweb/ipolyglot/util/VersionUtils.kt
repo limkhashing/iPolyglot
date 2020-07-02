@@ -4,7 +4,7 @@ import com.kslimweb.ipolyglot.BuildConfig
 
 object VersionUtils {
 
-    val isReleaseMode: Boolean
+    private val isReleaseMode: Boolean
         get() = !BuildConfig.DEBUG
 
 

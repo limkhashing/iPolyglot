@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:aw="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <data>
@@ -16,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/spacing_large"
+        android:id="@+id/main_view"
         android:orientation="vertical">
 
         <include layout="@layout/layout_input_speech"
@@ -35,27 +34,6 @@
             android:onClick="@{() -> viewModel.onInputSpeechClicked()}"
             android:scaleType="fitXY"
             android:src="@{viewModel.isSpeaking ? @drawable/ic_google_mic_disable : @drawable/ic_google_mic}" />
-
-<!--        <Button-->
-<!--            android:id="@+id/speech_to_text_button"-->
-<!--            style="@style/Widget.AppCompat.Button.Colored"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:onClick="@{() -> viewModel.onInputSpeechClicked()}"-->
-<!--            android:textAllCaps="false"-->
-<!--            android:text="@{viewModel.textButtonSpeechToText}" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/listening_status"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@{viewModel.textListeningStatus}"-->
-<!--            android:textAppearance="@style/TextAppearance.AppCompat.Caption"-->
-<!--            android:layout_marginBottom="@dimen/spacing_tiny"-->
-<!--            android:layout_marginLeft="@dimen/spacing_medium"-->
-<!--            android:layout_marginRight="@dimen/spacing_medium"-->
-<!--            android:layout_marginTop="@dimen/spacing_tiny"-->
-<!--            android:textColor="@android:color/black" />-->
 
         <include
             android:id="@+id/cardview_speech_translate"

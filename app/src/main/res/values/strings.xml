@@ -2,6 +2,12 @@
     <string name="app_name">iPolyglot</string>
     <string name="permission_message">This app needs to record audio and recognize your speech.</string>
 
+    <string name="spinner_text_input_speech">Input Speech Language</string>
+    <string name="spinner_text_translation">Translation Language</string>
+    <string name="speech_text">Speech Text will display here</string>
+    <string name="translation_text">Translation Text will display here</string>
+    <string name="label_search">Appear In: </string>
+
     <!-- https://cloud.google.com/translate/docs/languages -->
     <string-array name="list_of_language">
         <item>Arabic</item>

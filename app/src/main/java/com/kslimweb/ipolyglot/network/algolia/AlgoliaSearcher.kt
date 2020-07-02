@@ -10,7 +10,6 @@ import com.algolia.search.model.search.Query
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 
 class AlgoliaSearcher(private val index: Index,
@@ -36,6 +35,9 @@ class AlgoliaSearcher(private val index: Index,
     }
 
     private fun parseSearchResponse(speechTextSearchResponse: ResponseSearch) = listOf<HitAlQuran>().apply {
+        if (speechTextSearchResponse.hitsOrNull == null || speechTextSearchResponse.hitsOrNull?.isEmpty()!!) {
+            return@apply
+        }
         return speechTextSearchResponse.hits.deserialize(HitAlQuran.serializer())
     }
 }
