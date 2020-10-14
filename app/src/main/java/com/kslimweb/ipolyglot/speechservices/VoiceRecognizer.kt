@@ -66,13 +66,14 @@ class VoiceRecognizer(
                     val alQuranSearchHits = algoliaSearcher.search(speechText)
                     val translatedText = googleTranslate.translateText(speechText, viewModel.translateLanguageCode)
                     viewModel.setSpeechAndTranslationText(speechText, translatedText)
+                    setRecyclerViewSearchData(alQuranSearchHits)
 
-                    if (speechText.contains("اللّه اكْبر") || speechText.contains("بسم الله الرحمان الرحيم")
-                        || speechText.toUpperCase(Locale.getDefault()).contains("ALLAHU AKBAR")) {
-                        setRecyclerViewSearchData(emptyList())
-                    } else {
-                        setRecyclerViewSearchData(alQuranSearchHits)
-                    }
+//                    if (speechText.contains("اللّه اكْبر") || speechText.contains("بسم الله الرحمان الرحيم")
+//                        || speechText.toUpperCase(Locale.getDefault()).contains("ALLAHU AKBAR")) {
+//                        setRecyclerViewSearchData(emptyList())
+//                    } else {
+//                        setRecyclerViewSearchData(alQuranSearchHits)
+//                    }
 
 //                    val storedAlQuran = alQuranSearchHelper.getCurrentChapterVerses()
 //                    // can be either at start or at stop current chapter
