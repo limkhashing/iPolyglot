@@ -4,17 +4,20 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.appdistribution'
 apply plugin: 'com.google.firebase.crashlytics'
+
+def keystorePropertiesFile= rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     // https://stackoverflow.com/questions/18328730/how-to-create-a-release-signed-apk-file-using-gradle
     signingConfigs {
         release {
-            keyAlias "ipolyglot"
-            storeFile file("$rootProject.projectDir/ipolyglot.jks")
-            keyPassword "android"
-            storePassword "android"
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
 
@@ -44,19 +47,11 @@ android {
             multiDexEnabled true
             debuggable true
             applicationIdSuffix = '.dev'
-            firebaseAppDistribution {
-                testers="kslim5703@gmail.com"
-                serviceCredentialsFile = "$rootProject.projectDir/ipolygot-96fda3515e8a.json"
-            }
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            firebaseAppDistribution {
-                testers="kslim5703@gmail.com"
-                serviceCredentialsFile = "$rootProject.projectDir/ipolygot-96fda3515e8a.json"
-            }
         }
     }
     buildTypes.each {
@@ -78,15 +73,15 @@ android {
             outputFileName = "ipolygot-${v.baseName}-${variant.versionName}-${defaultConfig.versionCode}.apk"
         }
     }
-    dataBinding.enabled = true
+    buildFeatures.dataBinding = true
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
-    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.2'
+    testImplementation 'junit:junit:4.13'
 
     // mvvm
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
@@ -108,16 +103,17 @@ dependencies {
     api 'com.google.dagger:dagger:2.26'
     kapt 'com.google.dagger:dagger-compiler:2.26'
 
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
+    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     // Debug only dependencies
     debugImplementation 'com.facebook.stetho:stetho:1.5.1'
     debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 
     // androidx.test
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

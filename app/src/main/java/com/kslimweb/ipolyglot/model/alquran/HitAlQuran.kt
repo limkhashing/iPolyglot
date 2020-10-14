@@ -13,6 +13,7 @@ data class HitAlQuran(
     override val objectID: ObjectID,
     override var _highlightResult: JsonObject?,
     val chapter: Int,
+    val chapter_name: String,
     val verse: Int,
     val meaning: String,
     val translation: String

@@ -10,3 +10,4 @@
 .idea
 *.json
 /ipolyglot.jks
+/keystore.properties

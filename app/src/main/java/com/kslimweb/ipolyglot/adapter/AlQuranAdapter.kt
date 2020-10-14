@@ -9,35 +9,23 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.algolia.instantsearch.core.highlighting.HighlightedString
-import com.kslimweb.ipolyglot.R
+import com.kslimweb.ipolyglot.databinding.ItemSearchAlquranBinding
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 
-class AlQuranAdapter : RecyclerView.Adapter<AlQuranAdapter.ViewHolder>() {
+class AlQuranAdapter : RecyclerView.Adapter<AlQuranAdapter.AlQuranViewHolder>() {
 
     private var hitsAlQuran: List<HitAlQuran> = mutableListOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context), parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlQuranViewHolder {
+        return AlQuranViewHolder(ItemSearchAlquranBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int {
         return hitsAlQuran.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val chapter =  hitsAlQuran[position].chapter
-        val verseNumber =  hitsAlQuran[position].verse
-        holder.alQuranChapter.text = "Chapter " + chapter + ", Verse " + verseNumber
-        holder.textMeaning.text = ""
-        holder.textTranslation.text = ""
-
-        hitsAlQuran[position].highlightedMeanings?.let {
-            setHighlightMeanings(it, holder.textMeaning)
-        }
-
-        hitsAlQuran[position].highlightedTranslations?.let {
-            setHighlightTranslations(it, holder.textTranslation)
-        }
+    override fun onBindViewHolder(holder: AlQuranViewHolder, position: Int) {
+        holder.bind(hitsAlQuran[position])
     }
 
     private fun setHighlightMeanings(highlightedMeanings: HighlightedString, textMeaning: TextView) {
@@ -81,10 +69,14 @@ class AlQuranAdapter : RecyclerView.Adapter<AlQuranAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.item_search_alquran, parent, false)) {
-        val alQuranChapter = itemView.findViewById(R.id.txt_al_quran_chapter) as TextView
-        val textMeaning = itemView.findViewById(R.id.txt_meaning) as TextView
-        val textTranslation = itemView.findViewById(R.id.txt_translation) as TextView
+    inner class AlQuranViewHolder(private val binding: ItemSearchAlquranBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: HitAlQuran) = with(binding) {
+            binding.item = item
+            executePendingBindings()
+            if (binding.txtMeaning.text != "") binding.txtMeaning.text = ""
+            if (binding.txtTranslation.text != "") binding.txtTranslation.text = ""
+            item.highlightedMeanings?.let { setHighlightMeanings(it, binding.txtMeaning) }
+            item.highlightedTranslations?.let { setHighlightTranslations(it, binding.txtTranslation) }
+        }
     }
 }
