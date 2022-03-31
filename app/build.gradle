@@ -11,7 +11,8 @@ def keystorePropertiesFile= rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'testReleaseUnitTest',
+                                                      'createDebugCoverageReport', 'createReleaseCoverageReport']) {
     reports {
         xml.enabled = true
         html.enabled = true
