@@ -1,10 +1,12 @@
 package com.kslimweb.ipolyglot
 
+import android.Manifest
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.GrantPermissionRule
 import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
@@ -16,6 +18,10 @@ class MainActivityUiTest {
     @Rule
     @JvmField
     val rule = ActivityTestRule(MainActivity::class.java)
+
+    @Rule
+    @JvmField
+    val permissionRule = GrantPermissionRule.grant(Manifest.permission.RECORD_AUDIO)
 
     /**
      * Test UI
