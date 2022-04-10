@@ -14,7 +14,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:name"
         android:theme="@style/AppTheme">
-        <activity android:name="com.kslimweb.ipolyglot.MainActivity">
+        <activity android:name="com.kslimweb.ipolyglot.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

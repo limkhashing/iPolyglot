@@ -1,17 +1,16 @@
-package com.kslimweb.ipolyglot
+package com.kslimweb.ipolyglot.main
 
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.media.MediaActionSound
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kslimweb.ipolyglot.R
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.*

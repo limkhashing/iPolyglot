@@ -3,13 +3,12 @@ package com.kslimweb.ipolyglot.speechservices
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
-import com.kslimweb.ipolyglot.MainViewModel
+import com.kslimweb.ipolyglot.main.MainViewModel
 import com.kslimweb.ipolyglot.adapter.AlQuranAdapter
 import com.kslimweb.ipolyglot.model.alquran.HitAlQuran
 import com.kslimweb.ipolyglot.network.algolia.AlgoliaSearcher
 import com.kslimweb.ipolyglot.network.translate.GoogleTranslate
 import kotlinx.coroutines.*
-import java.util.*
 
 class VoiceRecognizer(
 //    private val mSpeechRecognizer: SpeechRecognizer,

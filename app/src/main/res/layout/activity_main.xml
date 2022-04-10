@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:bind="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainActivity">
+    tools:context=".main.MainActivity">
 
     <data>
         <variable
             name="viewModel"
-            type="com.kslimweb.ipolyglot.MainViewModel" />
+            type="com.kslimweb.ipolyglot.main.MainViewModel" />
     </data>
 
     <LinearLayout

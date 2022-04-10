@@ -10,6 +10,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
+import com.kslimweb.ipolyglot.main.MainActivity
 import org.hamcrest.CoreMatchers.not
 import org.junit.BeforeClass
 import org.junit.Rule

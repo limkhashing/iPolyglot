@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.kslimweb.ipolyglot.MainViewModel" />
+            type="com.kslimweb.ipolyglot.main.MainViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
