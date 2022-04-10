@@ -5,7 +5,7 @@ apply plugin: 'kotlinx-serialization'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
-apply from: 'jacoco.gradle'
+//apply from: 'jacoco.gradle'
 apply from: 'coveralls.gradle'
 
 def keystorePropertiesFile= rootProject.file("keystore.properties")
@@ -82,16 +82,9 @@ android {
 
     testOptions {
         unitTests.all {
-//            jacoco {
-//                includeNoLocationClasses = true
-//                excludes = ['jdk.internal.*']
-//            }
             if (name == "testReleaseUnitTest") {
                 // avoid running kover for release unit tests
                 kover.disabled = true
-            } else {
-                kover.excludes = ["com.kslimweb.ipolyglot.di.module.*", ".*ComposableSingletons.*", ".*BuildConfig.*", ".*_Factory.*"]
-                kover.includes = ["com.kslimweb.ipolyglot.adapter.*", "com.kslimweb.ipolyglot.main.*"]
             }
         }
     }
@@ -100,11 +93,9 @@ android {
 }
 
 tasks.koverHtmlReport {
-    enabled = true
     htmlReportDir.set(layout.buildDirectory.dir("${rootProject.projectDir}/app/build/reports/kover/"))
-
-//    includes = listOf("com.kslimweb.ipolyglot.*")            // inclusion rules for classes
-//    excludes = listOf("com.example.subpackage.*") // exclusion rules for classes
+    includes = ['com.kslimweb.ipolyglot.main.MainViewModel']  // your exclusion rules
+//    excludes = ['com.kslimweb.ipolyglot.*di*', '*androidx*']  // your exclusion rules
 }
 
 dependencies {
