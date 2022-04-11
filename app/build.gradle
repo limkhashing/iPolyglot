@@ -6,7 +6,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 //apply from: 'jacoco.gradle'
-apply from: 'coveralls.gradle'
 
 def keystorePropertiesFile= rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -49,6 +48,7 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            shrinkResources false
             multiDexEnabled true
             debuggable true
             testCoverageEnabled false
@@ -93,9 +93,7 @@ android {
 }
 
 tasks.koverHtmlReport {
-    htmlReportDir.set(layout.buildDirectory.dir("${rootProject.projectDir}/app/build/reports/kover/"))
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']  // your exclusion rules
-//    excludes = ['com.kslimweb.ipolyglot.*di*', '*androidx*']  // your exclusion rules
 }
 
 dependencies {

@@ -25,6 +25,7 @@ buildscript {
 }
 
 apply plugin: 'kover'
+apply from: 'coveralls.gradle'
 
 allprojects {
     repositories {
@@ -37,4 +38,12 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+tasks.koverMergedHtmlReport {
+    includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
+}
+
+tasks.koverMergedXmlReport {
+    includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
 }
