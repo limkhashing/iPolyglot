@@ -25,7 +25,7 @@ buildscript {
 }
 
 apply plugin: 'kover'
-apply from: './app/coveralls.gradle'
+apply from: 'coveralls.gradle'
 
 allprojects {
     repositories {
@@ -46,4 +46,5 @@ tasks.koverMergedHtmlReport {
 
 tasks.koverMergedXmlReport {
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
+    xmlReportFile.set(layout.buildDirectory.file("my-merged-report/result.xml"))
 }
