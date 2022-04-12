@@ -4,7 +4,7 @@ configurations.all {
     resolutionStrategy {
         eachDependency { details ->
             if ('org.jacoco' == details.requested.group) {
-                details.useVersion "0.8.8"
+                details.useVersion "0.8.7"
             }
         }
     }
