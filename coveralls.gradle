@@ -1,7 +1,7 @@
 apply plugin: 'com.github.kt3k.coveralls'
 
 coveralls {
-    jacocoReportPath = "build/my-merged-report/result.xml"
+    jacocoReportPath = "build/reports/kover/report.xml"
 }
 
 tasks.coveralls {

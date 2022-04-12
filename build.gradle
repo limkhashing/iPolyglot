@@ -42,9 +42,10 @@ task clean(type: Delete) {
 
 tasks.koverMergedHtmlReport {
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
+//    htmlReportDir.set(layout.buildDirectory.dir("my-project-report/html-result"))
 }
 
 tasks.koverMergedXmlReport {
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
-    xmlReportFile.set(layout.buildDirectory.file("my-merged-report/result.xml"))
+//    xmlReportFile.set(layout.buildDirectory.file("my-merged-report/result.xml"))
 }
