@@ -5,5 +5,5 @@ coveralls {
 }
 
 tasks.coveralls {
-    dependsOn 'koverMergedXmlReport'
+    dependsOn 'jacocoTestReport'
 }
