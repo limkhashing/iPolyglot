@@ -1,9 +1,9 @@
 apply plugin: 'com.github.kt3k.coveralls'
 
 coveralls {
-    jacocoReportPath = "${rootProject.projectDir}/app/build/reports/kover/project-xml/report.xml"
+    jacocoReportPath = "build/reports/kover/report.xml"
 }
 
-tasks.coveralls {
-    dependsOn 'koverXmlReport'
-}
+//tasks.coveralls {
+//    dependsOn 'koverMergedXmlReport'
+//}
