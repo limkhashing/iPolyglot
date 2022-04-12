@@ -1,7 +1,7 @@
 apply plugin: 'com.github.kt3k.coveralls'
 
 coveralls {
-    jacocoReportPath = "${rootProject}/build/reports/kover/report.xml"
+    jacocoReportPath = "build/reports/kover/report.xml"
 //    jacocoReportPath = "${rootProject.projectDir}/app/build/reports/kover/project-xml/report.xml"
 //    jacocoReportPath = "./app/build/reports/kover/project-xml/report.xml"
 }
