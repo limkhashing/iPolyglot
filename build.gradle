@@ -50,7 +50,7 @@ tasks.koverMergedHtmlReport {
 tasks.koverMergedXmlReport {
     enabled = true
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
-    excludes = ['*.*BuildConfig*']
+    excludes = ['*.*BuildConfig.*']
 }
 
 kover {
@@ -60,3 +60,4 @@ kover {
 //    disabledProjects = setOf()              // setOf("project-name") to disable coverage for project with name `project-name`
 //    runAllTestsForProjectTask = false       // true to run all tests in all projects if `koverHtmlReport`, `koverXmlReport`, `koverReport`, `koverVerify` or `check` tasks executed on some project
 }
+
