@@ -25,7 +25,7 @@ buildscript {
 }
 
 apply plugin: 'kover'
-//apply from: "jacoco.gradle"
+apply from: "jacoco.gradle"
 apply from: 'coveralls.gradle'
 
 allprojects {
@@ -42,22 +42,16 @@ task clean(type: Delete) {
 }
 
 tasks.koverMergedHtmlReport {
-    enabled = true
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
-    excludes = ['com.kslimweb.ipolyglot.BuildConfig']
 }
 
 tasks.koverMergedXmlReport {
-    enabled = true
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
-    excludes = ['com.kslimweb.ipolyglot.BuildConfig']
 }
 
 kover {
-    coverageEngine.set(kotlinx.kover.api.CoverageEngine.JACOCO) // change instrumentation agent and reporter
-    jacocoEngineVersion.set("0.8.8")        // change version of JaCoCo agent and reporter
-//    generateReportOnCheck = true            // false to do not execute `koverMergedReport` task before `check` task
-//    disabledProjects = setOf()              // setOf("project-name") to disable coverage for project with name `project-name`
-//    runAllTestsForProjectTask = false       // true to run all tests in all projects if `koverHtmlReport`, `koverXmlReport`, `koverReport`, `koverVerify` or `check` tasks executed on some project
+//    coverageEngine.set(kotlinx.kover.api.CoverageEngine.JACOCO) // change instrumentation agent and reporter
+//    jacocoEngineVersion.set("0.8.8")        // change version of JaCoCo agent and reporter
+//    disabledProjects = []]           // setOf("project-name") to disable coverage for project with name `project-name`
 }
 
