@@ -44,13 +44,13 @@ task clean(type: Delete) {
 tasks.koverMergedHtmlReport {
     enabled = true
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
-    excludes = ['*.*BuildConfig*']
+    excludes = ['com.kslimweb.ipolyglot.BuildConfig']
 }
 
 tasks.koverMergedXmlReport {
     enabled = true
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
-    excludes = ['*.*BuildConfig.*']
+    excludes = ['com.kslimweb.ipolyglot.BuildConfig']
 }
 
 kover {
