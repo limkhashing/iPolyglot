@@ -47,11 +47,12 @@ tasks.koverMergedHtmlReport {
 
 tasks.koverMergedXmlReport {
     includes = ['com.kslimweb.ipolyglot.main.MainViewModel']
+    excludes = ['com.kslimweb.ipolyglot.BuildConfig']
 }
 
 kover {
-//    coverageEngine.set(kotlinx.kover.api.CoverageEngine.JACOCO) // change instrumentation agent and reporter
-//    jacocoEngineVersion.set("0.8.8")        // change version of JaCoCo agent and reporter
-//    disabledProjects = []]           // setOf("project-name") to disable coverage for project with name `project-name`
+    coverageEngine.set(kotlinx.kover.api.CoverageEngine.JACOCO) // change instrumentation agent and reporter
+    jacocoEngineVersion.set("0.8.8")        // change version of JaCoCo agent and reporter
+//    disabledProjects = []           // setOf("project-name") to disable coverage for project with name `project-name`
 }
 
